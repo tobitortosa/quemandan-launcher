@@ -11,6 +11,11 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = _shell;
-        Opened += async (_, _) => await _shell.ResumeSessionAsync();
+        Opened += async (_, _) =>
+        {
+            // Si hay una versión nueva del launcher, se aplica y la app se reinicia sola.
+            await Updater.CheckAsync();
+            await _shell.ResumeSessionAsync();
+        };
     }
 }

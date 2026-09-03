@@ -17,3 +17,7 @@ obj/
 # Sistema
 Thumbs.db
 desktop.ini
+
+# Salidas del empaquetado del launcher
+launcher/artifacts/
+launcher/releases/

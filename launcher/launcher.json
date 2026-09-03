@@ -1,4 +1,4 @@
 {
-  "_": "Dónde está el backend. Mientras lo corras en tu PC con 'npm run dev', dejalo así. Cuando lo publiques en internet, poné esa dirección acá.",
-  "apiUrl": "http://127.0.0.1:3000"
+  "_": "Dónde está el backend. Para probar contra tu PC, cambiá esto por http://127.0.0.1:3000 y corré 'npm run dev' en la carpeta web.",
+  "apiUrl": "https://quemandan.vercel.app"
 }
