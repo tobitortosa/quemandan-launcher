@@ -1,6 +1,6 @@
 # SOBRINOS DE PEPE Launcher
 
-Launcher de Windows para el server de Minecraft "SOBRINOS DE PEPE" (`quemandan.minehost.pro`, Fabric 26.1). El viewer lo baja, se crea la cuenta, Tobías la aprueba, aprieta **JUGAR** y entra al server con la versión, el Java y los mods correctos. Con la cuenta de admin, el mismo launcher gestiona los mods y las cuentas.
+Launcher de Windows para el server de Minecraft "SOBRINOS DE PEPE" (`sobrinosdepepe.minehost.pro`, Fabric 26.1). El viewer lo baja, se crea la cuenta, Tobías la aprueba, aprieta **JUGAR** y entra al server con la versión, el Java y los mods correctos. Con la cuenta de admin, el mismo launcher gestiona los mods y las cuentas.
 
 **Estado:** fases 0 y 1 listas y probadas. El instalador entra al server con el inventario intacto, y el backend maneja cuentas, subida de mods y publicación del pack. Falta la interfaz (fase 2) y el panel de admin dentro del launcher (fase 3).
 

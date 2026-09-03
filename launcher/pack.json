@@ -4,7 +4,7 @@
   "fabricLoader": "0.19.5",
   "server": {
     "name": "SOBRINOS DE PEPE",
-    "address": "quemandan.minehost.pro"
+    "address": "sobrinosdepepe.minehost.pro"
   },
   "mods": [
     {

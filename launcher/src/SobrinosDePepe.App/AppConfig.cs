@@ -10,8 +10,28 @@ namespace SobrinosDePepe.App;
 public static class AppConfig
 {
     public const string DefaultApiUrl = "https://sobrinosdepepe.vercel.app";
+    public const string DefaultServerAddress = "sobrinosdepepe.minehost.pro";
 
     public static Uri ApiUrl { get; } = Resolve();
+
+    /// <summary>La dirección del servidor de Minecraft, para el indicador de estado.</summary>
+    public static string ServerAddress { get; } = ReadSetting("serverAddress") ?? DefaultServerAddress;
+
+    private static string? ReadSetting(string key)
+    {
+        var file = Path.Combine(AppContext.BaseDirectory, "launcher.json");
+        if (!File.Exists(file)) return null;
+
+        try
+        {
+            using var document = JsonDocument.Parse(File.ReadAllText(file));
+            return document.RootElement.TryGetProperty(key, out var value) ? value.GetString() : null;
+        }
+        catch (Exception ex) when (ex is IOException or JsonException)
+        {
+            return null;
+        }
+    }
 
     private static Uri Resolve()
     {
@@ -20,21 +40,7 @@ public static class AppConfig
             Uri.TryCreate(fromEnvironment, UriKind.Absolute, out var envUri))
             return envUri;
 
-        var file = Path.Combine(AppContext.BaseDirectory, "launcher.json");
-        if (File.Exists(file))
-        {
-            try
-            {
-                using var document = JsonDocument.Parse(File.ReadAllText(file));
-                if (document.RootElement.TryGetProperty("apiUrl", out var value) &&
-                    Uri.TryCreate(value.GetString(), UriKind.Absolute, out var fileUri))
-                    return fileUri;
-            }
-            catch (Exception ex) when (ex is IOException or JsonException)
-            {
-                // Si el archivo está mal, se usa la dirección compilada.
-            }
-        }
+        if (Uri.TryCreate(ReadSetting("apiUrl"), UriKind.Absolute, out var fromFile)) return fromFile;
 
         return new Uri(DefaultApiUrl);
     }

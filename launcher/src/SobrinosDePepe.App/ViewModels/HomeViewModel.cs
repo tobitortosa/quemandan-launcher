@@ -46,7 +46,7 @@ public partial class HomeViewModel : ObservableObject
 
     private async Task CheckServerAsync()
     {
-        var info = await Core.ServerStatus.QueryAsync("quemandan.minehost.pro");
+        var info = await Core.ServerStatus.QueryAsync(AppConfig.ServerAddress);
         ServerOnline = info.Online;
         ServerChecked = true;
         ServerLabel = info.Online

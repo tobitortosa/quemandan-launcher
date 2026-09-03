@@ -28,7 +28,7 @@
     "maven": "https://maven.fabricmc.net/"
   },
   "server": {
-    "address": "quemandan.minehost.pro",
+    "address": "sobrinosdepepe.minehost.pro",
     "srv_target": "sv36.minehost.pro",
     "srv_port": 25445,
     "srv_ip": "45.235.98.223",

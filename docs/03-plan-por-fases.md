@@ -30,7 +30,7 @@ Después, si hace falta: mod de verificación en el servidor (fase 4, opcional, 
 1. Instala Minecraft 26.1 en `%LOCALAPPDATA%\SobrinosDePepe\game`: client.jar, las 75 librerías de Windows, los 4.750 assets y el runtime Java 25 de Mojang. Con reintentos y verificación de sha1.
 2. Instala el perfil Fabric 0.19.5. Ojo con esto: hay que sacar el extractor de Java del perfil hijo, porque si no baja 150 MB de Java 8 que no sirven para nada.
 3. Descarga los mods del pack verificando sha1 y sha512, y copia las configs.
-4. Lanza el juego con sesión offline (`--username PEPE`, UUID derivado del nombre) y `--quickPlayMultiplayer quemandan.minehost.pro`.
+4. Lanza el juego con sesión offline (`--username PEPE`, UUID derivado del nombre) y `--quickPlayMultiplayer sobrinosdepepe.minehost.pro`.
 5. Loguea todo y captura la salida del juego.
 
 **Listo cuando:** apareces en el server como PEPE, con tu inventario, desde una carpeta que no es `.minecraft`, y un amigo sin Java instalado repite el proceso en su PC.

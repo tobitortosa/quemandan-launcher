@@ -43,7 +43,7 @@
 
 | Dato | Valor | Fuente |
 |---|---|---|
-| DNS | `quemandan.minehost.pro` **sin A**; SRV `_minecraft._tcp.quemandan.minehost.pro` → `sv36.minehost.pro:25445` (TTL 300), IP 45.235.98.223 (AS266777, Argentina, RTT ~4 ms) | nslookup |
+| DNS | `sobrinosdepepe.minehost.pro` **sin A**; SRV `_minecraft._tcp.sobrinosdepepe.minehost.pro` → `sv36.minehost.pro:25445` (TTL 300), IP 45.235.98.223 (AS266777, Argentina, RTT ~4 ms) | nslookup |
 | Estado (ping) | online · `26.1` · protocolo 775 · 0/20 · MOTD "A Minecraft Server" · favicon · sin `enforcesSecureChat` (coherente con offline) | Server List Ping propio |
 | Panel | **Pterodactyl** `https://pterodactyl.minehost.com.ar/` (tema Arix); nodo `sv36` corre Wings (8080) y SFTP en **2022**; sin FTP (21), sin RCON (25575 cerrado) | curl/sockets |
 | Client API | keys en `/account/api` (prefijo `ptlc_`) · `POST /api/client/servers/{id}/command` `{"command":"whitelist add PEPE"}` (502 si el server está apagado) · `GET .../resources` · `POST .../power` · `GET .../files/contents?file=/whitelist.json` · `POST .../files/write` · `/backups` · 256 req/min | routes/api-client.php de pterodactyl/panel |

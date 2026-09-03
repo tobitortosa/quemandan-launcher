@@ -9,7 +9,7 @@ namespace SobrinosDePepe.Core;
 public sealed record ServerInfo(bool Online, string? Version, int Protocol, int Players, int MaxPlayers, string? Motd, int LatencyMs);
 
 /// <summary>
-/// El punto verde o rojo del launcher. Hay un detalle importante: quemandan.minehost.pro
+/// El punto verde o rojo del launcher. Hay un detalle importante: sobrinosdepepe.minehost.pro
 /// no tiene registro A, se resuelve por SRV hacia otro host y otro puerto. El cliente de
 /// Minecraft hace esa resolución solo, pero nosotros la tenemos que hacer a mano para el ping.
 /// </summary>

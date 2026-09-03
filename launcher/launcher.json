@@ -1,4 +1,5 @@
 {
-  "_": "Dónde está el backend. Para probar contra tu PC, cambiá esto por http://127.0.0.1:3000 y corré 'npm run dev' en la carpeta web.",
-  "apiUrl": "https://sobrinosdepepe.vercel.app"
+  "_": "Para probar contra tu PC: cambiá apiUrl por http://127.0.0.1:3000 y corré 'npm run dev' en la carpeta web.",
+  "apiUrl": "https://sobrinosdepepe.vercel.app",
+  "serverAddress": "sobrinosdepepe.minehost.pro"
 }

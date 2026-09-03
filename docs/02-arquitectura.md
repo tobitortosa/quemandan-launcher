@@ -113,8 +113,8 @@ Dos cosas que no son fallbacks y se quedan: **reintentar** una descarga que se c
 ### 4.2 JUGAR
 
 1. Chequea el pack; si cambió, actualiza.
-2. Ping de estado: resuelve el SRV `_minecraft._tcp.quemandan.minehost.pro` → `sv36.minehost.pro:25445` y muestra el punto verde o rojo.
-3. Lanza el juego con el Java privado, los argumentos que trae el JSON de Mojang, sesión offline (`--username PEPE`, UUID v3 de `OfflinePlayer:PEPE`) y `--quickPlayMultiplayer quemandan.minehost.pro`, que lo mete directo al server sin pasar por el menú.
+2. Ping de estado: resuelve el SRV `_minecraft._tcp.sobrinosdepepe.minehost.pro` → `sv36.minehost.pro:25445` y muestra el punto verde o rojo.
+3. Lanza el juego con el Java privado, los argumentos que trae el JSON de Mojang, sesión offline (`--username PEPE`, UUID v3 de `OfflinePlayer:PEPE`) y `--quickPlayMultiplayer sobrinosdepepe.minehost.pro`, que lo mete directo al server sin pasar por el menú.
 4. Captura la salida del juego y `latest.log` para el botón "Copiar detalles".
 
 ### 4.3 Cuentas

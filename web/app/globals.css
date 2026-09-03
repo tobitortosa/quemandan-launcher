@@ -89,22 +89,6 @@ h1 {
   margin: 1rem 0 0;
 }
 
-.aviso {
-  margin: 2.25rem 0 0;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--linea);
-  border-radius: 0.7rem;
-  background: var(--panel);
-  text-align: left;
-  color: var(--suave);
-  font-size: 0.88rem;
-  line-height: 1.65;
-}
-
-.aviso strong {
-  color: var(--texto);
-}
-
 .redes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));

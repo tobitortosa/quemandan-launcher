@@ -52,13 +52,6 @@ export default function Home() {
           Windows de 64 bits · 2 GB libres · no toca tu Minecraft actual
         </p>
 
-        <div className="aviso">
-          <strong>Windows va a mostrar un aviso la primera vez.</strong> Aparece “Windows
-          protegió tu PC”. Apretá <em>Más información</em> y después{' '}
-          <em>Ejecutar de todas formas</em>. Pasa porque el instalador todavía no está firmado.
-          De la segunda vez en adelante no vuelve a aparecer.
-        </div>
-
         <div className="redes">
           {socials.map((social) => (
             <a

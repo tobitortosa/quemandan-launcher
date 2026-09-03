@@ -18,6 +18,8 @@ $project = Join-Path $root "src/SobrinosDePepe.App/SobrinosDePepe.App.csproj"
 $publishDir = Join-Path $root "artifacts/publish"
 $releaseDir = Join-Path $root "releases"
 $repo = "https://github.com/tobitortosa/sobrinosdepepe-launcher"
+$icon = Join-Path $root "../brand/icon.ico"
+$splash = Join-Path $root "../brand/logo-256.png"
 
 Write-Host "1. Compilando la aplicación" -ForegroundColor Cyan
 # Autocontenida: el jugador no necesita instalar .NET. En carpeta y no en un solo
@@ -39,8 +41,11 @@ if (-not (Get-Command vpk -ErrorAction SilentlyContinue)) {
   $env:Path += ";$env:USERPROFILE\.dotnet\tools"
 }
 
+# El ícono va también en el instalador, que es el archivo que la gente descarga,
+# y la imagen se muestra mientras instala.
 vpk pack --packId SobrinosDePepe --packVersion $Version --packDir $publishDir `
   --mainExe SobrinosDePepe.exe --packTitle "SOBRINOS DE PEPE" --packAuthors "SOBRINOS DE PEPE" `
+  --icon $icon --splashImage $splash --splashProgressColor "#4ADE80" `
   --channel $Channel --outputDir $releaseDir
 if ($LASTEXITCODE -ne 0) { throw "falló el empaquetado" }
 

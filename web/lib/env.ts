@@ -28,7 +28,7 @@ export const env = {
     return process.env.SERVER_NAME ?? 'SOBRINOS DE PEPE';
   },
   get serverAddress() {
-    return process.env.SERVER_ADDRESS ?? 'quemandan.minehost.pro';
+    return process.env.SERVER_ADDRESS ?? 'sobrinosdepepe.minehost.pro';
   },
   get downloadUrl() {
     return process.env.DOWNLOAD_URL ?? '';
