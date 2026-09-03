@@ -2,6 +2,10 @@ import Image from 'next/image';
 import { env } from '@/lib/env';
 import { socials } from './socials';
 
+// El link de descarga viene de una variable de entorno: se lee en cada pedido, así
+// cambiarlo no obliga a recompilar el sitio.
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'SOBRINOS DE PEPE · Launcher',
   description: 'Descargá el launcher del servidor y entrá a jugar.',
