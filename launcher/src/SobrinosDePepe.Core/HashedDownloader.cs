@@ -10,7 +10,7 @@ namespace SobrinosDePepe.Core;
 /// </summary>
 public sealed class HashedDownloader
 {
-    public const string UserAgent = "SobrinosDePepeLauncher/0.1 (tobias.tortosa@soution.com)";
+    public const string UserAgent = "SobrinosDePepeLauncher/0.1 (elsobrinodepepe@gmail.com)";
 
     private readonly HttpClient _http;
     private readonly int _attempts;

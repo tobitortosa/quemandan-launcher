@@ -36,4 +36,4 @@ export const env = {
 };
 
 export const MODRINTH_USER_AGENT =
-  process.env.MODRINTH_USER_AGENT ?? 'SobrinosDePepeLauncher/0.1 (tobias.tortosa@soution.com)';
+  process.env.MODRINTH_USER_AGENT ?? 'SobrinosDePepeLauncher/0.1 (elsobrinodepepe@gmail.com)';
