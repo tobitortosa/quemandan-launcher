@@ -25,6 +25,8 @@ export type PackPayload = {
     sha512: string;
     size: number;
     side: string;
+    kind: string;
+    folder: string;
     license: string;
     pageUrl: string;
     requires: { projectId: string; versionId: string | null }[];
@@ -52,6 +54,8 @@ export function toPayload(mods: PackMod[], version: string): PackPayload {
         sha512: m.sha512,
         size: m.size,
         side: m.side,
+        kind: m.kind,
+        folder: m.kind === 'shader' ? 'shaderpacks' : 'mods',
         license: m.license,
         pageUrl: m.pageUrl,
         requires: m.requires,
@@ -145,7 +149,7 @@ export async function validate(mods: PackMod[]): Promise<PackProblem[]> {
   return problems;
 }
 
-/** Los jars que además hay que subir al servidor por SFTP. */
+/** Los jars que además van en el servidor. Un shaderpack nunca va al servidor. */
 export function serverSideMods(mods: PackMod[]): PackMod[] {
-  return mods.filter((m) => m.side === 'server' || m.side === 'both');
+  return mods.filter((m) => m.kind === 'mod' && (m.side === 'server' || m.side === 'both'));
 }

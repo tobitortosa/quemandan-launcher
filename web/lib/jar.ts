@@ -65,3 +65,35 @@ export function readJar(bytes: Uint8Array): JarInfo | null {
 export function looksLikeJar(filename: string): boolean {
   return filename.toLowerCase().endsWith('.jar');
 }
+
+export function looksLikeShaderpack(filename: string): boolean {
+  return filename.toLowerCase().endsWith('.zip');
+}
+
+/**
+ * Un shaderpack es un .zip con una carpeta "shaders" adentro. No trae ficha con su
+ * nombre ni su versión, así que se toman del nombre del archivo, que es la convención
+ * que usan todos: ComplementaryUnbound_r5.8.1.zip
+ */
+export function readShaderpack(bytes: Uint8Array, filename: string): JarInfo | null {
+  let names: string[];
+  try {
+    names = Object.keys(unzipSync(bytes, { filter: (file) => file.name.includes('shaders/') }));
+  } catch {
+    return null;
+  }
+
+  if (names.length === 0) return null;
+
+  const base = filename.replace(/\.zip$/i, '');
+  const match = base.match(/^(.*?)[_-]?(r?[\d][\w.]*)$/);
+
+  return {
+    id: base,
+    name: (match?.[1] ?? base).replace(/[_-]+/g, ' ').trim(),
+    version: match?.[2] ?? '',
+    side: 'client',
+    license: '',
+    depends: [],
+  };
+}

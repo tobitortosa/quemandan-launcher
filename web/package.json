@@ -17,7 +17,7 @@
     "db:check": "tsx --env-file=.env.local scripts/check-db.mts",
     "pack:publish": "tsx --env-file=.env.local scripts/publish-pack.mts",
     "pack:check": "tsx --env-file=.env.local scripts/check-pack.mts",
-    "check:admin": "tsx --env-file=.env.local scripts/check-admin.mts"
+    "pack:shader": "tsx --env-file=.env.local scripts/add-shader.mts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.0",

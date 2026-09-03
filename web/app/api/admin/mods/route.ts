@@ -56,21 +56,26 @@ export async function POST(request: Request) {
     return fail(`No encontré "${reference}" en Modrinth. Revisá el link.`, 404);
   }
 
+  // Un shaderpack se publica para "iris", no para "fabric".
+  const shader = modrinth.isShader(project);
+  const loader = shader ? 'iris' : 'fabric';
+  const que = shader ? 'shaderpack' : 'mod';
+
   let version: modrinth.ModrinthVersion | undefined;
   try {
     if (parsed.data.versionId) {
       version = await modrinth.version(parsed.data.versionId);
     } else {
-      const list = await modrinth.versions(project.id);
+      const list = await modrinth.versions(project.id, loader);
       version = list.find((v) => v.version_type === 'release') ?? list[0];
     }
   } catch {
-    return fail('No pude leer las versiones del mod en Modrinth.', 502);
+    return fail(`No pude leer las versiones del ${que} en Modrinth.`, 502);
   }
 
   if (!version) {
     return fail(
-      `${project.title} no tiene ninguna versión para Minecraft ${env.minecraftVersion} con Fabric.`,
+      `${project.title} no tiene ninguna versión para Minecraft ${env.minecraftVersion}.`,
       409,
     );
   }
@@ -95,11 +100,12 @@ export async function POST(request: Request) {
     sha1: file.hashes.sha1,
     sha512: file.hashes.sha512,
     size: file.size,
-    side: modrinth.sideOf(project),
+    side: shader ? 'client' : modrinth.sideOf(project),
     license: project.license.id,
     pageUrl: `https://modrinth.com/${project.project_type}/${project.slug}`,
-    requires: modrinth.requiredDependencies(version),
+    requires: shader ? [] : modrinth.requiredDependencies(version),
     source: 'modrinth',
+    kind: shader ? 'shader' : 'mod',
   };
 
   await db
@@ -129,9 +135,10 @@ export async function POST(request: Request) {
   return ok({
     mod: row,
     warnings,
-    note:
-      row.side !== 'client'
-        ? `${file.filename} también va en el servidor: subilo por SFTP a /mods y reiniciá.`
+    note: shader
+      ? `${project.title} queda disponible en el menú de shaders del juego. Cada uno lo activa si quiere.`
+      : row.side !== 'client'
+        ? `${file.filename} también va en el servidor.`
         : null,
   });
 }

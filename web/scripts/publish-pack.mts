@@ -83,9 +83,11 @@ for (const mod of uploaded.added) {
 for (const bad of uploaded.rejected) console.log(`  RECHAZADO ${bad.filename}: ${bad.reason}`);
 
 // Quitar del pack los mods que ya no están en la carpeta.
+// Los shaderpacks no se tocan: no salen de esta carpeta.
 const wanted = new Set(jars);
 const current = await db.select().from(packMods);
 for (const mod of current) {
+  if (mod.kind !== 'mod') continue;
   if (!wanted.has(mod.filename)) {
     await mods.DELETE(
       new Request(`http://local/api/admin/mods?projectId=${encodeURIComponent(mod.projectId)}`, {

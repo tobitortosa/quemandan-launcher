@@ -15,9 +15,16 @@ public sealed class Pack
     [JsonPropertyName("server")] public PackServer Server { get; set; } = new();
     [JsonPropertyName("mods")] public List<PackMod> Mods { get; set; } = [];
 
-    /// <summary>Los mods que van al cliente. Los de solo servidor no se descargan acá.</summary>
+    /// <summary>
+    /// Lo que va en la PC del jugador: los mods de cliente y los shaderpacks.
+    /// Los mods de solo servidor no se descargan acá.
+    /// </summary>
     public IEnumerable<PackMod> ClientMods =>
         Mods.Where(m => m.Side is "client" or "both");
+
+    /// <summary>Las carpetas que el pack administra, y qué va en cada una.</summary>
+    public IEnumerable<IGrouping<string, PackMod>> ByFolder =>
+        ClientMods.GroupBy(m => m.Folder);
 
     public static Pack Load(string path)
     {
@@ -48,6 +55,12 @@ public sealed class PackMod
 
     /// <summary>"client", "server" o "both".</summary>
     [JsonPropertyName("side")] public string Side { get; set; } = "both";
+
+    /// <summary>"mod" o "shader".</summary>
+    [JsonPropertyName("kind")] public string Kind { get; set; } = "mod";
+
+    /// <summary>La carpeta del juego donde va: "mods" o "shaderpacks".</summary>
+    [JsonPropertyName("folder")] public string Folder { get; set; } = "mods";
 
     [JsonPropertyName("license")] public string License { get; set; } = "";
     [JsonPropertyName("pageUrl")] public string PageUrl { get; set; } = "";

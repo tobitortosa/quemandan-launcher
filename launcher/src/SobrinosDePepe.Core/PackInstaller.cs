@@ -45,7 +45,7 @@ public sealed class PackInstaller
         await _setup.InstallVanillaAsync(pack.Minecraft, progress, ct);
         var version = await _setup.InstallFabricAsync(pack.Minecraft, pack.FabricLoader, progress, ct);
 
-        var sync = await _mods.SyncAsync(pack, LauncherPaths.ModsDir, detail, ct);
+        var sync = await _mods.SyncAsync(pack, LauncherPaths.GameDir, detail, ct);
 
         var configs = 0;
         if (_overridesDir is not null)

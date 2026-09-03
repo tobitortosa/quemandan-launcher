@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { fail, ok, requireAdmin } from '@/lib/api';
 import { db } from '@/lib/db';
 import { modFiles, packMods } from '@/lib/db/schema';
-import { looksLikeJar, readJar } from '@/lib/jar';
+import { looksLikeJar, looksLikeShaderpack, readJar, readShaderpack } from '@/lib/jar';
 import * as modrinth from '@/lib/modrinth';
 
 /** Un .jar de mod no llega ni cerca de esto; el límite es para cortar subidas absurdas. */
@@ -32,8 +32,9 @@ export async function POST(request: Request) {
   const rejected: { filename: string; reason: string }[] = [];
 
   for (const upload of uploads) {
-    if (!looksLikeJar(upload.name)) {
-      rejected.push({ filename: upload.name, reason: 'No es un archivo .jar.' });
+    const esShader = looksLikeShaderpack(upload.name);
+    if (!looksLikeJar(upload.name) && !esShader) {
+      rejected.push({ filename: upload.name, reason: 'No es un mod (.jar) ni un shaderpack (.zip).' });
       continue;
     }
     if (upload.size > MAX_BYTES) {
@@ -46,17 +47,19 @@ export async function POST(request: Request) {
     const sha1 = createHash('sha1').update(buffer).digest('hex');
     const sha512 = createHash('sha512').update(buffer).digest('hex');
 
-    const inside = readJar(bytes);
+    const inside = esShader ? readShaderpack(bytes, upload.name) : readJar(bytes);
     if (!inside) {
       rejected.push({
         filename: upload.name,
-        reason: 'No parece un mod de Fabric: no tiene fabric.mod.json adentro.',
+        reason: esShader
+          ? 'No parece un shaderpack: no tiene una carpeta shaders adentro.'
+          : 'No parece un mod de Fabric: no tiene fabric.mod.json adentro.',
       });
       continue;
     }
 
     // Si Modrinth reconoce el archivo, se usa su información, que es más completa.
-    const known = await modrinth.byHash(sha1).catch(() => null);
+    const known = esShader ? null : await modrinth.byHash(sha1).catch(() => null);
     let title = inside.name || upload.name;
     let versionNumber = inside.version;
     let side: string = inside.side;
@@ -101,6 +104,7 @@ export async function POST(request: Request) {
       pageUrl,
       requires: [],
       source: 'upload',
+      kind: esShader ? 'shader' : 'mod',
     };
 
     await db.insert(packMods).values(row).onConflictDoUpdate({ target: packMods.projectId, set: row });
@@ -113,9 +117,10 @@ export async function POST(request: Request) {
       license: row.license,
       recognised: Boolean(known),
       sizeKb: Math.round(row.size / 1024),
-      note:
-        row.side !== 'client'
-          ? `${row.filename} también va en el servidor: subilo por SFTP a /mods y reiniciá.`
+      note: esShader
+        ? `${row.title} queda disponible en el menú de shaders del juego.`
+        : row.side !== 'client'
+          ? `${row.filename} también va en el servidor.`
           : null,
     });
   }

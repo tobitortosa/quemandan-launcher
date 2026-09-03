@@ -91,13 +91,22 @@ export function project(idOrSlug: string): Promise<ModrinthProject> {
   return get<ModrinthProject>(`/project/${encodeURIComponent(idOrSlug)}`);
 }
 
-/** Versiones del proyecto que sirven para nuestra versión de Minecraft con Fabric. */
-export function versions(idOrSlug: string): Promise<ModrinthVersion[]> {
+/**
+ * Versiones del proyecto que sirven para nuestra versión de Minecraft.
+ * Los mods se publican para "fabric" y los shaderpacks para "iris", así que el
+ * loader depende de qué se esté agregando.
+ */
+export function versions(idOrSlug: string, loader = 'fabric'): Promise<ModrinthVersion[]> {
   const games = encodeURIComponent(JSON.stringify([env.minecraftVersion]));
-  const loaders = encodeURIComponent(JSON.stringify(['fabric']));
+  const loaders = encodeURIComponent(JSON.stringify([loader]));
   return get<ModrinthVersion[]>(
     `/project/${encodeURIComponent(idOrSlug)}/version?game_versions=${games}&loaders=${loaders}`,
   );
+}
+
+/** Un shaderpack se publica como project_type "shader". */
+export function isShader(project: ModrinthProject): boolean {
+  return project.project_type === 'shader';
 }
 
 export function version(versionId: string): Promise<ModrinthVersion> {

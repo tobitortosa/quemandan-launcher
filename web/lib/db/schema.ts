@@ -84,8 +84,10 @@ export const packMods = pgTable(
     side: text('side').notNull(),
     license: text('license').notNull().default(''),
     pageUrl: text('page_url').notNull().default(''),
-    /** "upload" si el .jar lo subió el admin, "modrinth" si se baja de su CDN. */
+    /** "upload" si el archivo lo subió el admin, "modrinth" si se baja de su CDN. */
     source: text('source').notNull().default('upload'),
+    /** "mod" va a la carpeta mods; "shader" va a shaderpacks. */
+    kind: text('kind').notNull().default('mod'),
     requires: jsonb('requires')
       .$type<{ projectId: string; versionId: string | null }[]>()
       .notNull()
