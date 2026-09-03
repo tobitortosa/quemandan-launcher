@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SobrinosDePepe.App.ViewModels"
+             x:Class="SobrinosDePepe.App.Views.StartupView"
+             x:DataType="vm:StartupViewModel">
+
+  <Grid RowDefinitions="*,Auto,*" Margin="40">
+
+    <StackPanel Grid.Row="1" Spacing="0">
+
+      <Image Source="avares://SobrinosDePepe/Assets/logo.png"
+             Width="96" Height="96" HorizontalAlignment="Center" Margin="0,0,0,22" />
+
+      <TextBlock Classes="brand" Text="SOBRINOS DE PEPE" FontSize="24" Margin="0,0,0,30" />
+
+      <TextBlock Classes="muted" Text="{Binding Message}" HorizontalAlignment="Center"
+                 TextAlignment="Center" />
+
+      <ProgressBar Margin="0,16,0,0"
+                   Value="{Binding Percent}" Maximum="100"
+                   IsIndeterminate="{Binding !HasProgress}" />
+
+      <TextBlock Classes="faint" Text="{Binding Detail}" HorizontalAlignment="Center"
+                 TextAlignment="Center" Margin="0,12,0,0" TextWrapping="Wrap"
+                 IsVisible="{Binding Detail, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+    </StackPanel>
+
+  </Grid>
+</UserControl>

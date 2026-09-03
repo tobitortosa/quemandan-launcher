@@ -20,7 +20,26 @@ public partial class ShellViewModel : ObservableObject
     {
         Api = new LauncherApi(AppConfig.ApiUrl, _http);
         LauncherPaths.EnsureCreated();
-        ShowLogin();
+        Current = new StartupViewModel();
+    }
+
+    /// <summary>
+    /// Lo primero que pasa al abrir: se busca una versión nueva del launcher y, si la
+    /// hay, se instala y la aplicación se reinicia. Después se entra con la sesión
+    /// guardada, o se pide iniciar sesión.
+    /// </summary>
+    public async Task StartAsync()
+    {
+        var startup = Current as StartupViewModel ?? new StartupViewModel();
+        Current = startup;
+
+        await Updater.RunAsync(new Progress<UpdateProgress>(startup.Report));
+
+        startup.EnteringSession();
+        await ResumeSessionAsync();
+
+        // Si no había sesión guardada, se pide iniciar sesión.
+        if (Current == startup) ShowLogin();
     }
 
     public void ShowLogin(string? message = null) =>

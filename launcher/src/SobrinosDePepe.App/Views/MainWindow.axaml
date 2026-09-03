@@ -13,6 +13,9 @@
         TransparencyLevelHint="None">
 
   <Window.DataTemplates>
+    <DataTemplate DataType="vm:StartupViewModel">
+      <views:StartupView />
+    </DataTemplate>
     <DataTemplate DataType="vm:LoginViewModel">
       <views:LoginView />
     </DataTemplate>
