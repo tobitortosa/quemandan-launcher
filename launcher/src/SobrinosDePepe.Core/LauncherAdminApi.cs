@@ -82,6 +82,23 @@ public sealed record TemporaryPassword(
 /// lleva secretos: son llamadas al backend, que verifica el rol y es el único que
 /// tiene la clave del panel de Minehost.
 /// </summary>
+public sealed record ServerMod(
+    [property: JsonPropertyName("filename")] string Filename,
+    [property: JsonPropertyName("title")] string Title,
+    [property: JsonPropertyName("version")] string Version,
+    [property: JsonPropertyName("size")] long Size);
+
+public sealed record ServerMods(
+    [property: JsonPropertyName("directory")] string Directory,
+    [property: JsonPropertyName("missing")] List<ServerMod> Missing,
+    [property: JsonPropertyName("extra")] List<string> Extra,
+    [property: JsonPropertyName("ok")] List<string> Ok);
+
+public sealed record ServerModsResult(
+    [property: JsonPropertyName("uploaded")] List<string> Uploaded,
+    [property: JsonPropertyName("removed")] List<string> Removed,
+    [property: JsonPropertyName("note")] string Note);
+
 public static class LauncherAdminApi
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
@@ -135,6 +152,27 @@ public static class LauncherAdminApi
 
         return await api.SendAsync<UploadResult>(HttpMethod.Post, "api/admin/mods/upload", token, form, ct);
     }
+
+    /// <summary>Qué mods tiene el servidor comparado con lo que dice el pack.</summary>
+    public static Task<ServerMods> ServerModsAsync(this LauncherApi api, string token, CancellationToken ct = default) =>
+        api.SendAsync<ServerMods>(HttpMethod.Get, "api/admin/server/mods", token, null, ct);
+
+    /// <summary>Sube al servidor los mods que falten.</summary>
+    public static Task<ServerModsResult> UploadServerModsAsync(
+        this LauncherApi api, string token, CancellationToken ct = default) =>
+        api.SendAsync<ServerModsResult>(HttpMethod.Post, "api/admin/server/mods", token,
+            JsonContent(new { upload = true }), ct);
+
+    /// <summary>Borra del servidor los archivos indicados, por nombre.</summary>
+    public static Task<ServerModsResult> RemoveServerModsAsync(
+        this LauncherApi api, string token, IEnumerable<string> filenames, CancellationToken ct = default) =>
+        api.SendAsync<ServerModsResult>(HttpMethod.Post, "api/admin/server/mods", token,
+            JsonContent(new { remove = filenames.ToArray() }), ct);
+
+    /// <summary>"start", "restart" o "stop".</summary>
+    public static Task PowerAsync(this LauncherApi api, string token, string signal, CancellationToken ct = default) =>
+        api.SendAsync<JsonElement>(HttpMethod.Post, "api/admin/server/power", token,
+            JsonContent(new { signal }), ct);
 
     private static StringContent JsonContent(object value) =>
         new(JsonSerializer.Serialize(value, Json), System.Text.Encoding.UTF8, "application/json");

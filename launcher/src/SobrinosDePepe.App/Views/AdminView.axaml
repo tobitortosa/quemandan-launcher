@@ -24,6 +24,13 @@
         </StackPanel>
       </Button>
       <Button Classes="ghost" Content="Mods" Command="{Binding ShowModsCommand}" />
+      <Button Classes="ghost" Command="{Binding ShowServerCommand}">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="Servidor" />
+          <Ellipse Width="7" Height="7" VerticalAlignment="Center" Fill="{StaticResource WarnBrush}"
+                   IsVisible="{Binding ServerNeedsUpload}" />
+        </StackPanel>
+      </Button>
     </StackPanel>
 
     <!-- USUARIOS -->
@@ -141,6 +148,68 @@
         <TextBlock Classes="faint" TextAlignment="Center" TextWrapping="Wrap"
                    IsVisible="{Binding HasUnpublishedChanges}"
                    Text="Hay cambios sin publicar. Hasta que publiques, los jugadores siguen con el pack anterior." />
+      </StackPanel>
+
+    </Grid>
+
+    <!-- SERVIDOR -->
+    <Grid Grid.Row="2" RowDefinitions="Auto,*,Auto" IsVisible="{Binding ShowingServer}">
+
+      <StackPanel Grid.Row="0" Margin="0,0,0,12" Spacing="4">
+        <TextBlock Foreground="{StaticResource TextBrush}" FontSize="14" FontWeight="SemiBold"
+                   Text="Mods instalados en el servidor" />
+        <TextBlock Classes="faint" Text="{Binding ServerModsSummary}" />
+        <TextBlock Classes="faint" TextWrapping="Wrap"
+                   Text="Los mods de solo cliente no van acá: el servidor los ignora." />
+      </StackPanel>
+
+      <ScrollViewer Grid.Row="1">
+        <StackPanel Spacing="6">
+
+          <TextBlock Classes="label" Text="FALTAN EN EL SERVIDOR" Margin="0,4,0,2"
+                     IsVisible="{Binding ServerNeedsUpload}" />
+          <ItemsControl ItemsSource="{Binding ServerMissing}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="core:ServerMod">
+                <Border Classes="card" Padding="12,10" Margin="0,0,0,6">
+                  <StackPanel Spacing="2">
+                    <TextBlock Text="{Binding Title}" Foreground="{StaticResource WarnBrush}" FontSize="13" />
+                    <TextBlock Classes="faint" Text="{Binding Filename}" />
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
+          <TextBlock Classes="label" Text="ESTÁN EN EL SERVIDOR Y NO EN EL PACK" Margin="0,10,0,2"
+                     IsVisible="{Binding ServerHasExtra}" />
+          <ItemsControl ItemsSource="{Binding ServerExtra}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="x:String">
+                <Border Classes="card" Padding="12,10" Margin="0,0,0,6">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="{Binding}" Classes="muted" FontSize="12"
+                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <Button Grid.Column="1" Classes="link" Content="Borrar" FontSize="12"
+                            Command="{Binding $parent[ItemsControl].((vm:AdminViewModel)DataContext).RemoveServerModCommand}"
+                            CommandParameter="{Binding}" />
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
+        </StackPanel>
+      </ScrollViewer>
+
+      <StackPanel Grid.Row="2" Spacing="10" Margin="0,14,0,0">
+        <Button Classes="primary" Content="SUBIR LOS QUE FALTAN" HorizontalAlignment="Stretch"
+                IsVisible="{Binding ServerNeedsUpload}"
+                Command="{Binding UploadServerModsCommand}" />
+        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+          <Button Classes="ghost" Content="Reiniciar el servidor" Command="{Binding RestartServerCommand}" />
+          <Button Classes="ghost" Content="Actualizar" Command="{Binding LoadServerModsCommand}" />
+        </StackPanel>
       </StackPanel>
 
     </Grid>

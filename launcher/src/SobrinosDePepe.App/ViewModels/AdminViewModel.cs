@@ -40,6 +40,13 @@ public partial class AdminViewModel : ObservableObject
     [ObservableProperty] private bool _hasUnpublishedChanges;
     [ObservableProperty] private string? _serverSideNote;
 
+    // El servidor
+    public ObservableCollection<ServerMod> ServerMissing { get; } = [];
+    public ObservableCollection<string> ServerExtra { get; } = [];
+    [ObservableProperty] private string _serverModsSummary = "";
+    [ObservableProperty] private bool _serverNeedsUpload;
+    [ObservableProperty] private bool _serverHasExtra;
+
     public AdminViewModel(ShellViewModel shell, string token, Account account)
     {
         _shell = shell;
@@ -47,15 +54,18 @@ public partial class AdminViewModel : ObservableObject
         _username = account.Username;
         _ = LoadUsersAsync();
         _ = LoadModsAsync();
+        _ = LoadServerModsAsync();
     }
 
     public bool ShowingUsers => Tab == 0;
     public bool ShowingMods => Tab == 1;
+    public bool ShowingServer => Tab == 2;
 
     partial void OnTabChanged(int value)
     {
         OnPropertyChanged(nameof(ShowingUsers));
         OnPropertyChanged(nameof(ShowingMods));
+        OnPropertyChanged(nameof(ShowingServer));
     }
 
     [RelayCommand]
@@ -63,6 +73,9 @@ public partial class AdminViewModel : ObservableObject
 
     [RelayCommand]
     private void ShowMods() => Tab = 1;
+
+    [RelayCommand]
+    private void ShowServer() => Tab = 2;
 
     [RelayCommand]
     private void Back() => _shell.ShowHome(_token, new Account(Username, "active", "admin"));
@@ -190,6 +203,64 @@ public partial class AdminViewModel : ObservableObject
                 await _shell.Api.RemoveModAsync(_token, mod.ProjectId);
                 Notice = $"{mod.Title} quitado del pack. Publicá para que les llegue a todos.";
                 await LoadModsAsync();
+            });
+
+    // ----------------------------------------------------------------- Servidor
+
+    /// <summary>
+    /// Compara la carpeta de mods del servidor con el pack. Los mods marcados como
+    /// de cliente no van al servidor: Fabric los ignora igual, y ensucian el log.
+    /// </summary>
+    [RelayCommand]
+    private async Task LoadServerModsAsync()
+    {
+        await RunAsync(async () =>
+        {
+            var state = await _shell.Api.ServerModsAsync(_token);
+
+            ServerMissing.Clear();
+            foreach (var mod in state.Missing) ServerMissing.Add(mod);
+
+            ServerExtra.Clear();
+            foreach (var name in state.Extra) ServerExtra.Add(name);
+
+            ServerNeedsUpload = state.Missing.Count > 0;
+            ServerHasExtra = state.Extra.Count > 0;
+            ServerModsSummary = state.Missing.Count == 0 && state.Extra.Count == 0
+                ? $"El servidor tiene los {state.Ok.Count} mods que corresponden."
+                : $"{state.Ok.Count} en orden · {state.Missing.Count} faltan · {state.Extra.Count} de más";
+        });
+    }
+
+    [RelayCommand]
+    private void UploadServerMods() =>
+        Ask($"¿Subir al servidor los {ServerMissing.Count} mods que faltan?",
+            async () =>
+            {
+                var result = await _shell.Api.UploadServerModsAsync(_token);
+                Notice = result.Uploaded.Count > 0
+                    ? $"Subidos al servidor: {string.Join(", ", result.Uploaded)}. {result.Note}"
+                    : result.Note;
+                await LoadServerModsAsync();
+            });
+
+    [RelayCommand]
+    private void RemoveServerMod(string filename) =>
+        Ask($"¿Borrar {filename} del servidor? Se borra el archivo, no se puede deshacer.",
+            async () =>
+            {
+                var result = await _shell.Api.RemoveServerModsAsync(_token, [filename]);
+                Notice = $"Borrado del servidor: {filename}. {result.Note}";
+                await LoadServerModsAsync();
+            });
+
+    [RelayCommand]
+    private void RestartServer() =>
+        Ask("¿Reiniciar el servidor? Los que estén jugando se van a desconectar un momento.",
+            async () =>
+            {
+                await _shell.Api.PowerAsync(_token, "restart");
+                Notice = "El servidor está reiniciando. En un minuto vuelve.";
             });
 
     /// <summary>Deja una acción esperando el sí. Un clic de más no rompe nada.</summary>

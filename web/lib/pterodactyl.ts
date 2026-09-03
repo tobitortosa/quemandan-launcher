@@ -64,3 +64,57 @@ export const whitelist = {
 
 export const kick = (username: string, reason: string) =>
   runCommand(`kick ${username} ${reason}`);
+
+export type ServerFile = { name: string; size: number; isFile: boolean };
+
+/** Lista una carpeta del servidor, por ejemplo /mods. */
+export async function listFiles(directory: string): Promise<ServerFile[]> {
+  const response = await request(
+    `/servers/${env.pterodactylServerId}/files/list?directory=${encodeURIComponent(directory)}`,
+  );
+  const body = (await response.json()) as {
+    data: { attributes: { name: string; size: number; is_file: boolean } }[];
+  };
+  return body.data.map((f) => ({
+    name: f.attributes.name,
+    size: f.attributes.size,
+    isFile: f.attributes.is_file,
+  }));
+}
+
+/**
+ * Sube un archivo al servidor. El panel no recibe el archivo directamente: primero
+ * entrega una dirección temporal firmada y el archivo va ahí.
+ */
+export async function uploadFile(directory: string, filename: string, bytes: Uint8Array): Promise<void> {
+  const ticket = await request(`/servers/${env.pterodactylServerId}/files/upload`);
+  const { attributes } = (await ticket.json()) as { attributes: { url: string } };
+
+  const form = new FormData();
+  form.append('files', new File([bytes as BlobPart], filename, { type: 'application/java-archive' }));
+
+  const response = await fetch(`${attributes.url}&directory=${encodeURIComponent(directory)}`, {
+    method: 'POST',
+    body: form,
+  });
+
+  if (!response.ok) {
+    throw new PterodactylError(`No se pudo subir ${filename} (HTTP ${response.status}).`, response.status, false);
+  }
+}
+
+export async function deleteFiles(root: string, names: string[]): Promise<void> {
+  if (names.length === 0) return;
+  await request(`/servers/${env.pterodactylServerId}/files/delete`, {
+    method: 'POST',
+    body: JSON.stringify({ root, files: names }),
+  });
+}
+
+/** "start", "stop", "restart" o "kill". */
+export async function power(signal: string): Promise<void> {
+  await request(`/servers/${env.pterodactylServerId}/power`, {
+    method: 'POST',
+    body: JSON.stringify({ signal }),
+  });
+}
