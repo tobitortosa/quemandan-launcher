@@ -8,7 +8,8 @@
 param(
   [Parameter(Mandatory = $true)][string]$Version,
   [string]$Channel = "win",
-  [switch]$Publish
+  [switch]$Publish,
+  [string]$Token = $env:GITHUB_TOKEN
 )
 
 $ErrorActionPreference = "Stop"
@@ -49,8 +50,12 @@ Get-ChildItem $releaseDir | ForEach-Object {
 
 if ($Publish) {
   Write-Host "3. Publicando la versión $Version" -ForegroundColor Cyan
-  vpk upload github --repoUrl $repo --publish --releaseName "QUE MANDAN $Version" `
-    --tag "v$Version" --channel $Channel --outputDir $releaseDir
+  if (-not $Token) { $Token = (& gh auth token).Trim() }
+  if (-not $Token) { throw "falta el token de GitHub: pasá -Token o iniciá sesión con gh auth login" }
+
+  vpk upload github --repoUrl $repo --token $Token --publish `
+    --releaseName "QUE MANDAN $Version" --tag "v$Version" `
+    --channel $Channel --outputDir $releaseDir
   if ($LASTEXITCODE -ne 0) { throw "falló la publicación" }
   Write-Host "   listo: $repo/releases" -ForegroundColor Green
 } else {

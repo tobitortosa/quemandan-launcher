@@ -30,7 +30,7 @@
     <Grid Grid.Row="2" RowDefinitions="Auto,*" IsVisible="{Binding ShowingUsers}">
 
       <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
-        <TextBox Grid.Column="0" Text="{Binding Search}" Watermark="Buscar por nombre" />
+        <TextBox Grid.Column="0" Text="{Binding Search}" PlaceholderText="Buscar por nombre" />
         <Button Grid.Column="1" Classes="ghost" Content="Buscar" Margin="8,0,0,0"
                 Command="{Binding LoadUsersCommand}" />
       </Grid>

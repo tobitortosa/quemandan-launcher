@@ -12,7 +12,7 @@
       <TextBlock Classes="muted" Text="{Binding Title}" HorizontalAlignment="Center" Margin="0,0,0,26" />
 
       <TextBlock Classes="label" Text="Usuario" />
-      <TextBox Text="{Binding Username}" Watermark="Tu nombre en el juego" />
+      <TextBox Text="{Binding Username}" PlaceholderText="Tu nombre en el juego" />
 
       <TextBlock Classes="label" Text="Contraseña" Margin="0,16,0,6" />
       <TextBox Text="{Binding Password}" PasswordChar="•" />

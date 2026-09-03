@@ -22,7 +22,7 @@ public sealed class AccountStatusColorConverter : IValueConverter
     public static readonly AccountStatusColorConverter Instance = new();
 
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
-        new SolidColorBrush(value as string switch
+        new SolidColorBrush((value as string) switch
         {
             "pending" => Color.Parse("#F5A524"),
             "active" => Color.Parse("#4ADE80"),
