@@ -303,9 +303,16 @@ public partial class AdminViewModel : ObservableObject
 
     // ------------------------------------------------------------------ Común
 
+    /// <summary>
+    /// Cuántas operaciones hay en curso. Se cuentan en vez de usar un candado porque
+    /// al abrir el panel se cargan las tres listas a la vez, y un candado dejaba pasar
+    /// solo a la primera.
+    /// </summary>
+    private int _running;
+
     private async Task RunAsync(Func<Task> action)
     {
-        if (IsBusy) return;
+        _running++;
         IsBusy = true;
         Error = null;
 
@@ -327,7 +334,8 @@ public partial class AdminViewModel : ObservableObject
         }
         finally
         {
-            IsBusy = false;
+            _running--;
+            IsBusy = _running > 0;
         }
     }
 }
