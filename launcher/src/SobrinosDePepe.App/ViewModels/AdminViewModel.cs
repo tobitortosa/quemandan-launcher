@@ -46,6 +46,8 @@ public partial class AdminViewModel : ObservableObject
     [ObservableProperty] private string _serverModsSummary = "";
     [ObservableProperty] private bool _serverNeedsUpload;
     [ObservableProperty] private bool _serverHasExtra;
+    [ObservableProperty] private string _serverState = "consultando…";
+    [ObservableProperty] private bool _serverOnline;
 
     public AdminViewModel(ShellViewModel shell, string token, Account account)
     {
@@ -224,6 +226,11 @@ public partial class AdminViewModel : ObservableObject
             ServerExtra.Clear();
             foreach (var name in state.Extra) ServerExtra.Add(name);
 
+            // El estado real del servidor, para no tener que adivinarlo.
+            var power = await _shell.Api.ServerStateAsync(_token);
+            ServerState = power.Label;
+            ServerOnline = power.Online;
+
             ServerNeedsUpload = state.Missing.Count > 0;
             ServerHasExtra = state.Extra.Count > 0;
             ServerModsSummary = state.Missing.Count == 0 && state.Extra.Count == 0
@@ -315,6 +322,8 @@ public partial class AdminViewModel : ObservableObject
         _running++;
         IsBusy = true;
         Error = null;
+        // El aviso anterior no tiene por qué seguir en pantalla: cada acción trae el suyo.
+        Notice = null;
 
         try
         {

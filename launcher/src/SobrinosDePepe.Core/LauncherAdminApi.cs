@@ -94,6 +94,24 @@ public sealed record ServerMods(
     [property: JsonPropertyName("extra")] List<string> Extra,
     [property: JsonPropertyName("ok")] List<string> Ok);
 
+public sealed record ServerState(
+    [property: JsonPropertyName("state")] string State,
+    [property: JsonPropertyName("online")] bool Online,
+    [property: JsonPropertyName("error")] string? Error)
+{
+    /// <summary>Los estados que devuelve el panel, en castellano.</summary>
+    public string Label => State switch
+    {
+        "running" => "encendido",
+        "starting" => "arrancando",
+        "stopping" => "apagándose",
+        "offline" => "apagado",
+        _ => Error is null ? "no sé" : "no pude preguntar",
+    };
+
+    public bool IsBusy => State is "starting" or "stopping";
+}
+
 public sealed record ServerModsResult(
     [property: JsonPropertyName("uploaded")] List<string> Uploaded,
     [property: JsonPropertyName("removed")] List<string> Removed,
@@ -152,6 +170,10 @@ public static class LauncherAdminApi
 
         return await api.SendAsync<UploadResult>(HttpMethod.Post, "api/admin/mods/upload", token, form, ct);
     }
+
+    /// <summary>Si el servidor está encendido, apagado o arrancando.</summary>
+    public static Task<ServerState> ServerStateAsync(this LauncherApi api, string token, CancellationToken ct = default) =>
+        api.SendAsync<ServerState>(HttpMethod.Get, "api/admin/server", token, null, ct);
 
     /// <summary>Qué mods tiene el servidor comparado con lo que dice el pack.</summary>
     public static Task<ServerMods> ServerModsAsync(this LauncherApi api, string token, CancellationToken ct = default) =>
