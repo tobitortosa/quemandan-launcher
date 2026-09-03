@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'QUE MANDAN · Launcher',
-  description: 'Launcher del servidor de Minecraft QUE MANDAN.',
+  title: 'SOBRINOS DE PEPE · Launcher',
+  description: 'Launcher del servidor de Minecraft SOBRINOS DE PEPE.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -1,6 +1,6 @@
-# QUE MANDAN Launcher
+# SOBRINOS DE PEPE Launcher
 
-Launcher de Windows para el server de Minecraft "QUE MANDAN" (`quemandan.minehost.pro`, Fabric 26.1). El viewer lo baja, se crea la cuenta, Tobías la aprueba, aprieta **JUGAR** y entra al server con la versión, el Java y los mods correctos. Con la cuenta de admin, el mismo launcher gestiona los mods y las cuentas.
+Launcher de Windows para el server de Minecraft "SOBRINOS DE PEPE" (`quemandan.minehost.pro`, Fabric 26.1). El viewer lo baja, se crea la cuenta, Tobías la aprueba, aprieta **JUGAR** y entra al server con la versión, el Java y los mods correctos. Con la cuenta de admin, el mismo launcher gestiona los mods y las cuentas.
 
 **Estado:** fases 0 y 1 listas y probadas. El instalador entra al server con el inventario intacto, y el backend maneja cuentas, subida de mods y publicación del pack. Falta la interfaz (fase 2) y el panel de admin dentro del launcher (fase 3).
 
@@ -28,7 +28,7 @@ web/                           backend y página de descarga (Next.js)
 launcher/
 ├── pack.json                  el pack: Minecraft, loader y los 16 mods con sus hashes
 └── src/
-    ├── QueMandan.Core/        instalación y arranque del juego
+    ├── SobrinosDePepe.Core/        instalación y arranque del juego
     │   ├── LauncherPaths      dónde vive todo
     │   ├── Pack               modelo del pack
     │   ├── OfflineIdentity    UUID derivado del nombre, igual al que calcula el server
@@ -41,23 +41,23 @@ launcher/
     │   ├── SessionStore       token guardado cifrado con la cuenta de Windows
     │   ├── PackInstaller      deja la instalación igual al pack publicado
     │   └── ConfigSeeder       configs solo si no existen
-    └── QueMandan.Spike/       app de consola de la fase 0
+    └── SobrinosDePepe.Spike/       app de consola de la fase 0
 ```
 
 Probar la instalación completa sin abrir el juego:
 
 ```
 cd launcher
-dotnet run --project src/QueMandan.Spike -- PEPE --no-launch
+dotnet run --project src/SobrinosDePepe.Spike -- PEPE --no-launch
 ```
 
 Instalar y entrar al server:
 
 ```
-dotnet run --project src/QueMandan.Spike -- PEPE
+dotnet run --project src/SobrinosDePepe.Spike -- PEPE
 ```
 
-Se instala en `%LOCALAPPDATA%\QueMandan`. No toca `%APPDATA%\.minecraft`, así que TLauncher sigue funcionando.
+Se instala en `%LOCALAPPDATA%\SobrinosDePepe`. No toca `%APPDATA%\.minecraft`, así que TLauncher sigue funcionando.
 
 Probar el circuito completo en tu PC, sin configurar nada (base en memoria, tus mods ya subidos):
 
@@ -69,7 +69,7 @@ y en otra terminal:
 
 ```
 cd launcher
-dotnet run --project src/QueMandan.Spike -- --api http://127.0.0.1:3100 --user PEPE --pass test1234
+dotnet run --project src/SobrinosDePepe.Spike -- --api http://127.0.0.1:3100 --user PEPE --pass test1234
 ```
 
 Backend: ver [`web/README.md`](web/README.md) para la puesta en marcha real.

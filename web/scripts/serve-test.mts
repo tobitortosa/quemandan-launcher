@@ -8,7 +8,7 @@
  * Deja listo: la cuenta PEPE como administrador, los mods de la instalación de
  * referencia ya subidos y el pack publicado. Después:
  *
- *   dotnet run --project src/QueMandan.Spike -- --api http://127.0.0.1:3100 --user PEPE --pass test1234
+ *   dotnet run --project src/SobrinosDePepe.Spike -- --api http://127.0.0.1:3100 --user PEPE --pass test1234
  */
 import { createServer } from 'node:http';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -206,7 +206,7 @@ createServer((incoming, outgoing) => {
   console.log(`\nBackend de prueba en http://127.0.0.1:${PORT}`);
   console.log(`Administrador: PEPE / ${ADMIN_PASSWORD}`);
   console.log('\nProbá el launcher con:');
-  console.log(`  dotnet run --project src/QueMandan.Spike -- --api http://127.0.0.1:${PORT} --user PEPE --pass ${ADMIN_PASSWORD} --no-launch`);
+  console.log(`  dotnet run --project src/SobrinosDePepe.Spike -- --api http://127.0.0.1:${PORT} --user PEPE --pass ${ADMIN_PASSWORD} --no-launch`);
 });
 
 async function idOf(username: string) {

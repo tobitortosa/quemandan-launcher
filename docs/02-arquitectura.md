@@ -5,7 +5,7 @@
 
 ## 1. Qué hace
 
-Un launcher de Windows para el server "QUE MANDAN". El viewer lo baja, se crea la cuenta, Tobías la aprueba, aprieta **JUGAR** y entra al server con Minecraft 26.1, Fabric, Java 25 y los mods correctos. Con la cuenta de admin, el mismo launcher muestra dos pantallas más: **MODS** y **USUARIOS**.
+Un launcher de Windows para el server "SOBRINOS DE PEPE". El viewer lo baja, se crea la cuenta, Tobías la aprueba, aprieta **JUGAR** y entra al server con Minecraft 26.1, Fabric, Java 25 y los mods correctos. Con la cuenta de admin, el mismo launcher muestra dos pantallas más: **MODS** y **USUARIOS**.
 
 Todo lo que es de Mojang, Fabric o de los autores de mods se descarga desde sus servidores oficiales a la PC del jugador. Nosotros solo publicamos la lista con los hashes.
 
@@ -15,7 +15,7 @@ Todo lo que es de Mojang, Fabric o de los autores de mods se descarga desde sus 
 
 ```
 ┌──────────────────────────────────┐   ┌──────────────────────────────────┐
-│           QUE MANDAN             │   │           QUE MANDAN             │
+│           SOBRINOS DE PEPE             │   │           SOBRINOS DE PEPE             │
 │                                  │   │                                  │
 │  Usuario                         │   │        Hola, PEPE                │
 │  ┌────────────────────────────┐  │   │                                  │
@@ -104,7 +104,7 @@ Más dos estados: **pendiente de aprobación** ("Tu cuenta espera aprobación" +
 3. Mods: compara el sha1 de cada archivo local con el de la lista; baja lo que falta, verifica sha1 y sha512, escribe a un archivo temporal y recién entonces lo renombra. **Borra de `mods/` todo jar que no esté en la lista** (si no, quitar un mod del pack no lo quita de las PCs y el juego crashea).
    Los archivos que subió el admin salen de nuestro backend y van con la credencial de la sesión. Esa credencial se manda solo a nuestro dominio: a Mojang, a Fabric y a Modrinth no se les manda nada.
 4. Configs: `config/` y `options.txt` se escriben **solo si no existen**. No se pisan nunca: ahí están los keybinds, los waypoints y la sensibilidad del mouse de cada uno.
-5. Escribe `servers.dat` con "QUE MANDAN" si no existe.
+5. Escribe `servers.dat` con "SOBRINOS DE PEPE" si no existe.
 
 Primera instalación: ~665 MB en ~5.200 archivos, 3-5 minutos con buena conexión. Después, solo el delta.
 
@@ -161,8 +161,8 @@ Todo se verifica en cada arranque a propósito. Es rápido cuando no cambió nad
 ## 5. Carpetas en la PC del jugador
 
 ```
-%LOCALAPPDATA%\QueMandanLauncher\   ← la app (Velopack)
-%LOCALAPPDATA%\QueMandan\
+%LOCALAPPDATA%\SobrinosDePepeLauncher\   ← la app (Velopack)
+%LOCALAPPDATA%\SobrinosDePepe\
 ├── game\      versions· libraries· assets· runtime(Java 25)· mods· config· logs
 ├── pack\      el .mrpack actual
 ├── session.dat

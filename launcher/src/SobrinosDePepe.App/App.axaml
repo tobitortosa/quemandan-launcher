@@ -1,0 +1,17 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SobrinosDePepe.App.Application"
+             xmlns:local="using:SobrinosDePepe.App"
+             RequestedThemeVariant="Dark">
+
+  <Application.Resources>
+    <local:StatusColorConverter x:Key="StatusColor" />
+    <local:AccountStatusColorConverter x:Key="AccountStatusColor" />
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme />
+    <StyleInclude Source="avares://SobrinosDePepe/Theme.axaml" />
+  </Application.Styles>
+
+</Application>

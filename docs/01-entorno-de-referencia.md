@@ -71,7 +71,7 @@ Conclusiones:
 
 | Dato | Valor |
 |---|---|
-| Dirección que usan los jugadores | `quemandan.minehost.pro` (nombre en la lista: "QUE MANDAN") |
+| Dirección que usan los jugadores | `quemandan.minehost.pro` (nombre en la lista: "SOBRINOS DE PEPE") |
 | Resolución real | registro **SRV** `_minecraft._tcp.quemandan.minehost.pro` → `sv36.minehost.pro:25445` (IP 45.235.98.223). No hay registro A: un ping de estado tiene que resolver SRV primero. |
 | Estado al 2026-09-03 | online · versión `26.1` · protocolo 775 · 0/20 jugadores · MOTD por defecto "A Minecraft Server" · favicon presente · latencia ~58 ms |
 | Modo | **online-mode=false** (offline). Evidencia: la cuenta TLauncher "free" `PEPE` recibe 401 de Mojang y aun así entra al server. |

@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SobrinosDePepe.App/SobrinosDePepe.App.csproj" />
+    <Project Path="src/SobrinosDePepe.Core/SobrinosDePepe.Core.csproj" />
+    <Project Path="src/SobrinosDePepe.Spike/SobrinosDePepe.Spike.csproj" />
+  </Folder>
+</Solution>

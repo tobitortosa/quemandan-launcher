@@ -1,4 +1,4 @@
-# Backend de QUE MANDAN
+# Backend de SOBRINOS DE PEPE
 
 Cuentas, aprobación, baneos y el pack de mods. Es lo único que habla con el panel de Minehost: la clave de Pterodactyl vive acá y nunca viaja al launcher.
 

@@ -4,8 +4,154 @@
   box-sizing: border-box;
 }
 
+:root {
+  --fondo: #0f1115;
+  --panel: #171a20;
+  --linea: #262a33;
+  --texto: #e8e8ea;
+  --suave: #9aa0aa;
+  --tenue: #5c626d;
+  --verde: #4ade80;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
+}
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2.5rem 1.25rem;
+  /* Un resplandor verde detrás de la tarjeta. */
+  background:
+    radial-gradient(60rem 40rem at 50% -10%, rgba(74, 222, 128, 0.09), transparent 60%),
+    var(--fondo);
+}
+
+.card {
+  width: 100%;
+  max-width: 33rem;
+  text-align: center;
+}
+
+.logo {
+  border-radius: 1.6rem;
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+  font-size: clamp(1.9rem, 6vw, 2.6rem);
+  letter-spacing: -0.02em;
+  margin: 1.4rem 0 0.6rem;
+}
+
+.lead {
+  color: var(--suave);
+  line-height: 1.65;
+  margin: 0 auto 2rem;
+  max-width: 27rem;
+}
+
+.download {
+  display: inline-block;
+  padding: 1rem 2.75rem;
+  border-radius: 0.7rem;
+  background: var(--verde);
+  color: #0f1115;
+  font-weight: 650;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.download:hover {
+  background: #6ee7a0;
+  transform: translateY(-1px);
+}
+
+.pending {
+  color: #f5a524;
+}
+
+.requisitos {
+  color: var(--tenue);
+  font-size: 0.82rem;
+  margin: 1rem 0 0;
+}
+
+.aviso {
+  margin: 2.25rem 0 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--linea);
+  border-radius: 0.7rem;
+  background: var(--panel);
+  text-align: left;
+  color: var(--suave);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.aviso strong {
+  color: var(--texto);
+}
+
+.redes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.6rem;
+  margin-top: 2.25rem;
+}
+
+.red {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--linea);
+  border-radius: 0.7rem;
+  background: var(--panel);
+  color: var(--suave);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: border-color 0.12s ease, color 0.12s ease, transform 0.12s ease;
+}
+
+.red:hover {
+  border-color: var(--tono);
+  color: var(--texto);
+  transform: translateY(-1px);
+}
+
+.red svg:first-child {
+  color: var(--tono);
+  flex: none;
+}
+
+.red .nombre {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.red .arroba {
+  margin-left: auto;
+  color: var(--tenue);
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.red svg:last-child {
+  flex: none;
+  color: var(--tenue);
 }

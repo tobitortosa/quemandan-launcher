@@ -27,7 +27,7 @@ Después, si hace falta: mod de verificación en el servidor (fase 4, opcional, 
 
 `launcher/Spike/`, consola C# .NET 10 con CmlLib.Core:
 
-1. Instala Minecraft 26.1 en `%LOCALAPPDATA%\QueMandan\game`: client.jar, las 75 librerías de Windows, los 4.750 assets y el runtime Java 25 de Mojang. Con reintentos y verificación de sha1.
+1. Instala Minecraft 26.1 en `%LOCALAPPDATA%\SobrinosDePepe\game`: client.jar, las 75 librerías de Windows, los 4.750 assets y el runtime Java 25 de Mojang. Con reintentos y verificación de sha1.
 2. Instala el perfil Fabric 0.19.5. Ojo con esto: hay que sacar el extractor de Java del perfil hijo, porque si no baja 150 MB de Java 8 que no sirven para nada.
 3. Descarga los mods del pack verificando sha1 y sha512, y copia las configs.
 4. Lanza el juego con sesión offline (`--username PEPE`, UUID derivado del nombre) y `--quickPlayMultiplayer quemandan.minehost.pro`.

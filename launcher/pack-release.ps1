@@ -14,10 +14,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
-$project = Join-Path $root "src/QueMandan.App/QueMandan.App.csproj"
+$project = Join-Path $root "src/SobrinosDePepe.App/SobrinosDePepe.App.csproj"
 $publishDir = Join-Path $root "artifacts/publish"
 $releaseDir = Join-Path $root "releases"
-$repo = "https://github.com/tobitortosa/quemandan-launcher"
+$repo = "https://github.com/tobitortosa/sobrinosdepepe-launcher"
 
 Write-Host "1. Compilando la aplicación" -ForegroundColor Cyan
 # Autocontenida: el jugador no necesita instalar .NET. En carpeta y no en un solo
@@ -39,8 +39,8 @@ if (-not (Get-Command vpk -ErrorAction SilentlyContinue)) {
   $env:Path += ";$env:USERPROFILE\.dotnet\tools"
 }
 
-vpk pack --packId QueMandan --packVersion $Version --packDir $publishDir `
-  --mainExe QueMandan.exe --packTitle "QUE MANDAN" --packAuthors "QUE MANDAN" `
+vpk pack --packId SobrinosDePepe --packVersion $Version --packDir $publishDir `
+  --mainExe SobrinosDePepe.exe --packTitle "SOBRINOS DE PEPE" --packAuthors "SOBRINOS DE PEPE" `
   --channel $Channel --outputDir $releaseDir
 if ($LASTEXITCODE -ne 0) { throw "falló el empaquetado" }
 
@@ -54,7 +54,7 @@ if ($Publish) {
   if (-not $Token) { throw "falta el token de GitHub: pasá -Token o iniciá sesión con gh auth login" }
 
   vpk upload github --repoUrl $repo --token $Token --publish `
-    --releaseName "QUE MANDAN $Version" --tag "v$Version" `
+    --releaseName "SOBRINOS DE PEPE $Version" --tag "v$Version" `
     --channel $Channel --outputDir $releaseDir
   if ($LASTEXITCODE -ne 0) { throw "falló la publicación" }
   Write-Host "   listo: $repo/releases" -ForegroundColor Green

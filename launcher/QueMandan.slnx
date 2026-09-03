@@ -1,7 +1,0 @@
-<Solution>
-  <Folder Name="/src/">
-    <Project Path="src/QueMandan.App/QueMandan.App.csproj" />
-    <Project Path="src/QueMandan.Core/QueMandan.Core.csproj" />
-    <Project Path="src/QueMandan.Spike/QueMandan.Spike.csproj" />
-  </Folder>
-</Solution>
