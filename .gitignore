@@ -1,0 +1,19 @@
+# Secretos: nunca al repositorio
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# .NET
+bin/
+obj/
+*.user
+
+# Sistema
+Thumbs.db
+desktop.ini

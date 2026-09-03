@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:QueMandan.App.ViewModels"
+             x:Class="QueMandan.App.Views.LoginView"
+             x:DataType="vm:LoginViewModel">
+
+  <Grid RowDefinitions="*,Auto,*" Margin="34">
+
+    <StackPanel Grid.Row="1" Spacing="0">
+
+      <TextBlock Classes="brand" Text="QUE MANDAN" Margin="0,0,0,6" />
+      <TextBlock Classes="muted" Text="{Binding Title}" HorizontalAlignment="Center" Margin="0,0,0,26" />
+
+      <TextBlock Classes="label" Text="Usuario" />
+      <TextBox Text="{Binding Username}" Watermark="Tu nombre en el juego" />
+
+      <TextBlock Classes="label" Text="Contraseña" Margin="0,16,0,6" />
+      <TextBox Text="{Binding Password}" PasswordChar="•" />
+
+      <StackPanel IsVisible="{Binding IsRegistering}">
+        <TextBlock Classes="label" Text="Repetí la contraseña" Margin="0,16,0,6" />
+        <TextBox Text="{Binding ConfirmPassword}" PasswordChar="•" />
+      </StackPanel>
+
+      <TextBlock Classes="faint" TextWrapping="Wrap" Margin="0,12,0,0"
+                 IsVisible="{Binding IsRegistering}"
+                 Text="Usá exactamente el mismo nombre con el que jugás. No se puede cambiar después: es tu identidad en el servidor." />
+
+      <TextBlock Classes="error" Text="{Binding Error}" Margin="0,16,0,0"
+                 IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <TextBlock Classes="muted" Text="{Binding Notice}" Margin="0,16,0,0"
+                 IsVisible="{Binding Notice, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <Button Classes="primary" Content="{Binding ActionText}"
+              Command="{Binding SubmitCommand}"
+              IsEnabled="{Binding !IsBusy}"
+              HorizontalAlignment="Stretch" Margin="0,24,0,0" />
+
+      <Button Classes="link" Content="{Binding SwitchText}"
+              Command="{Binding SwitchCommand}"
+              HorizontalAlignment="Center" Margin="0,14,0,0" />
+
+    </StackPanel>
+
+  </Grid>
+</UserControl>

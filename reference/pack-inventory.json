@@ -1,0 +1,817 @@
+{
+  "generated_from": "C:/Users/Tobi/AppData/Roaming/.minecraft (TLauncher profile \"Fabric 26.1\")",
+  "generated_on": "2026-09-03",
+  "minecraft": {
+    "version": "26.1",
+    "client_jar": {
+      "sha1": "191771837687b766537a8c4607cb6fad79c533a1",
+      "size": 38113398,
+      "url": "https://piston-data.mojang.com/v1/objects/191771837687b766537a8c4607cb6fad79c533a1/client.jar"
+    },
+    "asset_index": {
+      "id": "30",
+      "totalSize": 456427629,
+      "size": 548391,
+      "url": "https://piston-meta.mojang.com/v1/packages/1c325980cb885aabe2602f94993eb2d82dd44a82/30.json"
+    },
+    "java": {
+      "component": "java-runtime-epsilon",
+      "majorVersion": 25.0
+    },
+    "main_class": "net.fabricmc.loader.impl.launch.knot.KnotClient",
+    "libraries_count": 114
+  },
+  "fabric": {
+    "loader": "0.19.2",
+    "mixin": "sponge-mixin 0.17.2+mixin.0.8.7",
+    "asm": "9.9",
+    "maven": "https://maven.fabricmc.net/"
+  },
+  "server": {
+    "address": "quemandan.minehost.pro",
+    "srv_target": "sv36.minehost.pro",
+    "srv_port": 25445,
+    "srv_ip": "45.235.98.223",
+    "status_probe_2026_09_03": {
+      "version": "26.1",
+      "protocol": 775,
+      "max_players": 20,
+      "motd": "A Minecraft Server",
+      "favicon": true
+    },
+    "online_mode": false,
+    "evidence_online_mode": "cliente con cuenta TLauncher tipo free (401 en user properties) se conecta sin problemas",
+    "panel": {
+      "type": "Pterodactyl",
+      "url": "https://pterodactyl.minehost.com.ar/server/dbd3f1e9",
+      "server_identifier": "dbd3f1e9",
+      "mods_folder_note": "según Tobías (2026-09-03) el server tiene los mismos jars que el cliente + voicechat"
+    }
+  },
+  "current_players_seen": [
+    "PEPE",
+    "Chichon",
+    "Titit0N",
+    "Luquitas1410",
+    "Felix_1256"
+  ],
+  "mods": [
+    {
+      "file": "cloth-config-26.1.154.jar",
+      "size": 1135373,
+      "sha1": "832f9047bc4af13587709c74f7c37e1c8579d1eb",
+      "sha256": "fb7a5d869ce10eaac2c2fe9ab84b4fc011a1fbfa575a93be9845a386a7f0c7d3",
+      "sha512": "8bfb75f2cac0a9910316c6a368a228c0f8f1261ac6f03dec5fba594e1619ac04334a3df4fb29778d61d0b8290d55949371a523d722b35501bf9a2902956d3b17",
+      "modrinth": {
+        "project_id": "9s6osm5g",
+        "slug": "cloth-config",
+        "title": "Cloth Config API",
+        "version_id": "GFM8zh9J",
+        "version_number": "26.1.154+fabric",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/9s6osm5g/versions/GFM8zh9J/cloth-config-26.1.154.jar",
+        "license": "LGPL-3.0-only",
+        "client_side": "optional",
+        "server_side": "optional",
+        "dependencies": []
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "fabric-api-0.155.2+26.1.2.jar",
+      "size": 2520724,
+      "sha1": "5fe5204ccc96a17340570db66a5b4127b8176246",
+      "sha256": "7196f2d8700cf906676db98cc13cd4b98267c4ca4ba3e8c516e62070b21a5a3a",
+      "sha512": "e07d2e525037e3ce2d6fa18ddc9d4970263a85fd0718fdbd41a1a42c93ec861307d0f5d1461f020ff941bdd5b981a82b5717ee2d6b5c400124bf0171fb21e998",
+      "modrinth": {
+        "project_id": "P7dR8mSH",
+        "slug": "fabric-api",
+        "title": "Fabric API",
+        "version_id": "uLkEd5dr",
+        "version_number": "0.155.2+26.1.2",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/uLkEd5dr/fabric-api-0.155.2%2B26.1.2.jar",
+        "license": "Apache-2.0",
+        "client_side": "optional",
+        "server_side": "optional",
+        "dependencies": []
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "iris-fabric-1.11.2+mc26.1.2.jar",
+      "size": 2803860,
+      "sha1": "c30e04509a1b284372cb9037b07714d4223ae91a",
+      "sha256": "aea0eefb174d19ad97a812b6de2e304f0d3abc50357b316908cf1035f1514b07",
+      "sha512": "01714943b36e7b78618bf133a20da489197322e20ebc2d9858f15bb57ac198fdab23dac6c917d6239ad3fe2e7c47f53fb387d475805eb7269fbfc16e30664155",
+      "modrinth": {
+        "project_id": "YL57xq9U",
+        "slug": "iris",
+        "title": "Iris Shaders",
+        "version_id": "MwcLS51S",
+        "version_number": "1.10.9+26.1-fabric",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/MwcLS51S/iris-fabric-1.10.9%2Bmc26.1.1.jar",
+        "license": "LGPL-3.0-only",
+        "client_side": "required",
+        "server_side": "unsupported",
+        "dependencies": [
+          {
+            "project_id": "AANobbMI",
+            "type": "required"
+          }
+        ]
+      },
+      "filename_mismatch": "iris-fabric-1.10.9+mc26.1.1.jar"
+    },
+    {
+      "file": "lithium-fabric-0.24.7+mc26.1.2.jar",
+      "size": 912821,
+      "sha1": "7959f418969ee8bfe50c0f21f352ed08b382f133",
+      "sha256": "a155b26df2593772e80a9f935837ba3319c68a3e774ba5e1b3a21eb64d477e86",
+      "sha512": "37240bdbf93c19fdc6aa632d89223639f0ef9d923ee1793b33d624946b0482cc972834049ed07d71db3494e16c9de68e755937aac7c4ac5d7291bd38c1425899",
+      "modrinth": {
+        "project_id": "gvQqBUqZ",
+        "slug": "lithium",
+        "title": "Lithium",
+        "version_id": "Oqq8TOAV",
+        "version_number": "mc26.1.2-0.24.7-fabric",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric",
+          "quilt"
+        ],
+        "url": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/Oqq8TOAV/lithium-fabric-0.24.7%2Bmc26.1.2.jar",
+        "license": "LGPL-3.0-only",
+        "client_side": "optional",
+        "server_side": "optional",
+        "dependencies": []
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "maplink-fabric-4.5.0-26.1.jar",
+      "size": 1349257,
+      "sha1": "e9a13b68cf63288bd37e8b4f64337a1411362c34",
+      "sha256": "cf91388fcf97062a4e5c09e37aa06b41500d10f0fef5b0d88b462553f5961ddc",
+      "sha512": "aea1594c5679e7506cdf6eae58bfb1cd2b629da248bb581543d280dbfc039c9ba4a9e8750735ec877c0909ee40f2de7d16f6337258427de7e7248dac98e84e4f",
+      "modrinth": {
+        "project_id": "kiByZ6gx",
+        "slug": "maplink",
+        "title": "Map Link  (formerly Remote Player Waypoints for Xaero's Map)",
+        "version_id": "OAn1IZkX",
+        "version_number": "4.5.0",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric",
+          "quilt"
+        ],
+        "url": "https://cdn.modrinth.com/data/kiByZ6gx/versions/OAn1IZkX/maplink-fabric-4.5.0-26.1.jar",
+        "license": "GPL-3.0-or-later",
+        "client_side": "required",
+        "server_side": "unsupported",
+        "dependencies": [
+          {
+            "project_id": "9s6osm5g",
+            "type": "required"
+          },
+          {
+            "project_id": "P7dR8mSH",
+            "type": "required"
+          },
+          {
+            "project_id": "NcUtCpym",
+            "type": "optional"
+          },
+          {
+            "project_id": "mOgUt4GM",
+            "type": "optional"
+          },
+          {
+            "project_id": "1bokaNcj",
+            "type": "optional"
+          },
+          {
+            "project_id": "JkSi2Fzx",
+            "type": "optional"
+          }
+        ]
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "modernfix-5.27.19-build.1.jar",
+      "size": 717189,
+      "sha1": "9f68fd82da95582bd27fb97b90015ce268296132",
+      "sha256": "b9095a5e216eb9fbd52b00b8e0ff0dc5ee43d23241b0f349925a0e12b4ec601b",
+      "sha512": "0ee91d7e138665375cbf29391ef2c6800c847c4fed3d41653e8c496ccac4b2833f474fb11c77b11e9aeb2eb6a3df246ab592f47678326c8af052612135cd6f7c",
+      "modrinth": {
+        "project_id": "TjSm1wrD",
+        "slug": "modernfix-mvus",
+        "title": "ModernFix-mVUS",
+        "version_id": "cTKaCklf",
+        "version_number": "5.27.19-build.1",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/TjSm1wrD/versions/cTKaCklf/modernfix-5.27.19-build.1.jar",
+        "license": "LGPL-3.0-only",
+        "client_side": "optional",
+        "server_side": "optional",
+        "dependencies": [
+          {
+            "project_id": "P7dR8mSH",
+            "type": "required"
+          }
+        ]
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "player-revive-v3.0-mc26.1.x.jar",
+      "size": 39523,
+      "sha1": "a0dfb4849b4ac96f28931612e3f31b366372cbc1",
+      "sha256": "f5f0b6b6b22a11a003810558f80803c35eb10c45465c625fa95ee9c0cd046251",
+      "sha512": "809b7038a5984622213e6810ab84a662a7808235cae70eb583608ceba406f411cba16e2c6a172d62467903520223314b9a759946ad06c59b3f9341fce33d4d89",
+      "modrinth": {
+        "project_id": "x1IFRoPF",
+        "slug": "player-revive",
+        "title": "Simple Revive",
+        "version_id": "AT9pH7Nd",
+        "version_number": "v3.0-mc26.1.x-mod",
+        "game_versions": [
+          "1.21.11",
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric",
+          "forge",
+          "neoforge",
+          "quilt"
+        ],
+        "url": "https://cdn.modrinth.com/data/x1IFRoPF/versions/AT9pH7Nd/player-revive-v3.0-mc26.1.x.jar",
+        "license": "CC-BY-4.0",
+        "client_side": "optional",
+        "server_side": "required",
+        "dependencies": []
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "reeses-sodium-options-fabric-2.2.3+mc26.1.2.jar",
+      "size": 103481,
+      "sha1": "e1c704acfb5bde6df36b23c3a38faff1f02abb73",
+      "sha256": "432f60df294ff2bf6b0debeb9750115c7d27ecb548d917e6ca7e31fd40cc83b9",
+      "sha512": "32736018c32c6ebd391a2fd0566b058faeae6b0cf00b1d56b816b8211ebcb665949bae5b1ae8bf2e9b7a24845ed94234c3fffc71f74354956833cfedeadcef12",
+      "modrinth": {
+        "project_id": "Bh37bMuy",
+        "slug": "reeses-sodium-options",
+        "title": "Reese's Sodium Options",
+        "version_id": "p88Tf9YM",
+        "version_number": "mc26.1.1-2.0.5+fabric",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/Bh37bMuy/versions/p88Tf9YM/reeses-sodium-options-fabric-2.0.5%2Bmc26.1.1.jar",
+        "license": "MIT",
+        "client_side": "required",
+        "server_side": "unsupported",
+        "dependencies": [
+          {
+            "project_id": "PtjYWJkn",
+            "type": "optional"
+          },
+          {
+            "project_id": "YL57xq9U",
+            "type": "optional"
+          },
+          {
+            "project_id": "AANobbMI",
+            "type": "required"
+          }
+        ]
+      },
+      "filename_mismatch": "reeses-sodium-options-fabric-2.0.5+mc26.1.1.jar"
+    },
+    {
+      "file": "sodium-extra-fabric-0.8.6+mc26.1.1.jar",
+      "size": 401602,
+      "sha1": "457ea5643de4e537eb44fc117d88886d52cdebf9",
+      "sha256": "ba7787879e9154a1d8aa2b9c1e64b718816bd133f80c11242f424d566815211c",
+      "sha512": "aed5ab19ca13c9e77d16140506d4cf83fbe15bd77fe76276f67fe8f7157ec591e9b8a65ab4176f2a880b58172634b54a5b369db40201a84618acfcc488d14ba0",
+      "modrinth": {
+        "project_id": "PtjYWJkn",
+        "slug": "sodium-extra",
+        "title": "Sodium Extra",
+        "version_id": "1bz3AMCV",
+        "version_number": "mc26.1.1-0.8.7+fabric",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/PtjYWJkn/versions/1bz3AMCV/sodium-extra-fabric-0.8.7%2Bmc26.1.1.jar",
+        "license": "LGPL-3.0-only",
+        "client_side": "required",
+        "server_side": "unsupported",
+        "dependencies": [
+          {
+            "project_id": "Bh37bMuy",
+            "type": "optional"
+          },
+          {
+            "project_id": "YL57xq9U",
+            "type": "optional"
+          },
+          {
+            "project_id": "AANobbMI",
+            "type": "required"
+          }
+        ]
+      },
+      "filename_mismatch": "sodium-extra-fabric-0.8.7+mc26.1.1.jar"
+    },
+    {
+      "file": "sodium-fabric-0.8.9+mc26.1.1.jar",
+      "size": 1810286,
+      "sha1": "48b949ec71365788dfd4e89d489f7abd504aa709",
+      "sha256": "25ad95ba787bd7ff2a0deaf20a8f4642b91e23489d0e10933693d9963a6022f2",
+      "sha512": "74f9dc8963b5258226837cc361ba6b525da734ab4fa5f05d1862bc6e9175f4fa81ca3d49443e2fb85be144d06042f0d65cbcceefc391043af857b38aa2614ae8",
+      "modrinth": {
+        "project_id": "AANobbMI",
+        "slug": "sodium",
+        "title": "Sodium",
+        "version_id": "uGvVQBnw",
+        "version_number": "mc26.1.1-0.8.9-fabric",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/AANobbMI/versions/uGvVQBnw/sodium-fabric-0.8.9%2Bmc26.1.1.jar",
+        "license": "LicenseRef-Polyform-Shield-1.0.0",
+        "client_side": "required",
+        "server_side": "unsupported",
+        "dependencies": []
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "sound-physics-remastered-fabric-1.5.1+26.1.2.jar",
+      "size": 201734,
+      "sha1": "f7592512bf6a54c14d5a807aa941b86d802436a5",
+      "sha256": "7392f46fcf5d0921805dd4c91c9d99482d59a4ff92870c52c6da2e76798c88cb",
+      "sha512": "7dd35bbe930d79a303564c61bf9e9de53480d0c602e6bd6889cbcff52969d76fbc598ca15dfd7a22219e5702f9c89ca5d7c8619d4f9612775a2053cd55e7a819",
+      "modrinth": {
+        "project_id": "qyVF9oeo",
+        "slug": "sound-physics-remastered",
+        "title": "Sound Physics Remastered",
+        "version_id": "y3vsp51g",
+        "version_number": "fabric-1.5.1+26.1.2",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric",
+          "quilt"
+        ],
+        "url": "https://cdn.modrinth.com/data/qyVF9oeo/versions/y3vsp51g/sound-physics-remastered-fabric-1.5.1%2B26.1.2.jar",
+        "license": "GPL-3.0-only",
+        "client_side": "required",
+        "server_side": "optional",
+        "dependencies": [
+          {
+            "project_id": "mOgUt4GM",
+            "type": "optional"
+          },
+          {
+            "project_id": "9s6osm5g",
+            "type": "optional"
+          },
+          {
+            "project_id": "9eGKb6K1",
+            "type": "optional"
+          }
+        ]
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "xaerominimap-fabric-26.1.2-26.4.2.jar",
+      "size": 2216030,
+      "sha1": "861266c190489fa2b5df121469bd279ba0508223",
+      "sha256": "601c59ae7bda2fd759a128660974bf33b07af409c1d61db4e431289a91c100b2",
+      "sha512": "e11634beba35c11c10c887b695769e54c2e04ad15b7c98c6342bdcb8aaaf85b7be29d465ade83172a99cc7bb36ea9ecd48e6fbaf4a8baf7cd615669c4beb46b0",
+      "modrinth": {
+        "project_id": "1bokaNcj",
+        "slug": "xaeros-minimap",
+        "title": "Xaero's Minimap",
+        "version_id": "fklv23QW",
+        "version_number": "fabric-26.1.2-26.4.2",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric",
+          "quilt"
+        ],
+        "url": "https://cdn.modrinth.com/data/1bokaNcj/versions/fklv23QW/xaerominimap-fabric-26.1.2-26.4.2.jar",
+        "license": "LicenseRef-All-Rights-Reserved",
+        "client_side": "required",
+        "server_side": "optional",
+        "dependencies": [
+          {
+            "project_id": "P7dR8mSH",
+            "type": "required"
+          },
+          {
+            "project_id": "gF3BGWvG",
+            "type": "optional"
+          }
+        ]
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "xaeroworldmap-fabric-26.1.2-1.45.0.jar",
+      "size": 1474027,
+      "sha1": "7e4031f7c1fdcd32ac69fd172ef66313a58825a5",
+      "sha256": "504d19092e620bb037d5571908f87992d53188c4c2a5dfd80eeb82aaeb80c870",
+      "sha512": "4fc4a297a65c1508fb1477682a0a1664a16abfc81067416e9bda22751ad481699b7fc5b568e8da6fb730bfe86148c503998525d1e20f36222e842216b53dc5cf",
+      "modrinth": {
+        "project_id": "NcUtCpym",
+        "slug": "xaeros-world-map",
+        "title": "Xaero's World Map",
+        "version_id": "BzCXHIwa",
+        "version_number": "fabric-26.1.2-1.45.0",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric",
+          "quilt"
+        ],
+        "url": "https://cdn.modrinth.com/data/NcUtCpym/versions/BzCXHIwa/xaeroworldmap-fabric-26.1.2-1.45.0.jar",
+        "license": "LicenseRef-All-Rights-Reserved",
+        "client_side": "required",
+        "server_side": "optional",
+        "dependencies": [
+          {
+            "project_id": "gF3BGWvG",
+            "type": "optional"
+          },
+          {
+            "project_id": "P7dR8mSH",
+            "type": "required"
+          }
+        ]
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "zoomx-26.1.jar",
+      "size": 19084,
+      "sha1": "156dadd4581d96a0fea6565f5f85f74da43c3026",
+      "sha256": "548744b988bcedbbf38aea99e083711fcc03807b0db9840b0778a3bba5f25eb8",
+      "sha512": "0d9e0dbf74a24887878586b13b146e2c591c6ddd5ad440dcb349914648e8db46debb8b60baee2846f89f5a8bc9d2a8f7440befc5746527cf34c3c93f2a2beb28",
+      "modrinth": {
+        "project_id": "uagtqGzt",
+        "slug": "zoomx",
+        "title": "ZoomX",
+        "version_id": "BrfMqnOA",
+        "version_number": "26.1",
+        "game_versions": [
+          "26.1"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/uagtqGzt/versions/BrfMqnOA/zoomx-26.1.jar",
+        "license": "MIT",
+        "client_side": "required",
+        "server_side": "unsupported",
+        "dependencies": []
+      },
+      "filename_mismatch": null
+    },
+    {
+      "file": "voicechat-fabric-2.6.22+26.1.2.jar",
+      "size": 5526001,
+      "sha1": "6fc0c5a5e302828306019df148bdf157ea2007b4",
+      "sha256": "263907108ecc91935ffad3ac03d839316c9e3996944de1177ff1d336a4ab551d",
+      "sha512": "adac8ed875bb9f1ac50ef47a878eaf64f2aaa303a1e5e540f1abf2c9abbb88ed4df532906cee0f99635659e7440d8330d23a9b5d2191c8c99ba7edcb82b438b2",
+      "modrinth": {
+        "project_id": "9eGKb6K1",
+        "slug": "simple-voice-chat",
+        "title": "Simple Voice Chat",
+        "version_id": "Z8DASI8B",
+        "version_number": "fabric-2.6.22+26.1.2",
+        "game_versions": [
+          "26.1",
+          "26.1.1",
+          "26.1.2"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "url": "https://cdn.modrinth.com/data/9eGKb6K1/versions/Z8DASI8B/voicechat-fabric-2.6.22%2B26.1.2.jar",
+        "license": "LicenseRef-All-Rights-Reserved",
+        "client_side": "optional",
+        "server_side": "optional",
+        "dependencies": [
+          {
+            "project_id": "9s6osm5g",
+            "type": "optional"
+          },
+          {
+            "project_id": "YlKdE5VK",
+            "type": "optional"
+          },
+          {
+            "project_id": "mOgUt4GM",
+            "type": "optional"
+          },
+          {
+            "project_id": "SRlzjEBS",
+            "type": "optional"
+          },
+          {
+            "project_id": "Vebnzrzj",
+            "type": "optional"
+          },
+          {
+            "project_id": "UL4bJFDY",
+            "type": "optional"
+          },
+          {
+            "project_id": "qyVF9oeo",
+            "type": "optional"
+          }
+        ]
+      },
+      "filename_mismatch": null
+    }
+  ],
+  "configs": [
+    {
+      "path": "config/iris-excluded.json",
+      "size": 31,
+      "sha256": "4d3264b58c502afaeca3f44e8d2db0843c54b8ba957afd21a2d450fe10dafefb"
+    },
+    {
+      "path": "config/iris.properties",
+      "size": 314,
+      "sha256": "d564d4a98e9a6e925fafa10071c12dab5d0c6ffaa8aebdc96fc702de0c075ed8"
+    },
+    {
+      "path": "config/lithium.properties",
+      "size": 267,
+      "sha256": "6cf6f83720071fd1657c8e79b357caf68d40f410ae123e5f922483eb1d1d25be"
+    },
+    {
+      "path": "config/modernfix-mixins.properties",
+      "size": 4331,
+      "sha256": "6cdf760d41edbac0cae96db1232a627db75f5d147471e98b0dafdc3d7131865d"
+    },
+    {
+      "path": "config/sodium-extra-options.json",
+      "size": 2626,
+      "sha256": "96f90808c35c94b41ceaceb730e6eeb8544721eaa66277d403aaceab565e0f66"
+    },
+    {
+      "path": "config/sodium-extra.properties",
+      "size": 360,
+      "sha256": "a2f1b47c1eaa119ab34727f1d43c2506cb3d7f17ba8fb4efb49e20c8e0b58e70"
+    },
+    {
+      "path": "config/sodium-fingerprint.json",
+      "size": 427,
+      "sha256": "4e8378cda90661511ac36edc7120b5ed2b63967c621795a9c5641e6c20523551"
+    },
+    {
+      "path": "config/sodium-mixins.properties",
+      "size": 258,
+      "sha256": "b627c4456e6fa0bc4b5f85e2f1cd949faedae3cb9afdaf2a5f52e6f3b6ae1f01"
+    },
+    {
+      "path": "config/sodium-options.json",
+      "size": 734,
+      "sha256": "a02eb06610dd6b8c1518789d2c394d49e3833158e42c8f6c6ce47c1769faa4d5"
+    },
+    {
+      "path": "config/xaerohud.txt",
+      "size": 123,
+      "sha256": "58c9270f258d0b224bb7d0f7c927544d5fbe5f1b8027c820e1e14ecbf48fb88c"
+    },
+    {
+      "path": "config/xaeropatreon.txt",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "config/maplink/friends.json5",
+      "size": 248,
+      "sha256": "b1a7457b9b3cf2ca24b13ee9ce31476d7e4c53b3207f2eed8c6849192c5dec95"
+    },
+    {
+      "path": "config/maplink/general.json5",
+      "size": 1634,
+      "sha256": "7a9388a220de9c55ff2b832f8209777d755e88289d2eb53babc3b202bb4ca49e"
+    },
+    {
+      "path": "config/maplink/hud.json5",
+      "size": 654,
+      "sha256": "74d5a570b5b99f8bf4ae9f1bbd9b2d07ea72ee32b43f0c0c0aa19bb265a9a65e"
+    },
+    {
+      "path": "config/maplink/minimap.json5",
+      "size": 624,
+      "sha256": "872648465f3d1f3d9c8410b00c1760984e5e8ba0e08d373743865907bee45c10"
+    },
+    {
+      "path": "config/maplink/worldmap.json5",
+      "size": 628,
+      "sha256": "64b19070b5d27d24b7a38c53d10b2637c4d3eed28bcfc57fa10bc0480efe1e08"
+    },
+    {
+      "path": "config/sound_physics_remastered/occlusion.properties",
+      "size": 4831,
+      "sha256": "ebbac45fbb3ca01487b85ffee9601b213b71896e6606fb297bcb0f3ac9c30ffb"
+    },
+    {
+      "path": "config/sound_physics_remastered/reflectivity.properties",
+      "size": 4713,
+      "sha256": "e26b00784bb6239988759ed1a64551b9f301dc33c5a855d91e976ee4bf40ac8a"
+    },
+    {
+      "path": "config/sound_physics_remastered/soundphysics.properties",
+      "size": 5104,
+      "sha256": "d29dede3f214ee4b1aa03314f92c3f973c21ee6e26d173eba3d01a2083237b6d"
+    },
+    {
+      "path": "config/sound_physics_remastered/sound_rates.properties",
+      "size": 74386,
+      "sha256": "7e24a9384fc6925299acf735a7468a2074e36570e159c56e1346b13456fdf4d3"
+    },
+    {
+      "path": "config/xaero/lib/client.cfg",
+      "size": 26,
+      "sha256": "43ed9dbfa5b4d6f0f3d2e8c2ced17ad298164b22c68ff11d415257a39b074336"
+    },
+    {
+      "path": "config/xaero/lib/common.cfg",
+      "size": 236,
+      "sha256": "98f698d96a6d21d830a455b4ad045b70516fa63c298021742d8499e7f0366cd2"
+    },
+    {
+      "path": "config/xaero/lib/profiles/default.cfg",
+      "size": 121,
+      "sha256": "34ae854b17d896d7cb853bdc28c27231a3947e91cb9f0991f372846ee3c2a907"
+    },
+    {
+      "path": "config/xaero/lib/server_profiles/default.cfg",
+      "size": 75,
+      "sha256": "d438aea41ca41e93697e059f523686935c0add482f6abe96b532bbf10c6ed80a"
+    },
+    {
+      "path": "config/xaero/minimap/client.cfg",
+      "size": 235,
+      "sha256": "c0915eff5d1a7905cd1038d646eb9086fd1a29e2f637d53535e4da161de17b9f"
+    },
+    {
+      "path": "config/xaero/minimap/common.cfg",
+      "size": 147,
+      "sha256": "2b49df024c03a369c62a303c72755e7fedeb4f4653ff53a12fd37bd83ccd4ed0"
+    },
+    {
+      "path": "config/xaero/minimap/default_radar_categories_client.json",
+      "size": 5531,
+      "sha256": "c63fa9862b71e4d7d39f0ba3c214ec8482c622d960574003eabe56dd021cbead"
+    },
+    {
+      "path": "config/xaero/minimap/default_radar_categories_server.json",
+      "size": 4597,
+      "sha256": "a4c652cafa7dea324e5f5cf3b1df46a84e54b6d4f877195857bce55a559c1cfd"
+    },
+    {
+      "path": "config/xaero/minimap/profiles/default.cfg",
+      "size": 3825,
+      "sha256": "f1ff62b22cfc97486d00e8bd3367a3207f0a8da235e7b365c5aa2a54e3f8dc25"
+    },
+    {
+      "path": "config/xaero/minimap/profiles/info_display_config/default.cfg.txt",
+      "size": 684,
+      "sha256": "184e654fa1fc8ad09943c97c4e65ab78acb5b3cfca22417a831513d1b6d9bbc6"
+    },
+    {
+      "path": "config/xaero/minimap/server_profiles/default.cfg",
+      "size": 75,
+      "sha256": "d438aea41ca41e93697e059f523686935c0add482f6abe96b532bbf10c6ed80a"
+    },
+    {
+      "path": "config/xaero/world-map/client.cfg",
+      "size": 521,
+      "sha256": "d0f079a8df083f6f60a0e0c1316a25fc841755a91bdcb2f86c66ead8e7d4d13d"
+    },
+    {
+      "path": "config/xaero/world-map/common.cfg",
+      "size": 141,
+      "sha256": "0c229eb0daf85bd09af51f21eeeb99497a3bd50a825d5ab1ca695fb21bf6cf9d"
+    },
+    {
+      "path": "config/xaero/world-map/profiles/default.cfg",
+      "size": 1619,
+      "sha256": "5422abf9c83fedef6509144293fad20f588d4bb6ce0cf1af78cbcd2bcd0d2ccf"
+    },
+    {
+      "path": "config/xaero/world-map/server_profiles/default.cfg",
+      "size": 75,
+      "sha256": "d438aea41ca41e93697e059f523686935c0add482f6abe96b532bbf10c6ed80a"
+    }
+  ],
+  "shaderpacks": [
+    {
+      "name": "ComplementaryUnbound_r5.8.1",
+      "form": "carpeta extraida (2 MB) + ComplementaryUnbound_r5.8.1.zip.txt con settings",
+      "iris_enabled_by_default": true
+    }
+  ],
+  "resourcepacks": [],
+  "options_txt_highlights": {
+    "lang": "es_es",
+    "fullscreen": true,
+    "renderDistance": 12,
+    "guiScale": 3,
+    "maxFps": 240
+  },
+  "tlauncher_specific": {
+    "injected_mod": "tlskincape 1.39 (skins/capas de TLauncher; no existe fuera de TLauncher)",
+    "account_type": "free",
+    "username": "PEPE",
+    "offline_uuid": "5b071e1f-3a11-4f28-9c68-a6321cadc031"
+  },
+  "not_used": [
+    "cavedweller-1.3.0.jar (descargado, nunca usado, no está ni en cliente ni en server)"
+  ],
+  "offline_uuids": {
+    "PEPE": "7a067f19-b48d-3c6e-9039-8f37f64def1f",
+    "Chichon": "5f1bb3e1-3a21-3c39-a409-e50842f7df31",
+    "Titit0N": "7bc394ba-c092-3432-b0b3-57a16c894f33",
+    "Luquitas1410": "9c4d6396-daf9-3c3c-9eb3-93fe87cb87b7",
+    "Felix_1256": "abc27f34-f3db-3e4c-8807-6fe307d72d6c"
+  },
+  "players_evidence": "command_history.txt (/tp) + chat y \"joined the game\" en .minecraft/logs (latest.log y *.gz), 2026-09-03"
+}

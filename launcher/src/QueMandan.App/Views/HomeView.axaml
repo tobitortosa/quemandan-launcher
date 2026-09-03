@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:QueMandan.App.ViewModels"
+             x:Class="QueMandan.App.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+
+  <Grid RowDefinitions="Auto,*,Auto" Margin="34,30">
+
+    <!-- Encabezado -->
+    <StackPanel Grid.Row="0">
+      <TextBlock Classes="brand" Text="QUE MANDAN" />
+      <TextBlock Classes="muted" HorizontalAlignment="Center" Margin="0,8,0,0"
+                 Text="{Binding Username, StringFormat='Hola, {0}'}" />
+    </StackPanel>
+
+    <!-- Centro -->
+    <StackPanel Grid.Row="1" VerticalAlignment="Center" Spacing="0">
+
+      <Button Classes="primary play" Content="JUGAR"
+              Command="{Binding PlayCommand}"
+              IsEnabled="{Binding !IsWorking}"
+              HorizontalAlignment="Stretch" />
+
+      <!-- Progreso -->
+      <StackPanel Margin="0,20,0,0" IsVisible="{Binding IsWorking}" Spacing="8">
+        <TextBlock Classes="muted" Text="{Binding Stage}" HorizontalAlignment="Center" />
+        <ProgressBar Value="{Binding Percent}" Maximum="100"
+                     IsIndeterminate="{Binding !HasProgress}" />
+        <TextBlock Classes="faint" Text="{Binding Detail}" HorizontalAlignment="Center"
+                   TextTrimming="CharacterEllipsis" />
+      </StackPanel>
+
+      <!-- Estado del servidor -->
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8" Margin="0,22,0,0"
+                  IsVisible="{Binding ServerChecked}">
+        <Ellipse Width="8" Height="8" VerticalAlignment="Center">
+          <Ellipse.Fill>
+            <SolidColorBrush Color="{Binding ServerOnline, Converter={StaticResource StatusColor}}" />
+          </Ellipse.Fill>
+        </Ellipse>
+        <TextBlock Classes="muted" Text="{Binding ServerLabel}" />
+      </StackPanel>
+
+      <!-- Mensajes -->
+      <TextBlock Classes="muted" Text="{Binding Message}" TextWrapping="Wrap" TextAlignment="Center"
+                 Margin="0,18,0,0"
+                 IsVisible="{Binding Message, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <!-- Error -->
+      <Border Classes="card" Margin="0,18,0,0" Padding="18"
+              IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="error" Text="{Binding Error}" />
+          <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+            <Button Classes="ghost" Content="Copiar detalles" Command="{Binding CopyErrorCommand}" />
+            <Button Classes="ghost" Content="Reparar instalación" Command="{Binding RepairCommand}" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+    </StackPanel>
+
+    <!-- Pie -->
+    <StackPanel Grid.Row="2" Spacing="14">
+
+      <Button Classes="ghost" Content="ADMINISTRAR"
+              Command="{Binding OpenAdminCommand}"
+              HorizontalAlignment="Stretch"
+              IsVisible="{Binding IsAdmin}" />
+
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+        <Button Classes="link" Content="Cerrar sesión" Command="{Binding LogOutCommand}" />
+        <TextBlock Classes="faint" Text="·" VerticalAlignment="Center" />
+        <Button Classes="link" Content="Abrir carpeta" Command="{Binding OpenFolderCommand}" />
+      </StackPanel>
+
+    </StackPanel>
+
+  </Grid>
+</UserControl>

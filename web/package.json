@@ -1,0 +1,42 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx --env-file=.env.local scripts/seed.mts",
+    "typecheck": "tsc --noEmit",
+    "check:modrinth": "tsx --env-file=.env.local scripts/check-modrinth.mts",
+    "test": "tsx scripts/test-flow.mts",
+    "serve:test": "tsx scripts/serve-test.mts",
+    "db:check": "tsx --env-file=.env.local scripts/check-db.mts",
+    "pack:publish": "tsx --env-file=.env.local scripts/publish-pack.mts"
+  },
+  "dependencies": {
+    "@node-rs/argon2": "^2.2.0",
+    "drizzle-orm": "^0.45.2",
+    "fflate": "^0.8.3",
+    "next": "16.3.4",
+    "pg": "^8.23.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@types/node": "^20",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.4",
+    "tsx": "^4.23.13",
+    "typescript": "^5"
+  }
+}

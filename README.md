@@ -1,0 +1,88 @@
+# QUE MANDAN Launcher
+
+Launcher de Windows para el server de Minecraft "QUE MANDAN" (`quemandan.minehost.pro`, Fabric 26.1). El viewer lo baja, se crea la cuenta, Tobías la aprueba, aprieta **JUGAR** y entra al server con la versión, el Java y los mods correctos. Con la cuenta de admin, el mismo launcher gestiona los mods y las cuentas.
+
+**Estado:** fases 0 y 1 listas y probadas. El instalador entra al server con el inventario intacto, y el backend maneja cuentas, subida de mods y publicación del pack. Falta la interfaz (fase 2) y el panel de admin dentro del launcher (fase 3).
+
+## Documentos
+
+| Doc | Para qué |
+|---|---|
+| [`docs/01-entorno-de-referencia.md`](docs/01-entorno-de-referencia.md) | Qué hay exactamente en la PC de referencia y en el server. Fuente de verdad del pack. |
+| [`docs/02-arquitectura.md`](docs/02-arquitectura.md) | Pantallas, componentes, flujos, base de datos, API, secretos. |
+| [`docs/03-plan-por-fases.md`](docs/03-plan-por-fases.md) | Las cuatro fases con su criterio de "listo". |
+| [`docs/04-decisiones-y-preguntas.md`](docs/04-decisiones-y-preguntas.md) | Lo decidido, lo que quedó fuera de alcance y lo que falta. |
+| [`docs/05-hallazgos-verificados.md`](docs/05-hallazgos-verificados.md) | Datos técnicos con su fuente: URLs, versiones, límites y trampas. |
+| [`docs/research/`](docs/research/) | Los informes completos de la investigación, con nivel de confianza por afirmación. |
+| [`reference/pack-inventory.json`](reference/pack-inventory.json) | Inventario de la instalación de referencia: hashes, IDs de Modrinth, UUIDs offline. |
+
+## Código
+
+```
+web/                           backend y página de descarga (Next.js)
+├── lib/                       env · db · auth · username · pterodactyl · modrinth · pack · api
+├── app/api/                   15 rutas: cuentas, pack y admin
+├── scripts/                   seed · test-flow · serve-test · check-modrinth
+└── drizzle/                   migraciones
+
+launcher/
+├── pack.json                  el pack: Minecraft, loader y los 16 mods con sus hashes
+└── src/
+    ├── QueMandan.Core/        instalación y arranque del juego
+    │   ├── LauncherPaths      dónde vive todo
+    │   ├── Pack               modelo del pack
+    │   ├── OfflineIdentity    UUID derivado del nombre, igual al que calcula el server
+    │   ├── HashedDownloader   descarga con reintentos y verificación de hash
+    │   ├── ModSynchronizer    deja mods/ igual al pack, borra lo que sobra
+    │   ├── GameSetup          Minecraft + Java 25 + perfil de Fabric
+    │   ├── GameRunner         arranca el juego y captura su salida
+    │   ├── ServerStatus       resuelve el SRV y pregunta si el server está online
+    │   ├── LauncherApi        cuentas y pack contra el backend
+    │   ├── SessionStore       token guardado cifrado con la cuenta de Windows
+    │   ├── PackInstaller      deja la instalación igual al pack publicado
+    │   └── ConfigSeeder       configs solo si no existen
+    └── QueMandan.Spike/       app de consola de la fase 0
+```
+
+Probar la instalación completa sin abrir el juego:
+
+```
+cd launcher
+dotnet run --project src/QueMandan.Spike -- PEPE --no-launch
+```
+
+Instalar y entrar al server:
+
+```
+dotnet run --project src/QueMandan.Spike -- PEPE
+```
+
+Se instala en `%LOCALAPPDATA%\QueMandan`. No toca `%APPDATA%\.minecraft`, así que TLauncher sigue funcionando.
+
+Probar el circuito completo en tu PC, sin configurar nada (base en memoria, tus mods ya subidos):
+
+```
+cd web && npm run serve:test
+```
+
+y en otra terminal:
+
+```
+cd launcher
+dotnet run --project src/QueMandan.Spike -- --api http://127.0.0.1:3100 --user PEPE --pass test1234
+```
+
+Backend: ver [`web/README.md`](web/README.md) para la puesta en marcha real.
+
+## Las reglas del proyecto
+
+1. El jugador no configura nada: crear cuenta, esperar la aprobación, JUGAR.
+2. Instalación aislada. Nunca se toca la instalación de TLauncher.
+3. Minecraft, Fabric, Java y los mods se descargan de sus servidores oficiales a la PC del jugador. Nunca rehosteamos nada.
+4. El launcher no contiene ningún secreto. Descompilarlo no da más poder que ser un usuario.
+5. La identidad en el server es el nombre exacto: los usernames son inmutables y respetan mayúsculas.
+6. Todo archivo descargado se verifica por hash.
+7. Las versiones son fijas y las elige el admin. Nunca "la última".
+8. El panel de admin vive dentro del launcher, pero las acciones las ejecuta el backend.
+9. Si algo falla, mensaje claro. No hay caminos alternativos.
+10. Sin monetizar el launcher ni el server.

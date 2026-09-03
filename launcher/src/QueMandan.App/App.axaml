@@ -1,0 +1,17 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="QueMandan.App.Application"
+             xmlns:local="using:QueMandan.App"
+             RequestedThemeVariant="Dark">
+
+  <Application.Resources>
+    <local:StatusColorConverter x:Key="StatusColor" />
+    <local:AccountStatusColorConverter x:Key="AccountStatusColor" />
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme />
+    <StyleInclude Source="avares://QueMandan/Theme.axaml" />
+  </Application.Styles>
+
+</Application>
