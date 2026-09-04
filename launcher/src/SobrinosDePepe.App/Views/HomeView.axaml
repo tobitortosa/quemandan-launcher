@@ -23,16 +23,16 @@
               IsEnabled="{Binding !IsWorking}"
               HorizontalAlignment="Stretch">
         <Panel>
-          <TextBlock Text="JUGAR" IsVisible="{Binding !IsGameRunning}"
+          <TextBlock Text="JUGAR" IsVisible="{Binding !ShowReturnToGame}"
                      HorizontalAlignment="Center" />
-          <TextBlock Text="VOLVER AL JUEGO" IsVisible="{Binding IsGameRunning}"
+          <TextBlock Text="VOLVER AL JUEGO" IsVisible="{Binding ShowReturnToGame}"
                      HorizontalAlignment="Center" />
         </Panel>
       </Button>
 
       <Button Classes="link" Content="Cerrar el juego"
               Command="{Binding CloseGameCommand}"
-              IsVisible="{Binding IsGameRunning}"
+              IsVisible="{Binding ShowReturnToGame}"
               HorizontalAlignment="Center" Margin="0,8,0,0" />
 
       <!-- Progreso -->

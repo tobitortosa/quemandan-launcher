@@ -62,6 +62,39 @@ public static class GameProcess
         return process is not null;
     }
 
+    /// <summary>
+    /// Espera hasta que el juego abra su ventana. Java tarda: en una máquina lenta
+    /// pasan treinta o cuarenta segundos entre arrancar el proceso y ver algo en
+    /// pantalla, y durante ese rato el jugador no sabe si algo está pasando.
+    /// </summary>
+    /// <returns>
+    /// true cuando el juego está andando, ya sea porque apareció la ventana o porque
+    /// se agotó la espera y el proceso sigue vivo. false solo si el proceso terminó,
+    /// que es lo que ocurre cuando el juego falla al arrancar.
+    /// </returns>
+    public static async Task<bool> WaitForWindowAsync(Process process, TimeSpan? limit = null)
+    {
+        var deadline = DateTime.UtcNow + (limit ?? TimeSpan.FromMinutes(3));
+
+        while (true)
+        {
+            try
+            {
+                process.Refresh();
+
+                if (process.HasExited) return false;
+                if (process.MainWindowHandle != IntPtr.Zero) return true;
+                if (DateTime.UtcNow >= deadline) return true;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+
+            await Task.Delay(TimeSpan.FromMilliseconds(400));
+        }
+    }
+
     /// <summary>Trae la ventana del juego al frente, y la restaura si estaba minimizada.</summary>
     public static bool BringToFront()
     {

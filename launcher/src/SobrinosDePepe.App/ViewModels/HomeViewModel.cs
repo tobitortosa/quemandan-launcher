@@ -35,6 +35,16 @@ public partial class HomeViewModel : ObservableObject
     /// <summary>Si el juego ya está abierto, JUGAR vuelve a esa ventana en vez de abrir otra.</summary>
     [ObservableProperty] private bool _isGameRunning;
 
+    /// <summary>
+    /// El botón recién ofrece volver al juego cuando la ventana está en pantalla. Antes
+    /// de eso el juego todavía se está abriendo, y ofrecer "volver" no tendría sentido.
+    /// </summary>
+    public bool ShowReturnToGame => IsGameRunning && !IsWorking;
+
+    partial void OnIsGameRunningChanged(bool value) => OnPropertyChanged(nameof(ShowReturnToGame));
+
+    partial void OnIsWorkingChanged(bool value) => OnPropertyChanged(nameof(ShowReturnToGame));
+
     public HomeViewModel(ShellViewModel shell, string token, Account account)
     {
         _shell = shell;
@@ -122,36 +132,60 @@ public partial class HomeViewModel : ObservableObject
             var (version, report) = await installer.ApplyAsync(pack, progress, detail);
 
             Stage = "Abriendo el juego…";
-            Detail = "";
+            Detail = "La primera vez tarda un poco más.";
             HasProgress = false;
 
             var launcher = new GameSetup(LauncherPaths.GameDir, _shell.Http).CreateLauncherWithoutJavaExtractor();
             var runner = new GameRunner(launcher, Path.Combine(LauncherPaths.Root, "game-output.log"));
             var process = runner.BuildProcess(version, Username, pack.Server.Address);
 
-            IsGameRunning = true;
+            var started = new TaskCompletionSource();
 
             _ = Task.Run(async () =>
             {
-                var run = await runner.RunAsync(process);
-
-                // El juego corre en su propio hilo; la pantalla se toca en el de la interfaz.
-                Dispatcher.UIThread.Post(() =>
+                try
                 {
-                    IsGameRunning = false;
-                    if (run.ExitCode != 0)
+                    var run = await runner.RunAsync(process, started: started);
+
+                    // El juego corre en su propio hilo; la pantalla se toca en el de la interfaz.
+                    Dispatcher.UIThread.Post(() =>
                     {
-                        Error = "El juego se cerró con un error.";
-                        ErrorDetail = ReadTail(run.LogPath);
-                    }
-                });
+                        IsGameRunning = false;
+                        if (run.ExitCode != 0)
+                        {
+                            Error = "El juego se cerró con un error.";
+                            ErrorDetail = ReadTail(run.LogPath);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    started.TrySetException(ex);
+                }
             });
 
-            await Task.Delay(TimeSpan.FromSeconds(6));
-            Message = report.WasUpToDate
-                ? "Ya estaba todo al día. El juego está abriendo."
-                : $"Actualizado: {report.ModsDownloaded} mods nuevos, {report.ModsRemoved} quitados.";
+            // Se espera a que el juego muestre su ventana. Hasta entonces el cargador
+            // sigue girando: es lo único que le dice al jugador que algo está pasando,
+            // y con Java pasan varios segundos entre arrancar y ver algo en pantalla.
+            await started.Task;
+            var appeared = await GameProcess.WaitForWindowAsync(process);
+
+            IsGameRunning = appeared;
             Stage = "";
+            Detail = "";
+
+            if (appeared)
+            {
+                Message = report.WasUpToDate
+                    ? "Listo, el juego está abierto."
+                    : $"Actualizado: {report.ModsDownloaded} mods nuevos, {report.ModsRemoved} quitados. El juego está abierto.";
+            }
+            else
+            {
+                Message = null;
+                Error = "El juego se cerró antes de abrir.";
+                ErrorDetail = ReadTail(Path.Combine(LauncherPaths.Root, "game-output.log"));
+            }
         }
         catch (ApiException ex)
         {

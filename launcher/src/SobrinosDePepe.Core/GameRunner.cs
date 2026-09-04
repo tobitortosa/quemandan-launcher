@@ -69,7 +69,15 @@ public sealed class GameRunner
     /// Corre el juego y guarda toda su salida en un archivo. Sin esto, cuando a alguien
     /// no le arranca, lo único que llega es "no me anda".
     /// </summary>
-    public async Task<GameRunResult> RunAsync(Process process, Action<string>? onLine = null, CancellationToken ct = default)
+    /// <param name="started">
+    /// Se completa en cuanto el proceso arrancó. Quien llama lo usa para empezar a
+    /// esperar la ventana del juego, que recién existe después de esto.
+    /// </param>
+    public async Task<GameRunResult> RunAsync(
+        Process process,
+        Action<string>? onLine = null,
+        TaskCompletionSource? started = null,
+        CancellationToken ct = default)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(_logPath)!);
         await using var log = new StreamWriter(_logPath, append: false);
@@ -85,6 +93,7 @@ public sealed class GameRunner
         process.ErrorDataReceived += (_, e) => Write(e.Data);
 
         process.Start();
+        started?.TrySetResult();
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
 
