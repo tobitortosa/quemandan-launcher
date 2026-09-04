@@ -66,8 +66,24 @@ export function looksLikeJar(filename: string): boolean {
   return filename.toLowerCase().endsWith('.jar');
 }
 
-export function looksLikeShaderpack(filename: string): boolean {
+export function looksLikeZip(filename: string): boolean {
   return filename.toLowerCase().endsWith('.zip');
+}
+
+/**
+ * Un paquete de recursos es un .zip con pack.mcmeta en la raíz. Se distingue de un
+ * shaderpack, que en cambio tiene una carpeta "shaders".
+ */
+export function readResourcePack(bytes: Uint8Array, filename: string): JarInfo | null {
+  let names: string[];
+  try {
+    names = Object.keys(unzipSync(bytes, { filter: (file) => file.name === 'pack.mcmeta' }));
+  } catch {
+    return null;
+  }
+
+  if (names.length === 0) return null;
+  return describeZip(filename);
 }
 
 /**
@@ -84,14 +100,22 @@ export function readShaderpack(bytes: Uint8Array, filename: string): JarInfo | n
   }
 
   if (names.length === 0) return null;
+  return describeZip(filename);
+}
 
+/**
+ * Ni los shaderpacks ni los paquetes de recursos traen una ficha con su nombre y su
+ * versión, así que se toman del nombre del archivo, que es la convención que usan
+ * todos: ComplementaryUnbound_r5.8.1.zip
+ */
+function describeZip(filename: string): JarInfo {
   const base = filename.replace(/\.zip$/i, '');
-  const match = base.match(/^(.*?)[_-]?(r?[\d][\w.]*)$/);
+  const match = base.match(/^(.*?)[_ -]?(v?\.?\s*[\d][\w.]*)$/);
 
   return {
     id: base,
     name: (match?.[1] ?? base).replace(/[_-]+/g, ' ').trim(),
-    version: match?.[2] ?? '',
+    version: (match?.[2] ?? '').trim(),
     side: 'client',
     license: '',
     depends: [],

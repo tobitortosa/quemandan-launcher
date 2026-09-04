@@ -55,7 +55,7 @@ export function toPayload(mods: PackMod[], version: string): PackPayload {
         size: m.size,
         side: m.side,
         kind: m.kind,
-        folder: m.kind === 'shader' ? 'shaderpacks' : 'mods',
+        folder: m.kind === 'shader' ? 'shaderpacks' : m.kind === 'resourcepack' ? 'resourcepacks' : 'mods',
         license: m.license,
         pageUrl: m.pageUrl,
         requires: m.requires,
