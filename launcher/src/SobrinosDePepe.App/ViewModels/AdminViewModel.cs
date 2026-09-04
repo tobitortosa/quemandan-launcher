@@ -32,6 +32,7 @@ public partial class AdminViewModel : ObservableObject
     public ObservableCollection<UserRow> Users { get; } = [];
     [ObservableProperty] private string _search = "";
     [ObservableProperty] private int _pendingCount;
+    [ObservableProperty] private string _onlineSummary = "";
 
     // Mods
     public ObservableCollection<AdminMod> Mods { get; } = [];
@@ -90,9 +91,24 @@ public partial class AdminViewModel : ObservableObject
         await RunAsync(async () =>
         {
             var users = await _shell.Api.UsersAsync(_token, Search);
+
+            // Quiénes están jugando se le pregunta al servidor directamente: contesta
+            // la lista completa de nombres.
+            var online = await ServerQuery.PlayersAsync(AppConfig.ServerAddress);
+            var jugando = online.Names.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
             Users.Clear();
-            foreach (var user in users) Users.Add(new UserRow(user, Username));
+            foreach (var user in users)
+                Users.Add(new UserRow(user, Username, jugando.Contains(user.Username)));
+
             PendingCount = users.Count(u => u.IsPending);
+            OnlineSummary = !online.Answered
+                ? "No pude preguntarle al servidor quién está jugando."
+                : jugando.Count == 0
+                    ? "Nadie está jugando en este momento."
+                    : jugando.Count == 1
+                        ? "1 jugando ahora"
+                        : $"{jugando.Count} jugando ahora";
         });
     }
 

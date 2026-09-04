@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SobrinosDePepe.Core;
@@ -133,12 +134,17 @@ public partial class HomeViewModel : ObservableObject
             _ = Task.Run(async () =>
             {
                 var run = await runner.RunAsync(process);
-                IsGameRunning = false;
-                if (run.ExitCode != 0)
+
+                // El juego corre en su propio hilo; la pantalla se toca en el de la interfaz.
+                Dispatcher.UIThread.Post(() =>
                 {
-                    Error = "El juego se cerró con un error.";
-                    ErrorDetail = ReadTail(run.LogPath);
-                }
+                    IsGameRunning = false;
+                    if (run.ExitCode != 0)
+                    {
+                        Error = "El juego se cerró con un error.";
+                        ErrorDetail = ReadTail(run.LogPath);
+                    }
+                });
             });
 
             await Task.Delay(TimeSpan.FromSeconds(6));

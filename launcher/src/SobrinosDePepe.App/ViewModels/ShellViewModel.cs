@@ -1,3 +1,4 @@
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SobrinosDePepe.Core;
 
@@ -15,6 +16,9 @@ public partial class ShellViewModel : ObservableObject
 
     public LauncherApi Api { get; }
     public HttpClient Http => _http;
+
+    /// <summary>Se dispara cuando hay que traer la ventana al frente.</summary>
+    public event Action? BringToFront;
 
     public ShellViewModel()
     {
@@ -40,6 +44,25 @@ public partial class ShellViewModel : ObservableObject
 
         // Si no había sesión guardada, se pide iniciar sesión.
         if (Current == startup) ShowLogin();
+
+        // Desde acá, si aparece una versión nueva se corta lo que se esté haciendo.
+        // El aviso llega desde un hilo de fondo y la pantalla solo se puede cambiar
+        // desde el hilo de la interfaz.
+        UpdateWatcher.Start(version => Dispatcher.UIThread.Post(() =>
+        {
+            Current = new UpdateRequiredViewModel(this, version);
+            BringToFront?.Invoke();
+        }));
+    }
+
+    /// <summary>Vuelve al principio, después de una actualización que no hizo falta aplicar.</summary>
+    public void RestartFlow() => _ = StartAsync();
+
+    /// <summary>Le dice a la pantalla actual por qué no se cerró el launcher.</summary>
+    public void NotifyCannotClose()
+    {
+        if (Current is HomeViewModel home)
+            home.Message = "El launcher se queda abierto mientras juegues: así te avisa si hay una actualización.";
     }
 
     public void ShowLogin(string? message = null) =>

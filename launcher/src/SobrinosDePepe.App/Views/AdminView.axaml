@@ -36,11 +36,14 @@
     <!-- USUARIOS -->
     <Grid Grid.Row="2" RowDefinitions="Auto,*" IsVisible="{Binding ShowingUsers}">
 
-      <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
-        <TextBox Grid.Column="0" Text="{Binding Search}" PlaceholderText="Buscar por nombre" />
-        <Button Grid.Column="1" Classes="ghost" Content="Buscar" Margin="8,0,0,0"
-                Command="{Binding LoadUsersCommand}" />
-      </Grid>
+      <StackPanel Grid.Row="0" Spacing="10" Margin="0,0,0,12">
+        <TextBlock Classes="faint" Text="{Binding OnlineSummary}" />
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBox Grid.Column="0" Text="{Binding Search}" PlaceholderText="Buscar por nombre" />
+          <Button Grid.Column="1" Classes="ghost" Content="Buscar" Margin="8,0,0,0"
+                  Command="{Binding LoadUsersCommand}" />
+        </Grid>
+      </StackPanel>
 
       <ScrollViewer Grid.Row="1">
         <ItemsControl ItemsSource="{Binding Users}">
@@ -50,7 +53,7 @@
                 <Grid ColumnDefinitions="Auto,*,Auto">
 
                   <Ellipse Grid.Column="0" Width="8" Height="8" VerticalAlignment="Center"
-                           Fill="{Binding Status, Converter={StaticResource AccountStatusColor}}" />
+                           Fill="{Binding Dot}" />
 
                   <StackPanel Grid.Column="1" Margin="12,0" Spacing="2">
                     <StackPanel Orientation="Horizontal" Spacing="8">

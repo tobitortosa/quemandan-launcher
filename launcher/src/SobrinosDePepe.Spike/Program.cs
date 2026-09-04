@@ -46,6 +46,29 @@ if (args.Contains("--estado-juego"))
     return 0;
 }
 
+// Muestra la lista de servidores del menú multijugador, para diagnosticar.
+if (args.Contains("--lista-servidores"))
+{
+    var archivo = Value("--archivo") ?? Path.Combine(LauncherPaths.GameDir, "servers.dat");
+    Console.WriteLine($"Archivo: {archivo}");
+    foreach (var s in ServerList.Read(archivo))
+        Console.WriteLine($"  {s.Name,-24} {s.Address}");
+    return 0;
+}
+
+// Pregunta quiénes están conectados, para diagnosticar.
+if (args.Contains("--conectados"))
+{
+    var direccion = Value("--servidor") ?? AppConfigFallback();
+    var jugadores = await ServerQuery.PlayersAsync(direccion);
+    Console.WriteLine(jugadores.Answered
+        ? jugadores.Names.Count == 0
+            ? "El servidor contestó: no hay nadie conectado."
+            : $"Conectados ({jugadores.Names.Count}): {string.Join(", ", jugadores.Names)}"
+        : "El servidor no contestó la consulta (¿enable-query está en true?).");
+    return 0;
+}
+
 LauncherPaths.EnsureCreated();
 using var http = HashedDownloader.CreateHttpClient();
 
@@ -219,6 +242,8 @@ static void Fail(string message)
     Console.WriteLine("Error: " + message);
     Console.ForegroundColor = before;
 }
+
+static string AppConfigFallback() => "sobrinosdepepe.minehost.pro";
 
 static string? FindFile(string name) => Candidates(name).FirstOrDefault(File.Exists);
 static string? FindDirectory(string name) => Candidates(name).FirstOrDefault(Directory.Exists);

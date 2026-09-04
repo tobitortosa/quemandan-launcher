@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SobrinosDePepe.App.ViewModels"
+             x:Class="SobrinosDePepe.App.Views.UpdateRequiredView"
+             x:DataType="vm:UpdateRequiredViewModel">
+
+  <Grid RowDefinitions="*,Auto,*" Margin="34">
+
+    <StackPanel Grid.Row="1" Spacing="0">
+
+      <Image Source="avares://SobrinosDePepe/Assets/logo.png"
+             Width="80" Height="80" HorizontalAlignment="Center" Margin="0,0,0,20" />
+
+      <TextBlock Classes="title" Text="Hay una versión nueva" HorizontalAlignment="Center" />
+
+      <TextBlock Classes="muted" HorizontalAlignment="Center" Margin="0,8,0,0"
+                 Text="{Binding Version, StringFormat='Versión {0}'}" />
+
+      <TextBlock Classes="muted" TextWrapping="Wrap" TextAlignment="Center" Margin="0,18,0,0"
+                 Text="{Binding Message}" />
+
+      <ProgressBar Margin="0,18,0,0"
+                   Value="{Binding Percent}" Maximum="100"
+                   IsIndeterminate="{Binding !HasProgress}"
+                   IsVisible="{Binding IsWorking}" />
+
+      <TextBlock Classes="error" Text="{Binding Error}" Margin="0,16,0,0" TextAlignment="Center"
+                 IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <Button Classes="primary" Content="ACTUALIZAR"
+              Command="{Binding UpdateCommand}"
+              IsEnabled="{Binding !IsWorking}"
+              HorizontalAlignment="Stretch" Margin="0,24,0,0" />
+
+      <TextBlock Classes="faint" TextWrapping="Wrap" TextAlignment="Center" Margin="0,14,0,0"
+                 IsVisible="{Binding GameIsOpen}"
+                 Text="El juego que tenés abierto no se cierra: podés terminar la partida." />
+
+    </StackPanel>
+
+  </Grid>
+</UserControl>

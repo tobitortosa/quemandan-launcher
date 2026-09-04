@@ -54,6 +54,13 @@ public sealed class PackInstaller
             configs = seeded.Written;
         }
 
+        // El servidor, cargado en el menú multijugador. Al apretar JUGAR se entra
+        // directo, pero si alguien se desconecta y va al menú lo tiene que encontrar ahí.
+        var added = ServerList.Ensure(
+            Path.Combine(LauncherPaths.GameDir, "servers.dat"),
+            new SavedServer(pack.Server.Name, pack.Server.Address));
+        if (added) detail?.Report($"servidor {pack.Server.Name} agregado al menú multijugador");
+
         MarkInstalled(pack.PackVersion);
 
         var report = new InstallReport(
