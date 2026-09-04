@@ -8,7 +8,8 @@ namespace SobrinosDePepe.Core;
 public sealed record Account(
     [property: JsonPropertyName("username")] string Username,
     [property: JsonPropertyName("status")] string Status,
-    [property: JsonPropertyName("role")] string Role)
+    [property: JsonPropertyName("role")] string Role,
+    [property: JsonPropertyName("mustChangePassword")] bool MustChangePassword = false)
 {
     public bool IsPending => Status == "pending";
     public bool IsBanned => Status == "banned";
@@ -70,6 +71,19 @@ public sealed class LauncherApi
         using var request = Authorized(HttpMethod.Get, "api/pack", token);
         using var response = await _http.SendAsync(request, ct);
         return await ReadAsync<Pack>(response, ct);
+    }
+
+    /// <summary>
+    /// La persona elige su propia contraseña. Se usa cuando entró con la provisoria
+    /// que le restableció el administrador.
+    /// </summary>
+    public async Task ChangePasswordAsync(
+        string token, string password, string confirm, CancellationToken ct = default)
+    {
+        using var request = Authorized(HttpMethod.Post, "api/auth/password", token);
+        request.Content = JsonContent.Create(new { password, confirm }, options: Json);
+        using var response = await _http.SendAsync(request, ct);
+        await ReadAsync<JsonElement>(response, ct);
     }
 
     public async Task LogoutAsync(string token, CancellationToken ct = default)

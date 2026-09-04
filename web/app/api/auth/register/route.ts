@@ -36,7 +36,12 @@ export async function POST(request: Request) {
   return ok(
     {
       token,
-      user: { username: user.username, status: user.status, role: user.role },
+      user: {
+        username: user.username,
+        status: user.status,
+        role: user.role,
+        mustChangePassword: false,
+      },
     },
     201,
   );

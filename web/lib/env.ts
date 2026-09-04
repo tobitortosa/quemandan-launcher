@@ -30,6 +30,14 @@ export const env = {
   get serverAddress() {
     return process.env.SERVER_ADDRESS ?? 'sobrinosdepepe.minehost.pro';
   },
+  /**
+   * La contraseña que se le pone a una cuenta cuando el administrador la restablece.
+   * Es a propósito una sola y fácil de dictar: la persona entra con ella y lo primero
+   * que hace es elegir la suya.
+   */
+  get defaultPassword() {
+    return process.env.DEFAULT_PASSWORD ?? 'pepe2026';
+  },
   get downloadUrl() {
     return process.env.DOWNLOAD_URL ?? '';
   },

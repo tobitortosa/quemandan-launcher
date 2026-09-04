@@ -130,12 +130,13 @@ public partial class AdminViewModel : ObservableObject
 
     [RelayCommand]
     private void ResetPassword(UserRow user) =>
-        Ask($"¿Generar una contraseña nueva para {user.Username}? La actual deja de funcionar y se cierran sus sesiones.",
+        Ask($"¿Restablecer la contraseña de {user.Username}? Va a entrar con la provisoria y ahí elige la suya.",
             async () =>
             {
                 var result = await _shell.Api.ResetPasswordAsync(_token, user.Id);
                 Clipboard.Set(result.Password);
-                Notice = $"Contraseña nueva de {result.Username}: {result.Password} (copiada, pasásela)";
+                Notice = $"{result.Username} entra con: {result.Password}  (copiada, dictásela). " +
+                         "Al entrar le va a pedir que elija una propia.";
             });
 
     // --------------------------------------------------------------------- Mods

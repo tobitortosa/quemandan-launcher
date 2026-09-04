@@ -19,6 +19,9 @@
     <DataTemplate DataType="vm:LoginViewModel">
       <views:LoginView />
     </DataTemplate>
+    <DataTemplate DataType="vm:ChangePasswordViewModel">
+      <views:ChangePasswordView />
+    </DataTemplate>
     <DataTemplate DataType="vm:PendingViewModel">
       <views:PendingView />
     </DataTemplate>

@@ -38,6 +38,8 @@ export const users = pgTable(
     /** En minúsculas, para que no existan a la vez PEPE y pepe. */
     usernameLower: text('username_lower').notNull(),
     passwordHash: text('password_hash').notNull(),
+    /** Cuando es verdadero, la persona entra pero lo primero que hace es elegir su contraseña. */
+    mustChangePassword: boolean('must_change_password').notNull().default(false),
     role: text('role').notNull().default('player'),
     status: text('status').notNull().default('pending'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

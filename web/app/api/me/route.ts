@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     username: user.username,
     status: user.status,
     role: user.role,
+    mustChangePassword: user.mustChangePassword,
     createdAt: user.createdAt,
   });
 }

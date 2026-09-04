@@ -79,7 +79,9 @@ public partial class ShellViewModel : ObservableObject
 
     public void Route(string token, Account account)
     {
-        if (account.IsPending) ShowPending(token, account);
+        // Elegir la contraseña propia va antes que todo lo demás.
+        if (account.MustChangePassword) Current = new ChangePasswordViewModel(this, token, account);
+        else if (account.IsPending) ShowPending(token, account);
         else ShowHome(token, account);
     }
 }

@@ -18,7 +18,9 @@
     "pack:publish": "tsx --env-file=.env.local scripts/publish-pack.mts",
     "pack:check": "tsx --env-file=.env.local scripts/check-pack.mts",
     "pack:shader": "tsx --env-file=.env.local scripts/add-shader.mts",
-    "whitelist": "tsx --env-file=.env.local scripts/sync-whitelist.mts"
+    "whitelist": "tsx --env-file=.env.local scripts/sync-whitelist.mts",
+    "users": "tsx --env-file=.env.local scripts/users.mts",
+    "check:password": "tsx --env-file=.env.local scripts/check-password-flow.mts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.0",

@@ -29,6 +29,11 @@ export async function POST(request: Request) {
   const token = await createSession(user.id);
   return ok({
     token,
-    user: { username: user.username, status: user.status, role: user.role },
+    user: {
+      username: user.username,
+      status: user.status,
+      role: user.role,
+      mustChangePassword: user.mustChangePassword,
+    },
   });
 }

@@ -16,11 +16,11 @@
  *
  *   npm run db:seed
  */
-import { randomBytes } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { hashPassword, revokeSessions } from '../lib/auth';
 import { db } from '../lib/db';
 import { users } from '../lib/db/schema';
+import { env } from '../lib/env';
 import { isValidUsername, normalize, USERNAME_RULE } from '../lib/username';
 
 const ADMIN = process.env.ADMIN_USERNAME?.trim() || 'PEPE';
@@ -50,7 +50,7 @@ async function findByName(username: string) {
   const existing = await findByName(ADMIN);
 
   if (!existing) {
-    const password = ADMIN_PASSWORD ?? randomBytes(6).toString('base64url');
+    const password = ADMIN_PASSWORD ?? env.defaultPassword;
     await db.insert(users).values({
       username: ADMIN,
       usernameLower: normalize(ADMIN),
@@ -62,7 +62,7 @@ async function findByName(username: string) {
     console.log(
       ADMIN_PASSWORD
         ? `creada       ${ADMIN.padEnd(14)} rol admin  con la contraseña de tu .env.local`
-        : `creada       ${ADMIN.padEnd(14)} rol admin  contraseña: ${password}`,
+        : `creada       ${ADMIN.padEnd(14)} rol admin  entra con: ${password}`,
     );
   } else if (ADMIN_PASSWORD) {
     await db
@@ -88,16 +88,16 @@ for (const player of PLAYERS) {
     continue;
   }
 
-  const password = randomBytes(6).toString('base64url');
   await db.insert(users).values({
     username: player,
     usernameLower: normalize(player),
-    passwordHash: await hashPassword(password),
+    passwordHash: await hashPassword(env.defaultPassword),
     role: 'player',
     status: 'active',
     approvedAt: new Date(),
+    mustChangePassword: true,
   });
-  console.log(`creada       ${player.padEnd(14)} rol player contraseña: ${password}`);
+  console.log(`creada       ${player.padEnd(14)} rol player entra con: ${env.defaultPassword}`);
 }
 
 console.log('\nOjo: los nombres respetan mayúsculas y no se pueden cambiar: son la identidad');
