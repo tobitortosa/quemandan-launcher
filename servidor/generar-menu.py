@@ -84,7 +84,7 @@ menu += [t("  Clickea una categoria:" + chr(10) * 2, WHITE)]
 menu += boton(chr(0x1F4B0), "ECONOMIA", "Plata, tienda y subastas", "/economia")
 menu += boton(chr(0x1F3E0), "CASA", "Homes, viajes y spawn", "/casa")
 menu += boton(ESPADAS, "PVP", "Peleas, ranking y riesgo", "/pvp")
-menu += boton(chr(0x1F5FA), "EXTRAS", "Vision nocturna, mapa y mas", "/extras")
+menu += boton(chr(0x1F5FA), "EXTRAS", "Mapa, voz, skin y mas", "/extras")
 menu += [t(chr(10) + RAYA * 30, GOLD, bold=True)]
 guardar("comandos", menu)
 
@@ -150,12 +150,6 @@ ext += fila("/enderchest", "Tu cofre de ender donde estes", run="/enderchest")
 ext += fila("/workbench", "Mesa de crafteo portatil", run="/workbench")
 ext += fila("/msg <jug>", "Mensaje privado a alguien", suggest="/msg ")
 ext += fila("/voicechat", "Ajustes del chat de voz", run="/voicechat")
-ext += [
-    t(chr(10) + "   " + LUNA + " ", AQUA),
-    t("La vision nocturna se prende y se apaga" + chr(10) + "   con ", GRAY),
-    t("/nv", WHITE), t(". Aguanta hasta que la saques," + chr(10) +
-                       "   y vuelve sola si te matan." + chr(10), GRAY),
-]
 ext += volver()
 guardar("extras", ext)
 

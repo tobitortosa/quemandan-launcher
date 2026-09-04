@@ -1,4 +1,11 @@
 {
   "id": "nv",
-  "redirect": "nightvision"
+  "executes": [
+    {
+      "command": "function sdp:nv",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    }
+  ]
 }

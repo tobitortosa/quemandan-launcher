@@ -10,10 +10,11 @@
   ],
   "lines": [
     "",
-    "<gray>» <white>Dinero    <green><b>$%economycraft:balance_formatted%",
+    "<gray>» <white>Dinero    <green><b>%economycraft:balance_formatted%",
     "<gray>» <white>Kills     <red>%player:statistic_raw player_kills%",
     "<gray>» <white>Muertes   <#ff8080>%player:statistic_raw deaths%",
-    "<gray>» <white>Tu precio <gold>$%player:objective Bounty%",
+    "",
+    "<gray>» <white>Tu cabeza <gold>$%player:objective Bounty%",
     ""
   ]
 }
