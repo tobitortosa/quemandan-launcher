@@ -89,6 +89,71 @@ h1 {
   margin: 1rem 0 0;
 }
 
+/* El apartado que explica que el archivo se puede instalar tranquilo. */
+.seguridad {
+  margin-top: 2.25rem;
+  padding: 1.4rem 1.5rem;
+  border: 1px solid var(--linea);
+  border-radius: 0.9rem;
+  background: var(--panel);
+  text-align: left;
+}
+
+.seguridad h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1rem;
+  color: var(--verde);
+}
+
+.seguridad ul {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.seguridad li {
+  color: var(--suave);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  padding-left: 1rem;
+  border-left: 2px solid var(--linea);
+}
+
+.seguridad strong {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.seguridad em {
+  color: var(--texto);
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.repo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--linea);
+  border-radius: 0.6rem;
+  color: var(--suave);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.repo:hover {
+  border-color: var(--verde);
+  color: var(--texto);
+}
+
 .redes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
