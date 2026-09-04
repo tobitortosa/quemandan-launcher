@@ -1,0 +1,91 @@
+{
+  "id": "bounty",
+  "executes": [
+    {
+      "command": "tag @s add sdp_viendo",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    },
+    {
+      "command": "tellraw @s [\"\", {\"text\": \"\\n\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac  \\u2620 BUSCADOS  \\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\n\\n\", \"color\": \"gold\", \"bold\": true}]",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    },
+    {
+      "command": "execute unless entity @a[scores={Bounty=1..}] run tellraw @s [\"\", {\"text\": \"   No hay nadie con precio en su cabeza.\\n\", \"color\": \"gray\"}]",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    },
+    {
+      "command": "execute as @a[scores={Bounty=1..}] run tellraw @a[tag=sdp_viendo] [\"\", {\"text\": \"   \\u2620 \", \"color\": \"red\"}, {\"selector\": \"@s\", \"color\": \"white\", \"bold\": true}, {\"text\": \"  \\u00bb  \", \"color\": \"dark_gray\"}, {\"text\": \"$\", \"color\": \"gold\"}, {\"score\": {\"name\": \"@s\", \"objective\": \"Bounty\"}, \"color\": \"gold\", \"bold\": true}, {\"text\": \"\\n\"}]",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    },
+    {
+      "command": "tellraw @s [\"\", {\"text\": \"\\n  Para poner precio: \", \"color\": \"dark_gray\"}, {\"text\": \"/bounty <jugador> <plata>\", \"color\": \"aqua\"}, {\"text\": \"\\n\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\", \"color\": \"gold\", \"bold\": true}]",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    },
+    {
+      "command": "tag @s remove sdp_viendo",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    }
+  ],
+  "arguments": [
+    {
+      "id": "objetivo",
+      "type": "minecraft:entity player",
+      "arguments": [
+        {
+          "id": "monto",
+          "type": "brigadier:integer 100",
+          "executes": [
+            {
+              "command": "execute store success score @s sdp_ok run eco removemoney @s ${monto}",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if score @s sdp_ok matches 1 run scoreboard players add ${objetivo} Bounty ${monto}",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if score @s sdp_ok matches 1 run tellraw @a [\"\", {\"text\": \"\\n  \\u2620 RECOMPENSA \\u2620\\n\", \"color\": \"red\", \"bold\": true}, {\"text\": \"  \", \"color\": \"gray\"}, {\"selector\": \"@s\", \"color\": \"yellow\", \"bold\": true}, {\"text\": \" puso \", \"color\": \"gray\"}, {\"text\": \"$${monto}\", \"color\": \"gold\", \"bold\": true}, {\"text\": \" por la cabeza de\\n  \", \"color\": \"gray\"}, {\"selector\": \"${objetivo}\", \"color\": \"red\", \"bold\": true}, {\"text\": \"\\n\\n  Total acumulado: \", \"color\": \"gray\"}, {\"text\": \"$\", \"color\": \"gold\"}, {\"score\": {\"name\": \"${objetivo}\", \"objective\": \"Bounty\"}, \"color\": \"gold\", \"bold\": true}, {\"text\": \"   \\u00bb  \", \"color\": \"dark_gray\"}, {\"text\": \"/bounty\", \"color\": \"aqua\"}, {\"text\": \" para ver la lista\\n\", \"color\": \"gray\"}]",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if score @s sdp_ok matches 1 run playsound minecraft:entity.wither.spawn master @a ~ ~ ~ 0.4 1.6",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if score @s sdp_ok matches 0 run tellraw @s [\"\", {\"text\": \"  No te alcanza la plata para esa recompensa.\", \"color\": \"red\"}]",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "scoreboard players reset @s sdp_ok",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

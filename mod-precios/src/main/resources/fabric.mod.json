@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "preciosdepepe",
+  "version": "${version}",
+  "name": "Precios de Pepe",
+  "description": "Muestra en cada item cuanta plata te dan por venderlo en el servidor.",
+  "authors": ["SOBRINOS DE PEPE"],
+  "environment": "client",
+  "entrypoints": {
+    "client": ["pe.sobrinosdepepe.precios.PreciosCliente"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": ">=26.1",
+    "fabric-api": "*"
+  }
+}
