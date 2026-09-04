@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { fail, ok, pterodactylFailure, requireAdmin } from '@/lib/api';
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
-import { whitelist } from '@/lib/pterodactyl';
+import { syncWhitelist } from '@/lib/whitelist';
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
   const guard = await requireAdmin(request);
@@ -15,16 +15,17 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   const user = rows[0];
   if (!user) return fail('Esa cuenta no existe.', 404);
 
-  try {
-    await whitelist.add(user.username);
-  } catch (error) {
-    return pterodactylFailure(error, `Desbanear a ${user.username}`);
-  }
-
   await db
     .update(users)
     .set({ status: 'active', bannedAt: null, approvedAt: user.approvedAt ?? new Date() })
     .where(eq(users.id, id));
+
+  try {
+    await syncWhitelist();
+  } catch (error) {
+    await db.update(users).set({ status: user.status, bannedAt: user.bannedAt }).where(eq(users.id, id));
+    return pterodactylFailure(error, `Desbanear a ${user.username}`);
+  }
 
   return ok({ username: user.username, status: 'active' });
 }

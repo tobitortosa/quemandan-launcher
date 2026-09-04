@@ -57,11 +57,6 @@ export async function serverState(): Promise<{ state: string; online: boolean }>
   return { state, online: state === 'running' };
 }
 
-export const whitelist = {
-  add: (username: string) => runCommand(`whitelist add ${username}`),
-  remove: (username: string) => runCommand(`whitelist remove ${username}`),
-};
-
 export const kick = (username: string, reason: string) =>
   runCommand(`kick ${username} ${reason}`);
 
@@ -101,6 +96,15 @@ export async function uploadFile(directory: string, filename: string, bytes: Uin
   if (!response.ok) {
     throw new PterodactylError(`No se pudo subir ${filename} (HTTP ${response.status}).`, response.status, false);
   }
+}
+
+/** Escribe un archivo de texto en el servidor, por ejemplo whitelist.json. */
+export async function writeFile(path: string, contents: string): Promise<void> {
+  await request(`/servers/${env.pterodactylServerId}/files/write?file=${encodeURIComponent(path)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: contents,
+  });
 }
 
 export async function deleteFiles(root: string, names: string[]): Promise<void> {
