@@ -6,6 +6,9 @@ subir tal cual y todo queda como estaba.
 
 - `python servidor/respaldar.py` baja del servidor lo que hay acá.
 - `python servidor/generar-menu.py` arma el menú de `/comandos` y lo sube.
+- `python servidor/generar-cartel.py` arma el cartel de la derecha.
+- `python servidor/configurar-scoreboard.py` rehace los objetivos y los
+  lugares del scoreboard, que el juego guarda dentro del mundo.
 
 Las credenciales salen de `web/.env.local`, que no está en el repositorio.
 
