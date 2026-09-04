@@ -36,6 +36,16 @@ if (free < needed)
     return 1;
 }
 
+// Comprobación rápida de si el juego está abierto, para diagnosticar.
+if (args.Contains("--estado-juego"))
+{
+    using var abierto = GameProcess.Find();
+    Console.WriteLine(abierto is null
+        ? "No hay ningún Minecraft abierto desde esta carpeta."
+        : $"Minecraft abierto · proceso {abierto.Id} · ventana: {(abierto.MainWindowHandle != IntPtr.Zero ? "sí" : "no")}");
+    return 0;
+}
+
 LauncherPaths.EnsureCreated();
 using var http = HashedDownloader.CreateHttpClient();
 

@@ -31,6 +31,9 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private string? _errorDetail;
     [ObservableProperty] private string? _message;
 
+    /// <summary>Si el juego ya está abierto, JUGAR vuelve a esa ventana en vez de abrir otra.</summary>
+    [ObservableProperty] private bool _isGameRunning;
+
     public HomeViewModel(ShellViewModel shell, string token, Account account)
     {
         _shell = shell;
@@ -41,7 +44,12 @@ public partial class HomeViewModel : ObservableObject
         var installed = PackInstaller.InstalledVersion();
         Message = installed is null ? "Primera vez: la instalación tarda unos minutos." : $"Pack {installed} instalado.";
 
+        // Puede haber quedado el juego abierto de antes, incluso de otra vez que se
+        // abrió el launcher.
+        IsGameRunning = GameProcess.IsRunning();
+
         _ = CheckServerAsync();
+        _ = WatchGameAsync();
     }
 
     private async Task CheckServerAsync()
@@ -54,10 +62,32 @@ public partial class HomeViewModel : ObservableObject
             : "Servidor apagado";
     }
 
+    /// <summary>Mira cada tanto si el juego sigue abierto, para que el botón diga la verdad.</summary>
+    private async Task WatchGameAsync()
+    {
+        while (true)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(3));
+            var running = GameProcess.IsRunning();
+            if (running != IsGameRunning) IsGameRunning = running;
+        }
+    }
+
     [RelayCommand]
     private async Task PlayAsync()
     {
         if (IsWorking) return;
+
+        // Si ya está abierto, se vuelve a esa ventana: dos Minecraft escribiendo en la
+        // misma carpeta se pisan entre ellos.
+        if (GameProcess.IsRunning())
+        {
+            IsGameRunning = true;
+            Message = GameProcess.BringToFront()
+                ? "El juego ya estaba abierto."
+                : "El juego ya está abierto. Buscalo en la barra de tareas.";
+            return;
+        }
 
         IsWorking = true;
         Error = null;
@@ -98,9 +128,12 @@ public partial class HomeViewModel : ObservableObject
             var runner = new GameRunner(launcher, Path.Combine(LauncherPaths.Root, "game-output.log"));
             var process = runner.BuildProcess(version, Username, pack.Server.Address);
 
+            IsGameRunning = true;
+
             _ = Task.Run(async () =>
             {
                 var run = await runner.RunAsync(process);
+                IsGameRunning = false;
                 if (run.ExitCode != 0)
                 {
                     Error = "El juego se cerró con un error.";
@@ -141,6 +174,16 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private static void OpenLink(string url) =>
         Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+
+    /// <summary>Cierra el juego, por si quedó trabado o quieren volver a entrar limpio.</summary>
+    [RelayCommand]
+    private async Task CloseGameAsync()
+    {
+        Message = "Cerrando el juego…";
+        await GameProcess.CloseAsync();
+        IsGameRunning = GameProcess.IsRunning();
+        Message = IsGameRunning ? "No pude cerrarlo. Cerralo desde su ventana." : "El juego se cerró.";
+    }
 
     [RelayCommand]
     private void OpenFolder() =>

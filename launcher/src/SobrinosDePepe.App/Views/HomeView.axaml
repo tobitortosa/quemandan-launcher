@@ -18,10 +18,22 @@
     <!-- Centro -->
     <StackPanel Grid.Row="1" VerticalAlignment="Center" Spacing="0">
 
-      <Button Classes="primary play" Content="JUGAR"
+      <Button Classes="primary play"
               Command="{Binding PlayCommand}"
               IsEnabled="{Binding !IsWorking}"
-              HorizontalAlignment="Stretch" />
+              HorizontalAlignment="Stretch">
+        <Panel>
+          <TextBlock Text="JUGAR" IsVisible="{Binding !IsGameRunning}"
+                     HorizontalAlignment="Center" />
+          <TextBlock Text="VOLVER AL JUEGO" IsVisible="{Binding IsGameRunning}"
+                     HorizontalAlignment="Center" />
+        </Panel>
+      </Button>
+
+      <Button Classes="link" Content="Cerrar el juego"
+              Command="{Binding CloseGameCommand}"
+              IsVisible="{Binding IsGameRunning}"
+              HorizontalAlignment="Center" Margin="0,8,0,0" />
 
       <!-- Progreso -->
       <StackPanel Margin="0,20,0,0" IsVisible="{Binding IsWorking}" Spacing="8">
