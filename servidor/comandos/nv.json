@@ -1,5 +1,4 @@
 {
-  "id": "nv",
   "executes": [
     {
       "command": "function sdp:nv",
@@ -7,5 +6,6 @@
       "as_console": false,
       "op_level": 4
     }
-  ]
+  ],
+  "id": "nv"
 }

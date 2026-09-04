@@ -1,11 +1,11 @@
 {
   "executes": [
     {
-      "command": "menu sdp:casa",
+      "command": "menu sdp:tienda",
       "silent": true,
       "as_console": false,
       "op_level": 4
     }
   ],
-  "id": "casa"
+  "id": "tienda"
 }

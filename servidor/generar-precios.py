@@ -1,0 +1,455 @@
+# -*- coding: utf-8 -*-
+"""
+Arma prices.json y lo sube al servidor.
+
+    python servidor/generar-precios.py            # escribe y sube
+    python servidor/generar-precios.py --seco     # solo lo escribe local
+
+La tabla base es la que trae EconomyCraft adentro del jar: son 1.695 items con
+precios relativos hechos a mano que ya funcionan bien de la mitad para abajo.
+Este script le hace tres cosas encima.
+
+1) RE-ANCLAJE DEL FIN DEL JUEGO. Los items que definen el final estaban
+   regalados: el ingot de netherita valia 3 diamantes y una elytra 12. En el
+   /worth real de DonutSMP (el precio que paga su servidor, no el del mercado
+   entre jugadores) un ingot vale 208 diamantes y una elytra 250. Esa tabla la
+   sacaron de 158 capturas del GUI de /worth in-game y esta en
+   github.com/Aeripsen/donut-quant (quant/worth_table.csv, 2026-09-02).
+   Aca se copian solo los items de fin del juego: el resto de la tabla de Donut
+   esta deformada por su propia meta de farms (el vidrio les vale 70 veces mas
+   que a nosotros) y copiarla entera rompia la coherencia interna.
+
+   OJO con un dato que circula al reves: "una elytra vale 85 veces un ingot de
+   netherita" es del MERCADO de Donut (ahi es 59x). En su /worth la elytra vale
+   1,2 ingots. Los dos numeros son ciertos y miden cosas distintas.
+
+2) LA TIENDA NO VENDE LO QUE DURA. Donut vendia baratos todos los consumibles
+   de pelea (crystals, anchors, obsidiana, totems, gapples, perlas) justamente
+   para que regearse fuera barato y la gente saliera a pelear, y NUNCA vendio
+   equipamiento durable. Aca se hace igual: las categorias de armadura, armas,
+   herramientas y libros encantados quedan sin compra, los durables sueltos
+   tambien, y los consumibles bajan a los precios de la tienda de Donut.
+
+3) NADA DE PLATA INFINITA. Despues de tocar los precios se recorren las 1.515
+   recetas del juego: si todos los ingredientes de una receta se pueden comprar
+   en la tienda y el resultado se vende por mas, se le baja el precio de venta
+   al resultado hasta que craftear no de ganancia. La tabla de fabrica tenia 43
+   de estas maquinas (la peor: un lodestone cuesta 31 en ingredientes y se
+   vendia a 257).
+
+Los precios tambien viajan adentro del mod cliente que dibuja el cartelito de
+precio en cada item, asi que el script rearma ese jar. No hace falta compilar
+nada: precios.json es un recurso del jar y se reemplaza dentro del zip.
+"""
+import importlib.util
+import json
+import math
+import os
+import shutil
+import sys
+import zipfile
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+RAIZ = os.path.dirname(AQUI)
+sys.path.insert(0, AQUI)
+
+VERSION_MOD = "1.1.0"
+SALTO = chr(10)
+
+# El diamante es el ancla: no se mueve, y todo lo de Donut se escala por el.
+DIAMANTE = 84
+DIAMANTE_DONUT = 360
+
+
+def d(valor_donut):
+    """Pasa un precio del /worth de Donut a la escala de este servidor."""
+    return int(round(valor_donut * DIAMANTE / DIAMANTE_DONUT))
+
+
+# --------------------------------------------------------------- 1) fin del juego
+# Precio de venta nuevo, sacado del /worth real de DonutSMP.
+VENTA = {
+    # La cadena de la netherita, que era la distorsion mas grande de la tabla.
+    "minecraft:netherite_ingot": d(75000),        # 208 diamantes (valia 3)
+    "minecraft:netherite_block": d(675000),       # 9 ingots exactos, igual que Donut
+    "minecraft:netherite_scrap": d(9000),         # 25 diamantes
+    "minecraft:ancient_debris": d(1800),          # 5 diamantes
+    # Los items que definen el final del juego.
+    "minecraft:elytra": d(90000),                 # 250 diamantes (valia 12)
+    "minecraft:trident": d(30000),                # 83 diamantes
+    "minecraft:beacon": d(22500),                 # 62 diamantes
+    "minecraft:heavy_core": d(3000),
+    "minecraft:mace": 750,                        # el heavy core mas una vara de breeze
+    "minecraft:nether_star": 4200,                # no esta en Donut: lo dejo abajo del beacon
+    "minecraft:conduit": d(1600),
+    "minecraft:heart_of_the_sea": d(1200),
+    "minecraft:enchanted_golden_apple": 700,      # tampoco esta; lo alineo con las cabezas
+    # Trofeos: no se craftean, no se farmean, y son lo que se cuelga en la base.
+    "minecraft:dragon_egg": 1000000,              # Donut lo pone en 6.400 millones y rompe el /baltop
+    "minecraft:dragon_head": d(3000),
+    "minecraft:wither_skeleton_skull": d(3000),
+    "minecraft:skeleton_skull": d(3000),
+    "minecraft:creeper_head": d(3000),
+    "minecraft:zombie_head": d(3000),
+    "minecraft:piglin_head": d(600),
+    # Cosas raras que estaban muy abajo.
+    "minecraft:sponge": d(1500),
+    "minecraft:wet_sponge": d(1200),
+    "minecraft:enchanting_table": d(1500),
+    "minecraft:name_tag": d(600),
+    "minecraft:diamond_horse_armor": d(1500),
+    "minecraft:golden_horse_armor": d(900),
+    "minecraft:iron_horse_armor": d(300),
+    "minecraft:turtle_helmet": d(600),
+    "minecraft:nautilus_shell": d(300),
+    "minecraft:totem_of_undying": d(750),         # 2 diamantes: es consumible, no trofeo
+    "minecraft:shulker_shell": d(150),
+}
+
+# --------------------------------------------------------------- 2) que se vende
+# Categorias enteras que salen de la compra. Apagar una categoria solo la saca
+# del /shop: el /sell nunca mira si esta habilitada, asi que seguir vendiendo si.
+CATEGORIAS_SIN_COMPRA = ["armor", "weapons", "tools", "enchantments"]
+
+# Items durables sueltos que viven en categorias que si se compran.
+SIN_COMPRA = [
+    "minecraft:netherite_ingot", "minecraft:netherite_block", "minecraft:netherite_scrap",
+    "minecraft:ancient_debris", "minecraft:netherite_upgrade_smithing_template",
+    "minecraft:elytra", "minecraft:beacon", "minecraft:nether_star", "minecraft:heavy_core",
+    "minecraft:conduit", "minecraft:heart_of_the_sea", "minecraft:dragon_egg",
+    "minecraft:enchanting_table", "minecraft:anvil", "minecraft:chipped_anvil",
+    "minecraft:damaged_anvil", "minecraft:sponge", "minecraft:wet_sponge",
+    "minecraft:lodestone", "minecraft:spawner", "minecraft:trial_spawner",
+    "minecraft:vault", "minecraft:budding_amethyst", "minecraft:enchanted_golden_apple",
+]
+
+# Consumibles de pelea, a los precios de la tienda que tenia Donut. La idea es
+# que regearse sea barato: si cuesta horas, nadie sale a buscar pelea.
+COMPRA = {
+    "minecraft:totem_of_undying": d(1500),
+    "minecraft:end_crystal": d(350),
+    "minecraft:respawn_anchor": d(1000),
+    "minecraft:obsidian": d(100),
+    "minecraft:crying_obsidian": d(150),
+    "minecraft:glowstone": d(100),
+    "minecraft:ender_pearl": d(75),
+    "minecraft:golden_apple": d(250),
+    "minecraft:golden_carrot": d(120),
+    "minecraft:experience_bottle": d(100),
+    "minecraft:ender_chest": d(2500),
+    "minecraft:shulker_box": d(800),
+    "minecraft:shulker_shell": d(350),
+    "minecraft:blaze_rod": d(150),
+    "minecraft:ghast_tear": d(350),
+    "minecraft:dragon_breath": d(1000),
+    "minecraft:end_rod": d(100),
+    "minecraft:chorus_fruit": d(108),
+    "minecraft:popped_chorus_fruit": d(24),
+    "minecraft:magma_cream": d(96),
+    "minecraft:nether_wart": d(96),
+    "minecraft:potato": d(96),
+    "minecraft:carrot": d(96),
+    "minecraft:sweet_berries": d(50),
+    "minecraft:melon_slice": d(36),
+    "minecraft:apple": d(25),
+    "minecraft:cooked_chicken": d(48),
+    "minecraft:cooked_beef": d(35),
+}
+
+# ------------------------------------------------------------------ 4) los ajustes
+# El config de EconomyCraft. No tiene comando de reload: los cambios entran con
+# el reinicio. Y ojo: si se toca a mano con el servidor prendido y despues
+# alguien abre Admin > Settings en el juego, el mod reescribe el archivo con lo
+# que tenia en memoria desde el arranque y se pierden las ediciones.
+CONFIG = {
+    # Doce diamantes para arrancar. Donut arranca en cero, pero aca son cuatro
+    # amigos y empezar sin nada no le suma nada a nadie.
+    "startingBalance": 1000,
+    "dailyAmount": 100,
+
+    # Estaba en 10.000, que con los precios nuevos rompia el /sell: un ingot de
+    # netherita vale 17.500 y el limite es todo-o-nada por operacion, asi que la
+    # venta entera se rechazaba sin explicacion. 250.000 deja pasar cualquier
+    # botin de una pelea (una elytra son 21.000, un bloque de netherita 157.500)
+    # y todavia tapa el grifo en unos 3.000 diamantes por dia.
+    "dailySellLimit": 250000,
+
+    # El 10% NO es un impuesto general: solo lo cobran las subastas y las
+    # ordenes de compra. Es el unico sumidero real de plata que tiene el
+    # servidor, porque el /pay, el /sell y la tienda no pagan nada.
+    "taxRate": 0.1,
+    # Lo que se lleva quien te mata, de tu bolsillo al suyo. No crea plata: la
+    # mueve. Lo maneja el mod solo, en handlePvpKill.
+    "pvp_balance_loss_percentage": 0.1,
+
+    "standalone_commands": True,
+    "standalone_admin_commands": False,
+
+    # Tiene que quedar apagado: si se prende, EconomyCraft crea su objetivo
+    # eco_balance y se apropia del lugar del cartel de la derecha, que es de
+    # Styled Sidebars. Y al volver a apagarlo BORRA ese objetivo del mundo.
+    "scoreboard_enabled": False,
+
+    "shop_enabled": True,
+    "auction_enabled": True,
+    "sell_enabled": True,
+    "worth_enabled": True,
+    "orders_enabled": True,
+    "balance_separator": ".",
+    "transaction_log_enabled": True,
+    "transaction_log_retention_days": 7,
+    "order_expiration_hours": 168,
+    "auction_expiration_hours": 168,
+    "max_active_orders_per_player": 0,
+    "max_active_auctions_per_player": 0,
+
+    # Tiene que quedar apagado. Un multiplicador de venta que sube con el
+    # volumen es exactamente lo que hundio la economia de DonutSMP: los
+    # jugadores compraban en las ordenes por debajo de precio_base x
+    # multiplicador y vendian al servidor, y uno solo llego a vender 15 billones
+    # asi. Donut lo elimino el 2026-06-02.
+    "dynamic_prices_enabled": False,
+    "dynamic_price_min_multiplier": 0.5,
+    "dynamic_price_max_multiplier": 5.0,
+    "dynamic_price_min_active_days": 30,
+}
+
+
+# Como se ve cada categoria en el /shop: el color es uno de los 16 de Minecraft
+# y el icono es el item que se dibuja en la GUI.
+CATEGORIAS = {
+    "ores":           ("Minerales",      "aqua",         "minecraft:diamond"),
+    "blocks":         ("Bloques",        "gray",         "minecraft:stone"),
+    "blocks.stones":  ("Piedra",         "gray",         "minecraft:stone_bricks"),
+    "blocks.wood":    ("Madera",         "gold",         "minecraft:oak_log"),
+    "blocks.nether":  ("Nether",         "dark_red",     "minecraft:netherrack"),
+    "blocks.end":     ("End",            "light_purple", "minecraft:end_stone"),
+    "blocks.copper":  ("Cobre",          "gold",         "minecraft:copper_block"),
+    "blocks.sand":    ("Arena",          "yellow",       "minecraft:sand"),
+    "blocks.earth":   ("Tierra",         "dark_green",   "minecraft:dirt"),
+    "blocks.bricks":  ("Ladrillos",      "red",          "minecraft:bricks"),
+    "blocks.light":   ("Luces",          "yellow",       "minecraft:glowstone"),
+    "food":           ("Comida",         "green",        "minecraft:cooked_beef"),
+    "plants":         ("Plantas",        "dark_green",   "minecraft:oak_sapling"),
+    "redstone":       ("Redstone",       "red",          "minecraft:redstone"),
+    "dyes":           ("Tinturas",       "light_purple", "minecraft:pink_dye"),
+    "brewing":        ("Pociones",       "dark_purple",  "minecraft:brewing_stand"),
+    "utility":        ("Utiles",         "white",        "minecraft:chest"),
+    "transport":      ("Transporte",     "aqua",         "minecraft:minecart"),
+    "drops":          ("Drops de mobs",  "dark_aqua",    "minecraft:rotten_flesh"),
+    "ocean":          ("Oceano",         "blue",         "minecraft:prismarine"),
+    "ice":            ("Hielo",          "aqua",         "minecraft:packed_ice"),
+    "deep dark":      ("Deep Dark",      "dark_aqua",    "minecraft:sculk"),
+    "archaeology":    ("Arqueologia",    "yellow",       "minecraft:brush"),
+    "discs":          ("Discos",         "light_purple", "minecraft:jukebox"),
+    # Las cuatro que quedan sin compra. Se siguen pudiendo vender.
+    "armor":          ("Armaduras",      "dark_gray",    "minecraft:netherite_chestplate"),
+    "weapons":        ("Armas",          "dark_gray",    "minecraft:netherite_sword"),
+    "tools":          ("Herramientas",   "dark_gray",    "minecraft:netherite_pickaxe"),
+    "enchantments":   ("Encantamientos", "dark_gray",    "minecraft:enchanted_book"),
+}
+
+
+def verificador():
+    """Carga verificar-precios.py, que tiene el lector de recetas del juego."""
+    ruta = os.path.join(AQUI, "verificar-precios.py")
+    spec = importlib.util.spec_from_file_location("verificar_precios", ruta)
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+def tabla_de_fabrica():
+    """La tabla original. Se cachea en el repo para no depender del servidor."""
+    copia = os.path.join(AQUI, "referencia", "prices-de-fabrica.json")
+    if os.path.exists(copia):
+        return json.load(open(copia, encoding="utf-8"))
+    import mc
+    datos = json.loads(mc.read("/config/economycraft/prices.json"))
+    os.makedirs(os.path.dirname(copia), exist_ok=True)
+    json.dump(datos, open(copia, "w", encoding="utf-8", newline=SALTO),
+              indent=2, ensure_ascii=False)
+    print("  guardada copia de la tabla de fabrica en servidor/referencia/")
+    return datos
+
+
+def reparar(base, verif):
+    """Baja la venta de todo lo que se pueda craftear comprando los ingredientes."""
+    recetas, etiquetas = verif.cargar_juego()
+    tope = {}
+    for _, receta in recetas:
+        opciones = verif.ingredientes(receta, etiquetas)
+        if not opciones:
+            continue
+        resultado = receta.get("result", {})
+        salida = resultado.get("id")
+        if not salida or salida not in base:
+            continue
+        cantidad = resultado.get("count", 1)
+        costo = 0
+        for opcion in opciones:
+            posibles = [base[i]["unit_buy"] for i in opcion
+                        if i in base and base[i]["unit_buy"] > 0]
+            if not posibles:
+                costo = None      # ese ingrediente no se vende: no hay maquina
+                break
+            costo += min(posibles)
+        if costo is None:
+            continue
+        limite = costo // cantidad
+        tope[salida] = min(tope.get(salida, limite), limite)
+
+    reparadas = []
+    for item, limite in sorted(tope.items()):
+        p = base[item]
+        if p["unit_sell"] > limite:
+            reparadas.append((item, p["unit_sell"], limite))
+            p["unit_sell"] = limite
+    return reparadas
+
+
+def construir(verif):
+    base = {k: dict(v) for k, v in tabla_de_fabrica().items() if not k.startswith("_")}
+    faltantes = []
+
+    # 1) fin del juego. La compra sigue el mismo salto que la venta para que los
+    #    que quedan comprables no se abaraten sin querer.
+    for item, venta in VENTA.items():
+        if item not in base:
+            faltantes.append(item)
+            continue
+        p = base[item]
+        if p["unit_buy"] > 0 and p["unit_sell"] > 0:
+            p["unit_buy"] = int(round(p["unit_buy"] * venta / p["unit_sell"]))
+        p["unit_sell"] = venta
+
+    # 2) la tienda. La compra nunca baja de el doble de la venta: por debajo de
+    #    eso comprar y revender seria plata gratis.
+    for item, compra in COMPRA.items():
+        if item not in base:
+            faltantes.append(item)
+            continue
+        p = base[item]
+        p["unit_buy"] = compra
+        p["unit_sell"] = min(p["unit_sell"], compra // 2)
+    for item in SIN_COMPRA:
+        if item in base:
+            base[item]["unit_buy"] = 0
+        else:
+            faltantes.append(item)
+
+    # 3) craftear no puede dar ganancia
+    ratios = {k: v["unit_sell"] / v["unit_buy"]
+              for k, v in base.items() if v["unit_buy"] > 0 and v["unit_sell"] > 0}
+    reparadas = reparar(base, verif)
+    for item, _, _ in reparadas:
+        p = base[item]
+        if p["unit_buy"] > 0 and item in ratios:
+            p["unit_buy"] = max(p["unit_sell"] + 1, int(round(p["unit_sell"] / ratios[item])))
+
+    doc = {"_categories": {}}
+    for clave, (nombre, color, icono) in CATEGORIAS.items():
+        doc["_categories"][clave] = {
+            "name": nombre,
+            "color": color,
+            "icon": icono,
+            "enabled": clave not in CATEGORIAS_SIN_COMPRA,
+            "dynamic_price_enabled": True,
+        }
+    doc.update(dict(sorted(base.items())))
+    return doc, reparadas, faltantes
+
+
+def rearmar_mod(precios_mod, version=VERSION_MOD):
+    """Reemplaza precios.json adentro del jar del mod cliente y sube la version."""
+    libs = os.path.join(RAIZ, "mod-precios", "build", "libs")
+    if not os.path.isdir(libs):
+        print("no hay mod-precios/build/libs; salteo el rearmado del mod cliente")
+        return
+    candidatos = sorted(n for n in os.listdir(libs)
+                        if n.startswith("precios-sobrinosdepepe-") and n.endswith(".jar"))
+    if not candidatos:
+        print("no encuentro el jar del mod de precios; salteo el rearmado")
+        return
+    origen = os.path.join(libs, candidatos[0])
+    destino = os.path.join(libs, "precios-sobrinosdepepe-%s.jar" % version)
+    temporal = destino + ".tmp"
+    with zipfile.ZipFile(origen) as zin, \
+            zipfile.ZipFile(temporal, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            datos = zin.read(item.filename)
+            if item.filename == "precios.json":
+                datos = json.dumps(precios_mod, separators=(",", ":"),
+                                   sort_keys=True).encode("utf-8")
+            elif item.filename == "fabric.mod.json":
+                doc = json.loads(datos)
+                doc["version"] = version
+                datos = json.dumps(doc, indent=2, ensure_ascii=False).encode("utf-8")
+            zout.writestr(item, datos)
+    shutil.move(temporal, destino)
+    print("rearmado %s" % os.path.basename(destino))
+    print("  hay que publicarlo desde el panel para que los jugadores lo reciban")
+
+
+def main():
+    seco = "--seco" in sys.argv
+    verif = verificador()
+    doc, reparadas, faltantes = construir(verif)
+
+    if faltantes:
+        print("items que no estan en la tabla y se saltearon: %s"
+              % ", ".join(sorted(set(f.replace("minecraft:", "") for f in faltantes))))
+
+    print("reparadas %d recetas rentables:" % len(reparadas))
+    for item, antes, ahora in reparadas[:30]:
+        print("   %-42s venta %-8d -> %d" % (item.replace("minecraft:", ""), antes, ahora))
+    if len(reparadas) > 30:
+        print("   ... y %d mas" % (len(reparadas) - 30))
+    sin_venta = [i for i, _, a in reparadas if a <= 0]
+    if sin_venta:
+        print("   quedaron sin poder venderse: %s"
+              % ", ".join(s.replace("minecraft:", "") for s in sin_venta))
+
+    salida = os.path.join(AQUI, "precios", "prices.json")
+    os.makedirs(os.path.dirname(salida), exist_ok=True)
+    texto = json.dumps(doc, indent=2, ensure_ascii=False)
+    open(salida, "w", encoding="utf-8", newline=SALTO).write(texto)
+    print("escrito servidor/precios/prices.json (%d items, %d KB)"
+          % (len(doc) - 1, len(texto) // 1024))
+
+    precios_mod = {k: v["unit_sell"] for k, v in doc.items()
+                   if not k.startswith("_") and v["unit_sell"] > 0}
+    open(os.path.join(RAIZ, "mod-precios", "src", "main", "resources", "precios.json"),
+         "w", encoding="utf-8", newline=SALTO).write(
+        json.dumps(precios_mod, separators=(",", ":"), sort_keys=True))
+    print("escrito mod-precios/src/main/resources/precios.json (%d items)" % len(precios_mod))
+    rearmar_mod(precios_mod)
+
+    # El mismo chequeo que corre verificar-precios.py, sobre lo que se acaba de armar.
+    recetas, etiquetas = verif.cargar_juego()
+    limpio = {k: v for k, v in doc.items() if not k.startswith("_")}
+    print()
+    fallas = verif.informe(limpio, recetas, etiquetas)
+    if fallas:
+        print("HAY %d FALLAS: no subo nada" % fallas)
+        return 1
+
+    config = json.dumps(CONFIG, indent=2, ensure_ascii=False)
+    ruta_config = os.path.join(AQUI, "economia", "config.json")
+    os.makedirs(os.path.dirname(ruta_config), exist_ok=True)
+    open(ruta_config, "w", encoding="utf-8", newline=SALTO).write(config)
+    open(os.path.join(AQUI, "economia", "prices.json"), "w",
+         encoding="utf-8", newline=SALTO).write(texto)
+    print("escrito servidor/economia/config.json")
+
+    if not seco:
+        import mc
+        mc.write("/config/economycraft/prices.json", texto)
+        mc.write("/config/economycraft/config.json", config)
+        print("subidos prices.json y config.json")
+        print("EconomyCraft no tiene reload: los dos entran con el reinicio")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

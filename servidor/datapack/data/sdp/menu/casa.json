@@ -1,0 +1,835 @@
+{
+  "name": {
+    "text": "CASA Y VIAJES",
+    "italic": false,
+    "color": "#ffb02e",
+    "bold": true
+  },
+  "rows": 5,
+  "items": [
+    {
+      "slot": [
+        1,
+        1
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        1,
+        2
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        1,
+        3
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        1,
+        4
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        1,
+        5
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        1,
+        6
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        1,
+        7
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        1,
+        8
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        1,
+        9
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        5,
+        1
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        5,
+        2
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        5,
+        3
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        5,
+        4
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        5,
+        6
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        5,
+        7
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        5,
+        8
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        5,
+        9
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": " ",
+            "italic": false,
+            "color": "dark_gray",
+            "bold": true
+          },
+          "minecraft:lore": []
+        }
+      },
+      "sound": "click"
+    },
+    {
+      "slot": [
+        2,
+        2
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:red_bed",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/home set casa",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Guardar donde estas parado",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "message",
+        "message": {
+          "text": "",
+          "extra": [
+            {
+              "text": "\n  » ",
+              "italic": false,
+              "color": "dark_gray"
+            },
+            {
+              "text": "Para guardar tu casa:\n  ",
+              "italic": false,
+              "color": "gray"
+            },
+            {
+              "text": "/home set casa",
+              "color": "#00a6ff",
+              "bold": true,
+              "italic": false,
+              "click_event": {
+                "action": "suggest_command",
+                "command": "/home set casa"
+              },
+              "hover_event": {
+                "action": "show_text",
+                "value": {
+                  "text": "Clickea y completa lo que falta",
+                  "italic": false,
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "text": "   clickealo y completalo\n",
+              "italic": false,
+              "color": "dark_gray"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "slot": [
+        2,
+        3
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:oak_door",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/home casa",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Viajar a tu casa",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "command",
+        "command": "home casa",
+        "as_player": true,
+        "silent": false
+      }
+    },
+    {
+      "slot": [
+        2,
+        4
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:respawn_anchor",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/spawn",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Volver al spawn",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "command",
+        "command": "spawn",
+        "as_player": true,
+        "silent": false
+      }
+    },
+    {
+      "slot": [
+        2,
+        5
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:ender_pearl",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/rtp",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Tirarte a un lugar random",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "command",
+        "command": "rtp",
+        "as_player": true,
+        "silent": false
+      }
+    },
+    {
+      "slot": [
+        2,
+        6
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:lodestone",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/warp",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Los lugares del servidor",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "message",
+        "message": {
+          "text": "",
+          "extra": [
+            {
+              "text": "\n  » ",
+              "italic": false,
+              "color": "dark_gray"
+            },
+            {
+              "text": "Para viajar a un lugar:\n  ",
+              "italic": false,
+              "color": "gray"
+            },
+            {
+              "text": "/warp ",
+              "color": "#00a6ff",
+              "bold": true,
+              "italic": false,
+              "click_event": {
+                "action": "suggest_command",
+                "command": "/warp "
+              },
+              "hover_event": {
+                "action": "show_text",
+                "value": {
+                  "text": "Clickea y completa lo que falta",
+                  "italic": false,
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "text": "   clickealo y completalo\n",
+              "italic": false,
+              "color": "dark_gray"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "slot": [
+        2,
+        7
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:compass",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/tpa",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Pedirle ir hasta el a alguien",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "message",
+        "message": {
+          "text": "",
+          "extra": [
+            {
+              "text": "\n  » ",
+              "italic": false,
+              "color": "dark_gray"
+            },
+            {
+              "text": "Para pedirle a alguien ir hasta el:\n  ",
+              "italic": false,
+              "color": "gray"
+            },
+            {
+              "text": "/tpa ",
+              "color": "#00a6ff",
+              "bold": true,
+              "italic": false,
+              "click_event": {
+                "action": "suggest_command",
+                "command": "/tpa "
+              },
+              "hover_event": {
+                "action": "show_text",
+                "value": {
+                  "text": "Clickea y completa lo que falta",
+                  "italic": false,
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "text": "   clickealo y completalo\n",
+              "italic": false,
+              "color": "dark_gray"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "slot": [
+        2,
+        8
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:lime_dye",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/tpaccept",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Aceptar que alguien venga",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "command",
+        "command": "tpaccept",
+        "as_player": true,
+        "silent": false
+      }
+    },
+    {
+      "slot": [
+        3,
+        2
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:red_dye",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/tpdeny",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Rechazar el pedido",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "command",
+        "command": "tpdeny",
+        "as_player": true,
+        "silent": false
+      }
+    },
+    {
+      "slot": [
+        3,
+        3
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:recovery_compass",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/back",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Volver a tu ultimo viaje",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "command",
+        "command": "back",
+        "as_player": true,
+        "silent": false
+      }
+    },
+    {
+      "slot": [
+        3,
+        4
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:ladder",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "/top",
+            "italic": false,
+            "color": "#00a6ff",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Subir a la superficie",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "command",
+        "command": "top",
+        "as_player": true,
+        "silent": false
+      }
+    },
+    {
+      "slot": [
+        5,
+        5
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:arrow",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "« VOLVER",
+            "italic": false,
+            "color": "#ffb02e",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  Al menu anterior",
+              "italic": false,
+              "color": "gray"
+            }
+          ]
+        }
+      },
+      "sound": "page_turn",
+      "action": {
+        "type": "navigate",
+        "action": "open",
+        "menu": "sdp:comandos"
+      }
+    }
+  ]
+}

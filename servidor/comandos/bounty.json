@@ -1,38 +1,7 @@
 {
-  "id": "bounty",
   "executes": [
     {
-      "command": "tag @s add sdp_viendo",
-      "silent": true,
-      "as_console": false,
-      "op_level": 4
-    },
-    {
-      "command": "tellraw @s [\"\", {\"text\": \"\\n\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac  \\u2620 BUSCADOS  \\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\n\\n\", \"color\": \"gold\", \"bold\": true}]",
-      "silent": true,
-      "as_console": false,
-      "op_level": 4
-    },
-    {
-      "command": "execute unless entity @a[scores={Bounty=1..}] run tellraw @s [\"\", {\"text\": \"   No hay nadie con precio en su cabeza.\\n\", \"color\": \"gray\"}]",
-      "silent": true,
-      "as_console": false,
-      "op_level": 4
-    },
-    {
-      "command": "execute as @a[scores={Bounty=1..}] run tellraw @a[tag=sdp_viendo] [\"\", {\"text\": \"   \\u2620 \", \"color\": \"red\"}, {\"selector\": \"@s\", \"color\": \"white\", \"bold\": true}, {\"text\": \"  \\u00bb  \", \"color\": \"dark_gray\"}, {\"text\": \"$\", \"color\": \"gold\"}, {\"score\": {\"name\": \"@s\", \"objective\": \"Bounty\"}, \"color\": \"gold\", \"bold\": true}, {\"text\": \"\\n\"}]",
-      "silent": true,
-      "as_console": false,
-      "op_level": 4
-    },
-    {
-      "command": "tellraw @s [\"\", {\"text\": \"\\n  Para poner precio: \", \"color\": \"dark_gray\"}, {\"text\": \"/bounty <jugador> <plata>\", \"color\": \"aqua\"}, {\"text\": \"\\n\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\\u25ac\", \"color\": \"gold\", \"bold\": true}]",
-      "silent": true,
-      "as_console": false,
-      "op_level": 4
-    },
-    {
-      "command": "tag @s remove sdp_viendo",
+      "command": "function sdp:lista_bounty",
       "silent": true,
       "as_console": false,
       "op_level": 4
@@ -45,10 +14,16 @@
       "arguments": [
         {
           "id": "monto",
-          "type": "brigadier:integer 100",
+          "type": "brigadier:integer 10",
           "executes": [
             {
-              "command": "execute store success score @s sdp_ok run eco removemoney @s ${monto}",
+              "command": "execute store success score @s sdp_ok if score @s Shards matches ${monto}..",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if score @s sdp_ok matches 1 run scoreboard players remove @s Shards ${monto}",
               "silent": true,
               "as_console": false,
               "op_level": 4
@@ -60,7 +35,7 @@
               "op_level": 4
             },
             {
-              "command": "execute if score @s sdp_ok matches 1 run tellraw @a [\"\", {\"text\": \"\\n  \\u2620 RECOMPENSA \\u2620\\n\", \"color\": \"red\", \"bold\": true}, {\"text\": \"  \", \"color\": \"gray\"}, {\"selector\": \"@s\", \"color\": \"yellow\", \"bold\": true}, {\"text\": \" puso \", \"color\": \"gray\"}, {\"text\": \"$${monto}\", \"color\": \"gold\", \"bold\": true}, {\"text\": \" por la cabeza de\\n  \", \"color\": \"gray\"}, {\"selector\": \"${objetivo}\", \"color\": \"red\", \"bold\": true}, {\"text\": \"\\n\\n  Total acumulado: \", \"color\": \"gray\"}, {\"text\": \"$\", \"color\": \"gold\"}, {\"score\": {\"name\": \"${objetivo}\", \"objective\": \"Bounty\"}, \"color\": \"gold\", \"bold\": true}, {\"text\": \"   \\u00bb  \", \"color\": \"dark_gray\"}, {\"text\": \"/bounty\", \"color\": \"aqua\"}, {\"text\": \" para ver la lista\\n\", \"color\": \"gray\"}]",
+              "command": "execute if score @s sdp_ok matches 1 run tellraw @a [\"\", {\"text\": \"\\n  \\u2620 RECOMPENSA \\u2620\\n\", \"color\": \"#ff00a6\", \"bold\": true}, {\"text\": \"  \", \"color\": \"gray\"}, {\"selector\": \"@s\", \"color\": \"#ffb02e\", \"bold\": true}, {\"text\": \" puso \", \"color\": \"gray\"}, {\"text\": \"\\u2726${monto}\", \"color\": \"#a503fc\", \"bold\": true}, {\"text\": \" shards por la cabeza de\\n  \", \"color\": \"gray\"}, {\"selector\": \"${objetivo}\", \"color\": \"#ff00a6\", \"bold\": true}, {\"text\": \"\\n\\n  Total acumulado: \", \"color\": \"gray\"}, {\"text\": \"\\u2726\", \"color\": \"#a503fc\"}, {\"score\": {\"name\": \"${objetivo}\", \"objective\": \"Bounty\"}, \"color\": \"#a503fc\", \"bold\": true}, {\"text\": \"   \\u00bb  \", \"color\": \"dark_gray\"}, {\"text\": \"/bounty\", \"color\": \"#00a6ff\", \"click_event\": {\"action\": \"run_command\", \"command\": \"/bounty\"}, \"hover_event\": {\"action\": \"show_text\", \"value\": {\"text\": \"Ver la lista de buscados\", \"color\": \"gray\"}}}, {\"text\": \" para ver la lista\\n\", \"color\": \"gray\"}]",
               "silent": true,
               "as_console": false,
               "op_level": 4
@@ -72,7 +47,7 @@
               "op_level": 4
             },
             {
-              "command": "execute if score @s sdp_ok matches 0 run tellraw @s [\"\", {\"text\": \"  No te alcanza la plata para esa recompensa.\", \"color\": \"red\"}]",
+              "command": "execute if score @s sdp_ok matches 0 run tellraw @s [\"\", {\"text\": \"  \\u2716 \", \"color\": \"#ff5555\"}, {\"text\": \"No te alcanzan los shards para esa recompensa.\", \"color\": \"#ff5555\"}, {\"text\": \"\\n\"}]",
               "silent": true,
               "as_console": false,
               "op_level": 4
@@ -87,5 +62,6 @@
         }
       ]
     }
-  ]
+  ],
+  "id": "bounty"
 }

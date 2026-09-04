@@ -5,8 +5,9 @@ Deja los objetivos y los lugares del scoreboard como tienen que estar.
     python servidor/configurar-scoreboard.py
 
 Esto no vive en ningún archivo de configuración: el juego lo guarda dentro del
-mundo (world/data/scoreboard.dat). Si algún día hay que rearmar el servidor o se
-pierde el mundo, se corre esto y queda igual.
+mundo (en 26.1 la ruta es world/data/minecraft/scoreboard.dat, antes era
+world/data/scoreboard.dat). Si algún día hay que rearmar el servidor o se pierde
+el mundo, se corre esto y queda igual.
 
 Los tres lugares que tiene el juego:
   - sidebar     el cartel de la derecha, que maneja Styled Sidebars por su cuenta
@@ -14,15 +15,29 @@ Los tres lugares que tiene el juego:
   - below_name  debajo del nombre del jugador, en el mundo
 """
 import json
+import os
+import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import estilo as e
 import mc
-
-CORAZON = chr(0x2764)
 
 OBJETIVOS = [
     # nombre, criterio, como se muestra
-    ("HP", "health", {"text": CORAZON, "color": "red"}),
-    ("Bounty", "dummy", {"text": chr(0x2620) + " Recompensa", "color": "red"}),
+    ("HP", "health", {"text": chr(0x2764), "color": "red"}),
+    ("Shards", "dummy", {"text": e.SHARD + " Shards", "color": e.SHARDS}),
+    ("Bounty", "dummy", {"text": e.CALAVERA + " Recompensa", "color": e.RECOMPENSA}),
+
+    # El juego cuenta solo los ticks jugados de cada uno con este criterio, asi
+    # que no hace falta contar ticks a mano. Arranca en cero cuando se crea el
+    # objetivo y sigue sumando 20 por segundo mientras el jugador este conectado.
+    ("sdp_tiempo", "minecraft.custom:minecraft.play_time", {"text": "ticks jugados"}),
+    ("sdp_marca", "dummy", {"text": "ticks del ultimo shard"}),
+    ("sdp_dif", "dummy", {"text": "resta de trabajo"}),
+    ("sdp_x", "dummy", {"text": "x del ultimo turno"}),
+    ("sdp_z", "dummy", {"text": "z del ultimo turno"}),
+
     ("sdp_death", "deathCount", {"text": "muertes del tick"}),
     ("sdp_killer", "dummy", {"text": "asesino del tick"}),
     ("sdp_ok", "dummy", {"text": "resultado del cobro"}),
@@ -32,7 +47,11 @@ OBJETIVOS = [
 for nombre, criterio, display in OBJETIVOS:
     # Si ya existe, el comando falla sin consecuencias.
     mc.cmd("scoreboard objectives add %s %s %s" % (nombre, criterio, json.dumps(display)))
-    print("  objetivo %s (%s)" % (nombre, criterio))
+    print("  objetivo %-12s (%s)" % (nombre, criterio))
+
+# El nombre que se muestra si cambio: modify no falla aunque ya este puesto.
+for nombre, _, display in OBJETIVOS:
+    mc.cmd("scoreboard objectives modify %s displayname %s" % (nombre, json.dumps(display)))
 
 # La vida se dibuja como corazones y no como numero.
 mc.cmd("scoreboard objectives modify HP rendertype hearts")

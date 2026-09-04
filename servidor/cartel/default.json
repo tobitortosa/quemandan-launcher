@@ -6,15 +6,37 @@
   "scroll_speed": 1,
   "scroll_loop": true,
   "title": [
-    "<b><gold>SOBRINOS DE PEPE"
+    "<b><gr:#ffb02e:#ffd98a>SOBRINOS DE PEPE</gr>"
   ],
   "lines": [
     "",
-    "<gray>» <white>Dinero    <green><b>%economycraft:balance_formatted%",
-    "<gray>» <white>Kills     <red>%player:statistic_raw player_kills%",
-    "<gray>» <white>Muertes   <#ff8080>%player:statistic_raw deaths%",
+    [
+      "<#00ff00>$ <gray>Dinero",
+      "<#00ff00>%economycraft:balance_formatted%"
+    ],
+    [
+      "<#a503fc>✦ <gray>Shards",
+      "<#a503fc>%player:objective Shards%"
+    ],
     "",
-    "<gray>» <white>Tu cabeza <gold>$%player:objective Bounty%",
-    ""
+    [
+      "<#ff0000>⚔ <gray>Kills",
+      "<#ff0000>%player:statistic_raw player_kills%"
+    ],
+    [
+      "<#fc7703>☠ <gray>Muertes",
+      "<#fc7703>%player:statistic_raw deaths%"
+    ],
+    [
+      "<#ffe600>⌛ <gray>Jugado",
+      "<#ffe600>%player:statistic play_time%"
+    ],
+    "",
+    [
+      "<#ff00a6>☠ <gray>Tu cabeza",
+      "<#ff00a6>✦%player:objective Bounty%"
+    ],
+    "",
+    "<dark_gray>sobrinosdepepe.minehost.pro"
   ]
 }

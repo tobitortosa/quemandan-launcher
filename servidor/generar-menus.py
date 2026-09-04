@@ -1,0 +1,470 @@
+# -*- coding: utf-8 -*-
+"""
+Arma los menus de cofre y los deja en el datapack.
+
+    python servidor/generar-menus.py
+
+Los dibuja Inventory Menu, que lee los menus del datapack (data/sdp/menu/*.json)
+y los abre con /menu <id>. Es la forma en la que DonutSMP hace todos sus menus:
+GUI de cofre y no texto clickeable en el chat.
+
+Se sube con servidor/subir-datapack.py y se recarga con /reload.
+
+Como es un archivo de menu:
+  - "rows" de 1 a 6, y cada item lleva "slot": [fila, columna] con la fila de 1
+    a 6 y la columna de 1 a 9.
+  - el tipo "item" define el item entero y su accion aparte. El tipo "navigate"
+    existe pero NO se usa: si se le pone un "model", el mod reemplaza el stack
+    entero y pierde el nombre y la descripcion que le pusiste.
+  - la accion "command" con as_player en false corre con la fuente del servidor,
+    que no tiene entidad: @s no resuelve y hay que nombrar al jugador con %name%.
+    Eso mismo es lo que hace que los comandos de EconomyCraft anden para quien no
+    es operador, porque el mod solo se fija si la entidad de la fuente esta en
+    ops.json y ahi no hay ninguna entidad.
+  - "action_cost" de tipo "score" es lo que cobra los shards: el mod verifica el
+    score y lo descuenta el mismo, sin que haya que hacerlo a mano.
+  - los placeholders %...% aplanan el texto y le borran el formato a los hijos,
+    asi que en los nombres y las descripciones no se usan.
+"""
+import json
+import os
+import sys
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, AQUI)
+
+import estilo as e
+
+DESTINO = os.path.join(AQUI, "datapack", "data", "sdp", "menu")
+
+# Los precios de la tienda de shards. Son los de DonutSMP escalados por el
+# spawner: alla sale 1.500 shards y aca 200, o sea todo por 0,133. Lo que se
+# mantiene es la RELACION, que es la que define que conviene comprar primero.
+PRECIO = {
+    "spawner": 200,
+    "armadura": 200,     # por pieza; el set completo son 800
+    "espada": 200,
+    "maza": 270,
+    "pico": 130,
+    "pala": 110,
+    "hacha": 80,
+    "arco": 70,
+    "haste": 400,
+}
+
+# Los encantamientos de lo que vende la tienda. La armadura va con Proteccion y
+# no con Blast Protection a proposito: es el detalle que usa Donut para dar
+# acceso sin dar la ventaja que decide las peleas con crystals.
+ENC_ARMADURA = {"protection": 4, "unbreaking": 3, "mending": 1}
+ENC_ESPADA = {"sharpness": 5, "unbreaking": 3, "mending": 1, "looting": 3}
+ENC_MAZA = {"density": 5, "unbreaking": 3, "mending": 1}
+ENC_PICO = {"efficiency": 5, "unbreaking": 3, "mending": 1, "fortune": 3}
+ENC_PALA = {"efficiency": 5, "unbreaking": 3, "mending": 1}
+ENC_HACHA = {"efficiency": 5, "unbreaking": 3, "mending": 1}
+ENC_ARCO = {"power": 5, "unbreaking": 3, "mending": 1, "flame": 1}
+
+
+def texto(t, color=None, negrita=False, cursiva=False):
+    c = {"text": t, "italic": cursiva}
+    if color:
+        c["color"] = color
+    if negrita:
+        c["bold"] = True
+    return c
+
+
+def item(iid, nombre, color, lore=(), componentes=None, cantidad=1):
+    """El stack como lo serializa el juego: id, count y components."""
+    comp = {
+        "minecraft:custom_name": texto(nombre, color, negrita=True),
+        "minecraft:lore": [l if isinstance(l, dict) else texto("  " + l, e.ETIQUETA)
+                           for l in lore],
+    }
+    comp.update(componentes or {})
+    return {"id": iid, "count": cantidad, "components": comp}
+
+
+def celda(fila, columna, stack, accion=None, sonido="click"):
+    d = {"slot": [fila, columna], "type": "item", "item": stack, "sound": sonido}
+    if accion:
+        d["action"] = accion
+    return d
+
+
+def abrir(menu):
+    return {"type": "navigate", "action": "open", "menu": menu}
+
+
+def cerrar():
+    return {"type": "navigate", "action": "close"}
+
+
+def correr(comando):
+    """Corre el comando como el jugador: los de Essential Commands lo necesitan."""
+    return {"type": "command", "command": comando, "as_player": True, "silent": False}
+
+
+def escribir(comando, explicacion):
+    """
+    Para los comandos que piden datos que una GUI de cofre no puede pedir. Manda
+    una linea al chat que se clickea para que quede escrita y el jugador la
+    complete.
+    """
+    return {"type": "message", "message": {
+        "text": "",
+        "extra": [
+            texto("\n  " + e.FLECHA + " ", e.APAGADO),
+            texto(explicacion + "\n  ", e.ETIQUETA),
+            {"text": comando, "color": e.ACENTO, "bold": True, "italic": False,
+             "click_event": {"action": "suggest_command", "command": comando},
+             "hover_event": {"action": "show_text",
+                             "value": texto("Clickea y completa lo que falta", e.ETIQUETA)}},
+            texto("   clickealo y completalo\n", e.APAGADO),
+        ]}}
+
+
+def comprar(comando, precio):
+    """
+    Cobra shards y da el item. El mod verifica el score antes y lo descuenta
+    solo si alcanza, asi que no hay forma de comprar sin pagar.
+    """
+    return {
+        "type": "command", "command": comando, "as_player": False, "silent": True,
+        "action_cost": [{
+            "type": "score", "objective": "Shards", "amount": precio,
+            "fail_message": {"message": {"text": "", "extra": [
+                texto("  " + e.CRUZ + " ", e.ERROR),
+                texto("Te faltan shards. ", e.ERROR),
+                texto("Se ganan matando (10) y jugando (1 cada 10 min).", e.ETIQUETA),
+            ]}},
+        }],
+    }
+
+
+def marco(rows, saltar=()):
+    """Vidrio gris arriba y abajo, para que el menu no se vea vacio."""
+    relleno = item("minecraft:gray_stained_glass_pane", " ", e.APAGADO)
+    return [celda(f, c, relleno) for f in (1, rows) for c in range(1, 10)
+            if (f, c) not in saltar]
+
+
+def volver(menu="sdp:comandos", fila=None, columna=5):
+    return celda(fila, columna,
+                 item("minecraft:arrow", e.VOLVER + " VOLVER", e.MARCA, ["Al menu anterior"]),
+                 abrir(menu), sonido="page_turn")
+
+
+def lista(comandos, primera=2):
+    """
+    Acomoda una lista de comandos en filas de 7, dejando libres las columnas de
+    los bordes. Cada entrada es (item, comando, texto, accion).
+    """
+    celdas = []
+    for i, (iid, nombre, desc, accion) in enumerate(comandos):
+        fila = primera + i // 7
+        columna = 2 + i % 7
+        celdas.append(celda(fila, columna, item(iid, nombre, e.ACENTO, desc), accion))
+    return celdas
+
+
+def guardar(nombre, doc):
+    os.makedirs(DESTINO, exist_ok=True)
+    usados = [tuple(i["slot"]) for i in doc["items"]]
+    repetidos = {s for s in usados if usados.count(s) > 1}
+    assert not repetidos, "%s tiene dos items en %s" % (nombre, repetidos)
+    for f, c in usados:
+        assert 1 <= f <= doc["rows"] and 1 <= c <= 9, \
+            "%s: el slot %d,%d cae fuera del menu" % (nombre, f, c)
+    open(os.path.join(DESTINO, nombre + ".json"), "w", encoding="utf-8", newline="\n").write(
+        json.dumps(doc, indent=2, ensure_ascii=False))
+    print("  %-22s %d filas, %2d items" % (nombre + ".json", doc["rows"], len(doc["items"])))
+
+
+# ------------------------------------------------------------------ menu principal
+guardar("comandos", {
+    "name": texto("SOBRINOS DE PEPE", e.MARCA, negrita=True),
+    "rows": 5,
+    "items": marco(5) + [
+        celda(3, 2, item("minecraft:gold_ingot", "ECONOMIA", e.PLATA,
+                         ["Plata, tienda, subastas", "y ordenes de compra"]),
+              abrir("sdp:economia"), "select"),
+        celda(3, 3, item("minecraft:oak_door", "CASA Y VIAJES", e.MARCA,
+                         ["Homes, spawn, warps", "y teletransportes"]),
+              abrir("sdp:casa"), "select"),
+        celda(3, 4, item("minecraft:netherite_sword", "PVP", e.KILLS,
+                         ["Como se pelea aca", "y las recompensas"]),
+              abrir("sdp:pvp"), "select"),
+        celda(3, 6, item("minecraft:amethyst_shard", "TIENDA DE SHARDS", e.SHARDS,
+                         ["Lo que se compra matando:", "spawners, armas y armaduras"]),
+              abrir("sdp:tienda"), "select"),
+        celda(3, 7, item("minecraft:map", "EXTRAS", e.ACENTO,
+                         ["Mapa, voz, skin, apodo", "y lo demas"]),
+              abrir("sdp:extras"), "select"),
+        celda(3, 8, item("minecraft:barrier", "CERRAR", e.ERROR), cerrar(), "close"),
+    ],
+})
+
+# ---------------------------------------------------------------------- economia
+guardar("economia", {
+    "name": texto("ECONOMIA", e.PLATA, negrita=True),
+    "rows": 5,
+    "items": marco(5, saltar=[(5, 5)]) + lista([
+        ("minecraft:gold_ingot", "/bal", ["Cuanta plata tenes"], correr("bal")),
+        ("minecraft:gold_block", "/bal top", ["El ranking de los mas ricos"], correr("bal top")),
+        ("minecraft:sunflower", "/daily", ["Tu regalo diario"], correr("daily")),
+        ("minecraft:chest", "/shop", ["Comprarle al servidor"], correr("shop")),
+        ("minecraft:hopper", "/sell", ["Venderle al servidor"], correr("sell")),
+        ("minecraft:name_tag", "/worth", ["Cuanto vale lo que tenes en la mano"], correr("worth")),
+        ("minecraft:paper", "/pay", ["Pagarle a otro jugador"],
+         escribir("/pay ", "Para pagarle a alguien:")),
+        ("minecraft:ender_chest", "/ah", ["Subastas: venderle a los demas"], correr("ah")),
+        ("minecraft:writable_book", "/orders", ["Ordenes de compra: pedir algo"], correr("orders")),
+        ("minecraft:book", "/transactions", ["Tu historial de plata"], correr("transactions")),
+    ]) + [volver(fila=5)],
+})
+
+# -------------------------------------------------------------------------- casa
+guardar("casa", {
+    "name": texto("CASA Y VIAJES", e.MARCA, negrita=True),
+    "rows": 5,
+    "items": marco(5, saltar=[(5, 5)]) + lista([
+        ("minecraft:red_bed", "/home set casa", ["Guardar donde estas parado"],
+         escribir("/home set casa", "Para guardar tu casa:")),
+        ("minecraft:oak_door", "/home casa", ["Viajar a tu casa"], correr("home casa")),
+        ("minecraft:respawn_anchor", "/spawn", ["Volver al spawn"], correr("spawn")),
+        ("minecraft:ender_pearl", "/rtp", ["Tirarte a un lugar random"], correr("rtp")),
+        ("minecraft:lodestone", "/warp", ["Los lugares del servidor"],
+         escribir("/warp ", "Para viajar a un lugar:")),
+        ("minecraft:compass", "/tpa", ["Pedirle ir hasta el a alguien"],
+         escribir("/tpa ", "Para pedirle a alguien ir hasta el:")),
+        ("minecraft:lime_dye", "/tpaccept", ["Aceptar que alguien venga"], correr("tpaccept")),
+        ("minecraft:red_dye", "/tpdeny", ["Rechazar el pedido"], correr("tpdeny")),
+        ("minecraft:recovery_compass", "/back", ["Volver a tu ultimo viaje"], correr("back")),
+        ("minecraft:ladder", "/top", ["Subir a la superficie"], correr("top")),
+    ]) + [volver(fila=5)],
+})
+
+# --------------------------------------------------------------------------- pvp
+reglas = item("minecraft:netherite_chestplate", e.CALAVERA + " COMO SE PELEA ACA", e.KILLS, [
+    texto("  El PvP esta activo en TODO el mundo", e.ERROR),
+    texto("", None),
+    texto("  " + e.VINETA + " Si te matan, perdes lo que llevas", e.ETIQUETA),
+    texto("  " + e.VINETA + " Quien te mata se lleva el 10% de tu plata", e.ETIQUETA),
+    texto("  " + e.VINETA + " Las bases NO estan protegidas", e.ETIQUETA),
+    texto("", None),
+    texto("  Lo que guardas en el ender chest no se", e.ETIQUETA),
+    texto("  pierde al morir y nadie te lo puede robar.", e.ETIQUETA),
+])
+
+guardar("pvp", {
+    "name": texto("PVP Y RECOMPENSAS", e.KILLS, negrita=True),
+    "rows": 5,
+    "items": marco(5, saltar=[(5, 5)]) + [
+        celda(2, 2, reglas),
+        celda(2, 4, item("minecraft:amethyst_shard", "/shards", e.SHARDS,
+                         ["Cuantos shards tenes", "y como se ganan"]),
+              correr("shards")),
+        celda(2, 5, item("minecraft:skeleton_skull", "/bounty", e.RECOMPENSA,
+                         ["La lista de buscados"]),
+              correr("bounty")),
+        celda(2, 6, item("minecraft:wither_skeleton_skull", "PONER RECOMPENSA", e.RECOMPENSA,
+                         ["Poner shards por la cabeza",
+                          "de alguien. Los paga tu bolsillo",
+                          "y se los lleva quien lo mate."]),
+              escribir("/bounty ", "Para poner precio a una cabeza:")),
+        celda(2, 8, item("minecraft:diamond_sword", "TIENDA DE SHARDS", e.SHARDS,
+                         ["Lo que se compra matando"]),
+              abrir("sdp:tienda"), "select"),
+        volver(fila=5),
+    ],
+})
+
+# ------------------------------------------------------------------------ extras
+guardar("extras", {
+    "name": texto("EXTRAS", e.ACENTO, negrita=True),
+    "rows": 5,
+    "items": marco(5, saltar=[(5, 5)]) + lista([
+        ("minecraft:golden_carrot", "/nv", ["Ver de noche en las cuevas"], correr("nv")),
+        ("minecraft:filled_map", "/waypoint", ["Marcar un punto en tu mapa"],
+         escribir("/waypoint ", "Para marcar un punto:")),
+        ("minecraft:player_head", "/skin set", ["Ponerte la skin de otra cuenta"],
+         escribir("/skin set ", "Para cambiar tu skin:")),
+        ("minecraft:name_tag", "/nickname", ["Tu apodo en el chat"],
+         escribir("/nickname ", "Para ponerte un apodo:")),
+        ("minecraft:clock", "/afk", ["Avisar que te vas un rato"], correr("afk")),
+        ("minecraft:ender_chest", "/enderchest", ["Tu cofre de ender donde estes"],
+         correr("enderchest")),
+        ("minecraft:crafting_table", "/workbench", ["Mesa de crafteo portatil"],
+         correr("workbench")),
+        ("minecraft:writable_book", "/msg", ["Mensaje privado a alguien"],
+         escribir("/msg ", "Para mandarle un privado a alguien:")),
+        ("minecraft:note_block", "/voicechat", ["Ajustes del chat de voz"], correr("voicechat")),
+        ("minecraft:paper", "/clearchat", ["Limpiar el chat"], correr("clearchat")),
+    ]) + [volver(fila=5)],
+})
+
+# ------------------------------------------------------------- tienda de shards
+guardar("tienda", {
+    "name": texto("TIENDA DE SHARDS", e.SHARDS, negrita=True),
+    "rows": 5,
+    "items": marco(5, saltar=[(5, 5)]) + [
+        celda(2, 5, item("minecraft:amethyst_shard", e.SHARD + " COMO SE GANAN SHARDS", e.SHARDS, [
+            texto("  " + e.VINETA + " 10 por matar a otro jugador", e.SHARDS),
+            texto("  " + e.VINETA + " 1 por cada 10 minutos jugados", e.ETIQUETA),
+            texto("", None),
+            texto("  El tiempo AFK no cuenta: hay que", e.APAGADO),
+            texto("  moverse para que el reloj corra.", e.APAGADO),
+            texto("", None),
+            texto("  Los shards no se compran con plata", e.ERROR),
+            texto("  ni se pueden pasar a otro jugador.", e.ERROR),
+        ])),
+        celda(3, 2, item("minecraft:netherite_chestplate", "ARMADURA", e.SHARDS,
+                         ["Netherita con Proteccion IV,",
+                          "Irrompibilidad III y Reparacion",
+                          "%d shards la pieza" % PRECIO["armadura"]]),
+              abrir("sdp:tienda_armadura"), "select"),
+        celda(3, 3, item("minecraft:netherite_sword", "ARMAS", e.SHARDS,
+                         ["Espada, maza, arco y ballesta",
+                          "desde %d shards" % PRECIO["arco"]]),
+              abrir("sdp:tienda_armas"), "select"),
+        celda(3, 5, item("minecraft:netherite_pickaxe", "HERRAMIENTAS", e.SHARDS,
+                         ["Pico, pala y hacha de netherita",
+                          "desde %d shards" % PRECIO["hacha"]]),
+              abrir("sdp:tienda_herramientas"), "select"),
+        celda(3, 7, item("minecraft:spawner", "SPAWNERS", e.SHARDS,
+                         ["Generadores de mobs",
+                          "%d shards cada uno" % PRECIO["spawner"]]),
+              abrir("sdp:tienda_spawners"), "select"),
+        celda(3, 8, item("minecraft:potion", "POCIONES", e.SHARDS,
+                         ["Prisa II por 24 horas",
+                          "%d shards" % PRECIO["haste"]]),
+              abrir("sdp:tienda_pociones"), "select"),
+        volver(fila=5),
+    ],
+})
+
+
+def articulo(fila, columna, iid, nombre, precio, lore, componentes, comando):
+    """Un renglon de la tienda: el item como se ve, y el comando que lo entrega."""
+    detalle = list(lore) + [
+        texto("", None),
+        texto("  " + e.SHARD + " %d shards" % precio, e.SHARDS),
+        texto("  Clickea para comprar", e.APAGADO),
+    ]
+    return celda(fila, columna, item(iid, nombre, e.SHARDS, detalle, componentes),
+                 comprar(comando, precio), sonido=["success", "fail"])
+
+
+def armadura(fila, columna, pieza, nombre):
+    return articulo(
+        fila, columna, "minecraft:netherite_" + pieza, nombre, PRECIO["armadura"],
+        ["Proteccion IV", "Irrompibilidad III", "Reparacion"],
+        {"minecraft:enchantments": ENC_ARMADURA},
+        "give %%name%% netherite_%s[enchantments={protection:4,unbreaking:3,mending:1}] 1" % pieza)
+
+
+guardar("tienda_armadura", {
+    "name": texto("ARMADURA DE SHARDS", e.SHARDS, negrita=True),
+    "rows": 4,
+    "items": marco(4, saltar=[(4, 5)]) + [
+        armadura(2, 3, "helmet", "CASCO"),
+        armadura(2, 4, "chestplate", "PETO"),
+        armadura(2, 6, "leggings", "PANTALONES"),
+        armadura(2, 7, "boots", "BOTAS"),
+        celda(3, 5, item("minecraft:shield", "El set completo son %d shards"
+                         % (PRECIO["armadura"] * 4), e.ETIQUETA,
+                         ["Sin Proteccion contra explosiones:",
+                          "esa se la gana cada uno encantando."])),
+        volver("sdp:tienda", fila=4),
+    ],
+})
+
+guardar("tienda_armas", {
+    "name": texto("ARMAS DE SHARDS", e.SHARDS, negrita=True),
+    "rows": 4,
+    "items": marco(4, saltar=[(4, 5)]) + [
+        articulo(2, 3, "minecraft:netherite_sword", "ESPADA", PRECIO["espada"],
+                 ["Filo V", "Botin III", "Irrompibilidad III", "Reparacion"],
+                 {"minecraft:enchantments": ENC_ESPADA},
+                 "give %name% netherite_sword[enchantments={sharpness:5,looting:3,unbreaking:3,mending:1}] 1"),
+        articulo(2, 4, "minecraft:mace", "MAZA", PRECIO["maza"],
+                 ["Densidad V", "Irrompibilidad III", "Reparacion"],
+                 {"minecraft:enchantments": ENC_MAZA},
+                 "give %name% mace[enchantments={density:5,unbreaking:3,mending:1}] 1"),
+        articulo(2, 6, "minecraft:bow", "ARCO", PRECIO["arco"],
+                 ["Poder V", "Fuego", "Irrompibilidad III", "Reparacion"],
+                 {"minecraft:enchantments": ENC_ARCO},
+                 "give %name% bow[enchantments={power:5,flame:1,unbreaking:3,mending:1}] 1"),
+        articulo(2, 7, "minecraft:crossbow", "BALLESTA", PRECIO["arco"],
+                 ["Perforacion IV", "Irrompibilidad III", "Reparacion"],
+                 {"minecraft:enchantments": {"piercing": 4, "unbreaking": 3, "mending": 1}},
+                 "give %name% crossbow[enchantments={piercing:4,unbreaking:3,mending:1}] 1"),
+        volver("sdp:tienda", fila=4),
+    ],
+})
+
+guardar("tienda_herramientas", {
+    "name": texto("HERRAMIENTAS DE SHARDS", e.SHARDS, negrita=True),
+    "rows": 4,
+    "items": marco(4, saltar=[(4, 5)]) + [
+        articulo(2, 3, "minecraft:netherite_pickaxe", "PICO", PRECIO["pico"],
+                 ["Eficiencia V", "Fortuna III", "Irrompibilidad III", "Reparacion"],
+                 {"minecraft:enchantments": ENC_PICO},
+                 "give %name% netherite_pickaxe[enchantments={efficiency:5,fortune:3,unbreaking:3,mending:1}] 1"),
+        articulo(2, 5, "minecraft:netherite_shovel", "PALA", PRECIO["pala"],
+                 ["Eficiencia V", "Irrompibilidad III", "Reparacion"],
+                 {"minecraft:enchantments": ENC_PALA},
+                 "give %name% netherite_shovel[enchantments={efficiency:5,unbreaking:3,mending:1}] 1"),
+        articulo(2, 7, "minecraft:netherite_axe", "HACHA", PRECIO["hacha"],
+                 ["Eficiencia V", "Irrompibilidad III", "Reparacion"],
+                 {"minecraft:enchantments": ENC_HACHA},
+                 "give %name% netherite_axe[enchantments={efficiency:5,unbreaking:3,mending:1}] 1"),
+        volver("sdp:tienda", fila=4),
+    ],
+})
+
+
+def spawner(fila, columna, mob, nombre, drop):
+    datos = 'block_entity_data={id:"minecraft:mob_spawner",SpawnData:{entity:{id:"minecraft:%s"}}}' % mob
+    return articulo(
+        fila, columna, "minecraft:spawner", "SPAWNER DE " + nombre, PRECIO["spawner"],
+        ["Genera " + drop, "Se coloca y funciona solo"],
+        {"minecraft:block_entity_data": {
+            "id": "minecraft:mob_spawner",
+            "SpawnData": {"entity": {"id": "minecraft:" + mob}}}},
+        "give %%name%% spawner[%s] 1" % datos)
+
+
+guardar("tienda_spawners", {
+    "name": texto("SPAWNERS DE SHARDS", e.SHARDS, negrita=True),
+    "rows": 4,
+    "items": marco(4, saltar=[(4, 5)]) + [
+        spawner(2, 2, "skeleton", "ESQUELETO", "huesos y flechas"),
+        spawner(2, 3, "zombie", "ZOMBIE", "carne podrida"),
+        spawner(2, 4, "spider", "ARANA", "cuerda y ojos"),
+        spawner(2, 6, "creeper", "CREEPER", "polvora"),
+        spawner(2, 7, "blaze", "BLAZE", "varas de blaze"),
+        spawner(2, 8, "cow", "VACA", "carne y cuero"),
+        volver("sdp:tienda", fila=4),
+    ],
+})
+
+guardar("tienda_pociones", {
+    "name": texto("POCIONES DE SHARDS", e.SHARDS, negrita=True),
+    "rows": 3,
+    "items": marco(3, saltar=[(3, 5)]) + [
+        articulo(2, 5, "minecraft:potion", "PRISA II", PRECIO["haste"],
+                 ["Prisa II durante 24 horas", "Para minar de verdad"],
+                 {"minecraft:potion_contents": {
+                     "custom_effects": [
+                         {"id": "minecraft:haste", "duration": 1728000, "amplifier": 1}],
+                     "custom_color": 16755200}},
+                 'give %name% potion[potion_contents={custom_effects:[{id:"minecraft:haste",'
+                 'duration:1728000,amplifier:1}],custom_color:16755200},'
+                 'custom_name={text:"Prisa II - 24 horas",color:"#a503fc",italic:false}] 1'),
+        volver("sdp:tienda", fila=3),
+    ],
+})
+
+print("menus escritos en servidor/datapack/data/sdp/menu/")
+print("subilos con: python servidor/subir-datapack.py")

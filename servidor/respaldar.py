@@ -4,57 +4,73 @@ Baja del servidor la configuración que mantenemos nosotros y la deja en este
 repositorio, para que exista una copia fuera de Minehost.
 
     python servidor/respaldar.py
+
+La otra mitad es servidor/subir-datapack.py, que hace el camino inverso.
 """
+import json
 import os
+import sys
+import urllib.parse
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, AQUI)
 
 import mc
 
-AQUI = os.path.dirname(os.path.abspath(__file__))
-
+# Lo que baja siempre, con su nombre local.
 ARCHIVOS = [
-    # El menu de /comandos y los comandos propios.
-    ("/config/melius-commands/commands/comandos.json", "comandos/comandos.json"),
-    ("/config/melius-commands/commands/economia.json", "comandos/economia.json"),
-    ("/config/melius-commands/commands/casa.json", "comandos/casa.json"),
-    ("/config/melius-commands/commands/pvp.json", "comandos/pvp.json"),
-    ("/config/melius-commands/commands/extras.json", "comandos/extras.json"),
-    ("/config/melius-commands/commands/bounty.json", "comandos/bounty.json"),
-    ("/config/melius-commands/commands/nightvision.json", "comandos/nightvision.json"),
-    ("/config/melius-commands/commands/nv.json", "comandos/nv.json"),
-    ("/config/melius-commands/commands/clearchat.json", "comandos/clearchat.json"),
-    # Los modificadores cambian los permisos de comandos que no son nuestros.
+    # Los comandos propios y los modificadores de permisos de comandos ajenos.
     ("/config/melius-commands/modifiers/styledsidebars.json", "modificadores/styledsidebars.json"),
     ("/config/melius-commands/modifiers/clear.json", "modificadores/clear.json"),
     # El cartel de la derecha.
     ("/config/styled-sidebars/styles/default.json", "cartel/default.json"),
-    # Las recompensas y la vision nocturna.
-    ("/world/datapacks/sobrinosdepepe/pack.mcmeta", "datapack/pack.mcmeta"),
-    ("/world/datapacks/sobrinosdepepe/data/minecraft/tags/function/tick.json",
-     "datapack/data/minecraft/tags/function/tick.json"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/advancement/kill.json",
-     "datapack/data/sdp/advancement/kill.json"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/predicate/tiene_nv.json",
-     "datapack/data/sdp/predicate/tiene_nv.json"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/function/tick.mcfunction",
-     "datapack/data/sdp/function/tick.mcfunction"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/function/on_kill.mcfunction",
-     "datapack/data/sdp/function/on_kill.mcfunction"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/function/cobrar.mcfunction",
-     "datapack/data/sdp/function/cobrar.mcfunction"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/function/pagar.mcfunction",
-     "datapack/data/sdp/function/pagar.mcfunction"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/function/nv.mcfunction",
-     "datapack/data/sdp/function/nv.mcfunction"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/function/nv_prender.mcfunction",
-     "datapack/data/sdp/function/nv_prender.mcfunction"),
-    ("/world/datapacks/sobrinosdepepe/data/sdp/function/nv_apagar.mcfunction",
-     "datapack/data/sdp/function/nv_apagar.mcfunction"),
+    # La economía. prices.json también queda en servidor/precios/ cuando lo
+    # genera generar-precios.py; esta copia es la que está viva en el servidor.
+    ("/config/economycraft/config.json", "economia/config.json"),
+    ("/config/economycraft/prices.json", "economia/prices.json"),
+    # La configuración del mod de los menús de cofre.
+    ("/config/inventory-menu.json", "menus/inventory-menu.json"),
 ]
 
-for remoto, local in ARCHIVOS:
+# Estas carpetas se bajan enteras, así que agregar un archivo nuevo del lado del
+# servidor no pide tocar ninguna lista.
+CARPETAS = [
+    ("/config/melius-commands/commands", "comandos"),
+    ("/world/datapacks/sobrinosdepepe", "datapack"),
+]
+
+
+def listar(ruta):
+    return json.loads(mc.call("/files/list?directory=" + urllib.parse.quote(ruta)))["data"]
+
+
+def bajar(remoto, local):
     destino = os.path.join(AQUI, local.replace("/", os.sep))
     os.makedirs(os.path.dirname(destino), exist_ok=True)
     open(destino, "w", encoding="utf-8", newline="\n").write(mc.read(remoto))
     print("  " + local)
 
-print("bajados %d archivos" % len(ARCHIVOS))
+
+def bajar_carpeta(remoto, local):
+    total = 0
+    for entrada in listar(remoto):
+        a = entrada["attributes"]
+        if a["is_file"]:
+            bajar(remoto + "/" + a["name"], local + "/" + a["name"])
+            total += 1
+        else:
+            total += bajar_carpeta(remoto + "/" + a["name"], local + "/" + a["name"])
+    return total
+
+
+if __name__ == "__main__":
+    total = 0
+    for remoto, local in ARCHIVOS:
+        try:
+            bajar(remoto, local)
+            total += 1
+        except Exception as error:
+            print("  FALTA %s (%s)" % (local, error))
+    for remoto, local in CARPETAS:
+        total += bajar_carpeta(remoto, local)
+    print("bajados %d archivos" % total)
