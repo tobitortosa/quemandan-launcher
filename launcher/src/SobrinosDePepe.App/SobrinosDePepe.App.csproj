@@ -7,6 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SobrinosDePepe.App</RootNamespace>
     <AssemblyName>SobrinosDePepe</AssemblyName>
+    <!-- pack-release.ps1 la pisa con la versión que publica; esta es para compilar acá. -->
+    <Version>1.9.1</Version>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>

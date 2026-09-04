@@ -19,6 +19,14 @@ public sealed record Account(
 public sealed record Session(string Token, Account Account);
 
 /// <summary>
+/// Lo que tiene que estar al día en la máquina del jugador. Cualquiera de los dos
+/// puede venir en null si el backend todavía no lo sabe; ahí no se hace nada.
+/// </summary>
+public sealed record Versions(
+    [property: JsonPropertyName("launcher")] string? Launcher,
+    [property: JsonPropertyName("pack")] string? Pack);
+
+/// <summary>
 /// Un error que ya viene explicado por el backend. El mensaje se puede mostrar tal cual.
 /// </summary>
 public sealed class ApiException(string message, HttpStatusCode status) : Exception(message)
@@ -63,6 +71,16 @@ public sealed class LauncherApi
         using var request = Authorized(HttpMethod.Get, "api/me", token);
         using var response = await _http.SendAsync(request, ct);
         return await ReadAsync<Account>(response, ct);
+    }
+
+    /// <summary>
+    /// Las versiones al día del launcher y del pack de mods. No lleva sesión: es lo
+    /// único que se consulta cada diez segundos y no dice nada que no esté publicado.
+    /// </summary>
+    public async Task<Versions> VersionsAsync(CancellationToken ct = default)
+    {
+        using var response = await _http.GetAsync(new Uri(_baseUrl, "api/version"), ct);
+        return await ReadAsync<Versions>(response, ct);
     }
 
     /// <summary>El pack publicado. Una cuenta pendiente recibe un error explicado.</summary>

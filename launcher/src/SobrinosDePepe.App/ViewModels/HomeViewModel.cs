@@ -53,7 +53,9 @@ public partial class HomeViewModel : ObservableObject
         _isAdmin = account.IsAdmin;
 
         var installed = PackInstaller.InstalledVersion();
-        Message = installed is null ? "Primera vez: la instalación tarda unos minutos." : $"Pack {installed} instalado.";
+        Message = installed is null
+            ? "Primera vez: la instalación tarda unos minutos."
+            : $"Pack de mods {installed} instalado.";
 
         // Puede haber quedado el juego abierto de antes, incluso de otra vez que se
         // abrió el launcher.
@@ -82,6 +84,36 @@ public partial class HomeViewModel : ObservableObject
             var running = GameProcess.IsRunning();
             if (running != IsGameRunning) IsGameRunning = running;
         }
+    }
+
+    /// <summary>
+    /// El administrador publicó mods nuevos. Los del jugador tienen que ser los mismos
+    /// que los del servidor, así que si está adentro hay que sacarlo: se avisa, se
+    /// cierra el juego, se instalan los mods y se vuelve a entrar solo.
+    /// </summary>
+    public async Task PackChangedAsync(string version)
+    {
+        if (IsWorking) return;
+
+        if (!IsGameRunning)
+        {
+            // Nada que interrumpir: el pack se instala solo cuando aprete JUGAR.
+            Message = $"Hay mods nuevos (pack {version}). Apretá JUGAR para instalarlos.";
+            return;
+        }
+
+        for (var quedan = 10; quedan > 0; quedan--)
+        {
+            Message = $"Mods nuevos: el juego se cierra en {quedan}… y vuelve a abrirse solo.";
+            if (quedan % 3 == 0) _shell.ComeToFront();
+            await Task.Delay(TimeSpan.FromSeconds(1));
+        }
+
+        Message = "Cerrando el juego para instalar los mods…";
+        await GameProcess.CloseAsync();
+        IsGameRunning = false;
+
+        await PlayCommand.ExecuteAsync(null);
     }
 
     [RelayCommand]
@@ -205,7 +237,7 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private void CopyError()
     {
-        var text = $"SOBRINOS DE PEPE launcher\nUsuario: {Username}\nPack: {PackInstaller.InstalledVersion()}\n\n{Error}\n\n{ErrorDetail}";
+        var text = $"SOBRINOS DE PEPE launcher {AppVersion.Label}\nUsuario: {Username}\nPack de mods: {PackInstaller.InstalledVersion()}\n\n{Error}\n\n{ErrorDetail}";
         Clipboard.Set(text);
         Message = "Copiado. Pegalo en el chat así lo miramos.";
     }

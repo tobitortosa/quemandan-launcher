@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SobrinosDePepe.App.ViewModels"
         xmlns:views="using:SobrinosDePepe.App.Views"
+        xmlns:app="using:SobrinosDePepe.App"
         x:Class="SobrinosDePepe.App.Views.MainWindow"
         x:DataType="vm:ShellViewModel"
         Title="SOBRINOS DE PEPE"
@@ -36,6 +37,14 @@
     </DataTemplate>
   </Window.DataTemplates>
 
-  <ContentControl Content="{Binding Current}" />
+  <Grid RowDefinitions="*,Auto">
+
+    <ContentControl Grid.Row="0" Content="{Binding Current}" />
+
+    <!-- La versión del launcher, abajo de todo y en cualquier pantalla. -->
+    <TextBlock Grid.Row="1" Classes="faint" Text="{x:Static app:AppVersion.Label}"
+               HorizontalAlignment="Center" Margin="0,0,0,12" />
+
+  </Grid>
 
 </Window>

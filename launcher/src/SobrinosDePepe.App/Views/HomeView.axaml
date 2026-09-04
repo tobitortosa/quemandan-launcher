@@ -4,7 +4,7 @@
              x:Class="SobrinosDePepe.App.Views.HomeView"
              x:DataType="vm:HomeViewModel">
 
-  <Grid RowDefinitions="Auto,*,Auto" Margin="34,30">
+  <Grid RowDefinitions="Auto,*,Auto" Margin="34,30,34,10">
 
     <!-- Encabezado -->
     <StackPanel Grid.Row="0">

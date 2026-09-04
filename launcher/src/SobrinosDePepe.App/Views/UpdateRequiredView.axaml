@@ -27,14 +27,11 @@
       <TextBlock Classes="error" Text="{Binding Error}" Margin="0,16,0,0" TextAlignment="Center"
                  IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
-      <Button Classes="primary" Content="ACTUALIZAR"
+      <!-- La actualización arranca sola; el botón queda para reintentar si falló. -->
+      <Button Classes="primary" Content="REINTENTAR"
               Command="{Binding UpdateCommand}"
               IsEnabled="{Binding !IsWorking}"
               HorizontalAlignment="Stretch" Margin="0,24,0,0" />
-
-      <TextBlock Classes="faint" TextWrapping="Wrap" TextAlignment="Center" Margin="0,14,0,0"
-                 IsVisible="{Binding GameIsOpen}"
-                 Text="El juego que tenés abierto no se cierra: podés terminar la partida." />
 
     </StackPanel>
 

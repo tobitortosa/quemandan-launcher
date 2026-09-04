@@ -48,15 +48,26 @@ public partial class ShellViewModel : ObservableObject
         // Desde acá, si aparece una versión nueva se corta lo que se esté haciendo.
         // El aviso llega desde un hilo de fondo y la pantalla solo se puede cambiar
         // desde el hilo de la interfaz.
-        UpdateWatcher.Start(version => Dispatcher.UIThread.Post(() =>
-        {
-            Current = new UpdateRequiredViewModel(this, version);
-            BringToFront?.Invoke();
-        }));
+        UpdateWatcher.Start(
+            Api,
+            version => Dispatcher.UIThread.Post(() =>
+            {
+                Current = new UpdateRequiredViewModel(this, version);
+                ComeToFront();
+            }),
+            version => Dispatcher.UIThread.Post(() =>
+            {
+                // Los mods nuevos los instala la pantalla principal, que ya sabe
+                // sincronizar el pack y volver a abrir el juego.
+                if (Current is HomeViewModel home) _ = home.PackChangedAsync(version);
+            }));
     }
 
     /// <summary>Vuelve al principio, después de una actualización que no hizo falta aplicar.</summary>
     public void RestartFlow() => _ = StartAsync();
+
+    /// <summary>Trae la ventana adelante, para que un aviso obligatorio no pase de largo.</summary>
+    public void ComeToFront() => BringToFront?.Invoke();
 
     /// <summary>Le dice a la pantalla actual por qué no se cerró el launcher.</summary>
     public void NotifyCannotClose()

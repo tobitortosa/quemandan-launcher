@@ -24,7 +24,9 @@ $splash = Join-Path $root "../brand/logo-256.png"
 Write-Host "1. Compilando la aplicación" -ForegroundColor Cyan
 # Autocontenida: el jugador no necesita instalar .NET. En carpeta y no en un solo
 # archivo, porque los ejecutables autoextraíbles despiertan a los antivirus.
+# La versión va compilada adentro: el launcher la muestra abajo de todo.
 dotnet publish $project -c Release -r win-x64 --self-contained true `
+  -p:Version=$Version `
   -p:PublishSingleFile=false -p:DebugType=none -p:DebugSymbols=false `
   -o $publishDir
 if ($LASTEXITCODE -ne 0) { throw "falló la compilación" }

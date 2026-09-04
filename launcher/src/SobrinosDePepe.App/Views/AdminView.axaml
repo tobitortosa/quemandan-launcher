@@ -105,7 +105,7 @@
 
       <StackPanel Grid.Row="0" Margin="0,0,0,12" Spacing="4">
         <TextBlock Foreground="{StaticResource TextBrush}" FontSize="14" FontWeight="SemiBold"
-                   Text="{Binding PackVersion, StringFormat='Pack {0}'}" />
+                   Text="{Binding PackVersion, StringFormat='Pack de mods {0}'}" />
         <TextBlock Classes="faint" Text="{Binding PackInfo}" />
         <TextBlock Classes="faint" Text="{Binding ServerSideNote}"
                    IsVisible="{Binding ServerSideNote, Converter={x:Static ObjectConverters.IsNotNull}}" />

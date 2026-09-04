@@ -1,41 +1,54 @@
-using Velopack;
-using Velopack.Sources;
+using SobrinosDePepe.Core;
 
 namespace SobrinosDePepe.App;
 
 /// <summary>
-/// Mira cada tanto si se publicó una versión nueva del launcher. Alcanza con preguntar
-/// cada pocos minutos: no hace falta mantener una conexión abierta para algo que pasa
-/// una vez por semana, y una consulta simple no se corta ni hay que reconectarla.
+/// Vigila que la máquina del jugador esté al día, tanto el launcher como el pack de
+/// mods. Pregunta cada diez segundos, y le pregunta al backend en vez de a GitHub:
+/// la API de GitHub corta a las sesenta consultas por hora y cada diez segundos son
+/// trescientas sesenta.
 ///
-/// Dos minutos es lo más seguido que conviene: GitHub deja sesenta consultas por hora
-/// sin identificarse, y así se usan treinta.
+/// Las dos cosas son obligatorias. Un launcher viejo instala mal el pack, y un pack
+/// que no coincide con el del servidor no deja entrar: por eso, cuando aparece algo
+/// nuevo, al jugador se lo saca del juego en vez de dejarlo seguir.
 /// </summary>
 public static class UpdateWatcher
 {
-    private static readonly TimeSpan Interval = TimeSpan.FromMinutes(2);
+    private static readonly TimeSpan Interval = TimeSpan.FromSeconds(10);
 
     /// <summary>
-    /// Avisa una sola vez, con la versión encontrada, cuando aparece una nueva.
+    /// <paramref name="onLauncher"/> avisa una sola vez, porque después de actualizar
+    /// el launcher se reinicia. <paramref name="onPack"/> avisa una vez por versión y
+    /// sigue vigilando, porque el pack se sincroniza sin cerrar el launcher.
     /// </summary>
-    public static void Start(Action<string> onFound, CancellationToken ct = default)
+    public static void Start(
+        LauncherApi api, Action<string> onLauncher, Action<string> onPack, CancellationToken ct = default)
     {
         _ = Task.Run(async () =>
         {
+            string? packAvisado = null;
+
             while (!ct.IsCancellationRequested)
             {
                 await Task.Delay(Interval, ct);
 
                 try
                 {
-                    var manager = new UpdateManager(new GithubSource(Updater.ReleasesUrl, null, false));
-                    if (!manager.IsInstalled) continue;
+                    var versions = await api.VersionsAsync(ct);
 
-                    var update = await manager.CheckForUpdatesAsync();
-                    if (update is null) continue;
+                    if (AppVersion.IsPublished && EsMasNueva(versions.Launcher))
+                    {
+                        onLauncher(versions.Launcher!);
+                        return;
+                    }
 
-                    onFound(update.TargetFullRelease.Version.ToString());
-                    return;
+                    var instalado = PackInstaller.InstalledVersion();
+                    if (versions.Pack is not null && instalado is not null &&
+                        versions.Pack != instalado && versions.Pack != packAvisado)
+                    {
+                        packAvisado = versions.Pack;
+                        onPack(versions.Pack);
+                    }
                 }
                 catch (Exception)
                 {
@@ -44,4 +57,7 @@ public static class UpdateWatcher
             }
         }, ct);
     }
+
+    private static bool EsMasNueva(string? publicada) =>
+        Version.TryParse(publicada, out var version) && version > AppVersion.Current;
 }
