@@ -4,6 +4,11 @@ Copia de respaldo de la configuración que hoy solo existe dentro del servidor d
 Minehost. Si el mundo se pierde o hay que rearmar el servidor, esto se vuelve a
 subir tal cual y todo queda como estaba.
 
+- `python servidor/respaldar.py` baja del servidor lo que hay acá.
+- `python servidor/generar-menu.py` arma el menú de `/comandos` y lo sube.
+
+Las credenciales salen de `web/.env.local`, que no está en el repositorio.
+
 Nada de esto se instala en las máquinas de los jugadores: son mods y datapacks
 de servidor, así que se aplican sin publicar una versión nueva del launcher.
 
@@ -37,3 +42,23 @@ final del tick en vez de confiar en cuál pasa primero.
 `pack.mcmeta` declara los cuatro campos de versión (`pack_format`,
 `supported_formats`, `min_format`, `max_format`) y **tienen que coincidir entre
 sí**: 26.1 rechaza el pack si uno dice 17 y el otro 81.
+
+También vive acá la visión nocturna (`/nv`). El mismo comando la prende y la
+apaga: `nv.mcfunction` corta con `return run` antes de la segunda línea, porque
+si no, apagarla dejaría la marca en cero y la línea siguiente la volvería a
+prender en el mismo tick. La marca guarda la intención del jugador y la función
+de tick repone el efecto a quien lo perdió al morir, mirando el predicado
+`tiene_nv` para no reaplicarlo cada tick a quien ya lo tiene.
+
+## Un error conocido en el log
+
+Al recargar o cuando entra alguien, el log escupe varios
+`WrongMethodTypeException` desde `eu.pb4.predicate`. Es un choque entre la
+`predicate-api 0.8.1` que trae **Melius Commands** y la API de permisos de la
+Fabric API 0.155.2 del servidor: la librería llama esperando
+`(Identifier, boolean)` y encuentra `(Identifier, PermissionLevel)`.
+
+No lo causamos nosotros y no hay versión más nueva de Melius para 26.1. Solo
+afecta a los `require` de tipo `permission`, que ninguno de nuestros comandos
+usa, así que es ruido en el log y nada más. **No agregar predicados de tipo
+`permission`** en los comandos ni en los modificadores mientras siga así.
