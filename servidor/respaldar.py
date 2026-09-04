@@ -21,6 +21,10 @@ ARCHIVOS = [
     ("/config/melius-commands/commands/bounty.json", "comandos/bounty.json"),
     ("/config/melius-commands/commands/nightvision.json", "comandos/nightvision.json"),
     ("/config/melius-commands/commands/nv.json", "comandos/nv.json"),
+    ("/config/melius-commands/commands/clearchat.json", "comandos/clearchat.json"),
+    # Los modificadores cambian los permisos de comandos que no son nuestros.
+    ("/config/melius-commands/modifiers/styledsidebars.json", "modificadores/styledsidebars.json"),
+    ("/config/melius-commands/modifiers/clear.json", "modificadores/clear.json"),
     # El cartel de la derecha.
     ("/config/styled-sidebars/styles/default.json", "cartel/default.json"),
     # Las recompensas y la vision nocturna.

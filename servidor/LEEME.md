@@ -58,7 +58,22 @@ Al recargar o cuando entra alguien, el log escupe varios
 Fabric API 0.155.2 del servidor: la librería llama esperando
 `(Identifier, boolean)` y encuentra `(Identifier, PermissionLevel)`.
 
-No lo causamos nosotros y no hay versión más nueva de Melius para 26.1. Solo
-afecta a los `require` de tipo `permission`, que ninguno de nuestros comandos
-usa, así que es ruido en el log y nada más. **No agregar predicados de tipo
-`permission`** en los comandos ni en los modificadores mientras siga así.
+No hay versión más nueva de Melius ni de Styled Sidebars para 26.1, así que se
+resolvió por afuera: `modificadores/styledsidebars.json` reemplaza el requisito
+de ese comando por `{"type": "operator", "operator": 4}`, que mira el nivel de
+operador vanilla y no pasa por la API rota.
+
+**No usar predicados de tipo `permission`** en los comandos ni en los
+modificadores mientras siga así: cualquiera que se evalúe rompe el envío del
+árbol de comandos y deja sin comandos a todos los que no sean operadores.
+
+Lo peor de esto es cómo se veía: como el chequeo cortaba por lo alto cuando el
+jugador era operador, a quien administra el servidor le funcionaba todo y a los
+demás no les aparecía nada, sin ningún error visible en el juego.
+
+## `/clear` y `/clearchat`
+
+`/clear` le vacía el inventario a quien lo escribe y el nombre invita a pensar
+que limpia el chat. `modificadores/clear.json` lo deja solo para nivel 4 y
+`/clearchat` hace lo que la gente busca. Un operador todavía puede escribir
+`/clear` y borrarse el inventario: para eso no hay red de contención.

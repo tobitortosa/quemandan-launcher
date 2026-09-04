@@ -123,8 +123,10 @@ pvp = borde(CALAVERA + " PVP Y RECOMPENSAS")
 pvp += [
     t("   El PvP esta activo en ", GRAY), t("TODO el mundo" + chr(10) * 2, RED, bold=True),
     t("   " + CUADRO + "  ", RED), t("Si te matan, ", GRAY), t("perdes lo que llevas" + chr(10), WHITE),
-    t("   " + CUADRO + "  ", RED), t("Las bases ", GRAY), t("NO estan protegidas" + chr(10), WHITE),
-    t("   " + CUADRO + "  ", RED), t("Cualquiera puede entrar a tu casa" + chr(10) * 2, GRAY),
+    t("   " + CUADRO + "  ", RED), t("Quien te mata se lleva el ", GRAY), t("10% de tu plata" + chr(10), WHITE),
+    t("   " + CUADRO + "  ", RED), t("Las bases ", GRAY), t("NO estan protegidas" + chr(10) * 2, WHITE),
+    t("   Lo que guardas en ", GRAY), t("/enderchest", AQUA),
+    t(" no se pierde" + chr(10) + "   al morir y nadie te lo puede robar." + chr(10) * 2, GRAY),
     t("   " + CALAVERA + " PONER PRECIO A UNA CABEZA" + chr(10) * 2, GOLD, bold=True),
 ]
 pvp += fila("/bounty", "Ver la lista de buscados", ancho=22, run="/bounty")

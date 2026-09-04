@@ -1,0 +1,11 @@
+{
+  "id": "clearchat",
+  "executes": [
+    {
+      "command": "tellraw @s [\"\", {\"text\": \"\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\"}, {\"text\": \"  Chat limpio.\\n\", \"color\": \"dark_gray\"}]",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    }
+  ]
+}
