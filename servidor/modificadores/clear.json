@@ -1,5 +1,5 @@
 {
-  "type": "node:starts_with",
+  "type": "node:strict",
   "paths": "clear",
   "requirement_modifier": {
     "type": "requirement:replace",

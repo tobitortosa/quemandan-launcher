@@ -22,6 +22,13 @@ permiso de mover plata.
 
 Después de cambiar un archivo, `/reload` en el juego los vuelve a leer.
 
+**Cada ejecución necesita `"op_level": 4` explícito.** En Melius ese campo no
+tiene valor por defecto: sin él el comando corre con el nivel del jugador, y
+`tellraw` pide nivel 2. A un operador le funciona y a un viewer no, y como
+`silent` sí viene en `true` por defecto, el error no se ve en ninguna parte: al
+viewer simplemente no le aparece nada al apretar enter. Es el tipo de falla que
+solo se nota si se prueba sin ser operador (`deop`, probar, `op`).
+
 ## `cartel/` → `/config/styled-sidebars/styles/`
 
 El cartel de la derecha (**Styled Sidebars**): dinero, kills, muertes y el

@@ -63,7 +63,16 @@ def volver():
 
 
 def guardar(cid, partes):
-    doc = {"id": cid, "executes": [{"command": "tellraw @s " + json.dumps([""] + partes)}]}
+    # op_level no tiene valor por defecto en Melius: sin esto el tellraw corre con
+    # el nivel del jugador, y quien no es operador no llega al nivel 2 que pide.
+    # El comando falla y, como silent viene en true, no se ve ningun error: al
+    # viewer simplemente no le aparece nada.
+    doc = {"id": cid, "executes": [{
+        "command": "tellraw @s " + json.dumps([""] + partes),
+        "silent": True,
+        "as_console": False,
+        "op_level": 4,
+    }]}
     mc.write("/config/melius-commands/commands/%s.json" % cid,
              json.dumps(doc, indent=2, ensure_ascii=False))
     print("  escrito %s.json" % cid)
