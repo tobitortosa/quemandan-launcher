@@ -7,10 +7,13 @@ namespace SobrinosDePepe.App;
 /// Mira cada tanto si se publicó una versión nueva del launcher. Alcanza con preguntar
 /// cada pocos minutos: no hace falta mantener una conexión abierta para algo que pasa
 /// una vez por semana, y una consulta simple no se corta ni hay que reconectarla.
+///
+/// Dos minutos es lo más seguido que conviene: GitHub deja sesenta consultas por hora
+/// sin identificarse, y así se usan treinta.
 /// </summary>
 public static class UpdateWatcher
 {
-    private static readonly TimeSpan Interval = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan Interval = TimeSpan.FromMinutes(2);
 
     /// <summary>
     /// Avisa una sola vez, con la versión encontrada, cuando aparece una nueva.
