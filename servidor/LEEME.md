@@ -14,6 +14,7 @@ subir tal cual y todo queda como estaba.
 | `generar-comandos.py` | Arma los comandos propios de Melius y los sube. |
 | `generar-cartel.py` | Arma el cartel de la derecha. |
 | `configurar-scoreboard.py` | Rehace los objetivos y los lugares del scoreboard, que el juego guarda dentro del mundo. |
+| `configurar-borde.py` | Pone el borde del mundo, igual en las tres dimensiones. |
 | `estilo.py` | Los colores y los símbolos, en un solo lugar. |
 
 Las credenciales salen de `web/.env.local`, que no está en el repositorio.
@@ -74,10 +75,11 @@ tabla está deformada por su propia meta de farms — les vale el vidrio 70 vece
 más que a nosotros y el redstone 35 veces más — y copiarla entera rompía la
 coherencia con los otros 1.550 items.
 
-### Las tres formas de sacar plata infinita
+### Las cuatro formas de sacar plata infinita
 
-`verificar-precios.py` las busca todas, leyendo las 1.515 recetas del jar del
-juego. **Correlo después de cada cambio de precios.**
+`verificar-precios.py` las busca todas, leyendo del jar del juego las 1.515
+recetas y los 387 trueques de aldeano. **Correlo después de cada cambio de
+precios.**
 
 1. **Un item que se venda por más de lo que se compra.** Es la obvia y era la
    única que estaba controlada.
@@ -114,11 +116,85 @@ salen. Se itera hasta que ningún costo baja más. El combustible de los hornos 
 se cuenta, que es el lado conservador. Con ese cálculo aparecieron 61 items para
 reparar y el chequeo queda en cero.
 
+4. **El trueque de aldeano.** Es la que de verdad rompió la economía, y la que
+   el punto fijo no veía porque **un trueque no es una receta**. Los aldeanos
+   son la única máquina del juego que convierte cosas renovables en esmeraldas
+   y esmeraldas en equipo, sin límite y sin costo real.
+
+   El 5 de septiembre de 2026 la economía creó 763.005 pesos y **732.060 de
+   esos (el 96%) salieron de 285 libros encantados que vendió un solo jugador**,
+   162 de ellos Mending a 4.200 cada uno. No hubo trampa: a un librero curado se
+   le saca Mending por **una** esmeralda, el trueque se repone doce veces por
+   aldeano, y la tienda no puede saber qué encantamiento tiene el libro que le
+   estás vendiendo (le pagaba lo mismo a un Mending que a un Bane of Arthropods
+   I). Cualquier precio mayor que cero multiplicado por una sala de aldeanos es
+   plata infinita.
+
+   Arreglado poniendo **toda la categoría `enchantments` en 0 de compra y 0 de
+   venta**: `getUnitSell` devuelve `null` cuando el precio no es mayor que cero,
+   así que el item deja de ser vendible sin que el `/sell` se lo coma. Los
+   libros ahora se mueven entre jugadores por el `/ah`, que es lo que queremos y
+   además quema el 10% de impuesto.
+
+   Dos detalles del chequeo, porque sin ellos no caza nada:
+
+   - La tabla **no** tiene `minecraft:enchanted_book`: tiene 121 entradas
+     `enchanted_book_<encantamiento>_<nivel>`. Buscando el id pelado el trueque
+     del librero queda afuera del chequeo, que es exactamente lo que pasó. Hay
+     que valuarlo con el **máximo** de las variantes, porque el jugador elige
+     cuál conseguir.
+   - En el JSON del trueque, `wants.count` del librero es **0**: el costo en
+     esmeraldas lo calcula el juego en tiempo real. Tratarlo como gratis es el
+     lado correcto, porque con el descuento de curar al aldeano es 1 esmeralda.
+
+   El chequeo falla si un solo aldeano rinde más de 25.000 por día. Con la
+   categoría en cero quedan 73 trueques con ganancia y **ninguno** pasa el tope;
+   el más grande es el armero de nivel 5 con la pechera de diamante encantada,
+   11.520 por día. Eso no es una máquina: es una granja, con aldeanos que hay
+   que criar y subir de nivel.
+
+   **No bajar el precio de la esmeralda para arreglar esto.** Probado: a 56 (que
+   es lo que paga Donut, 24 escalado) mueren los trueques de basura → esmeralda
+   pero explotan los de esmeralda → equipo, y el peor pasa de 1.920 a 5.824 por
+   uso. El precio de la esmeralda no tiene una banda que cierre las dos puntas.
+
 Nunca poner un **multiplicador de venta** que suba con el volumen. Es
 exactamente lo que rompió Donut: los jugadores compraban en las órdenes por
 debajo de `precio_base x multiplicador` y le vendían al servidor. Uno solo llegó
 a vender 15 billones así, y Donut eliminó el sistema entero el 2026-06-02. Por
 eso `dynamic_prices_enabled` queda en `false`.
+
+## El borde del mundo
+
+8.000 bloques de lado, centrado en 0 0, **igual en las tres dimensiones**. Lo
+pone `configurar-borde.py` y es idempotente: correrlo de nuevo contesta "Nothing
+changed".
+
+El número no es una corazonada. Antes de ponerlo se midió el mundo que ya
+existe, leyendo los `.dat` de los jugadores y los nombres de los archivos de
+región:
+
+| Qué | Dónde llega |
+|---|---|
+| Regiones generadas del overworld | 2.560 bloques |
+| Regiones generadas del Nether | 1.024 bloques |
+| El End | todavía no existe |
+| Jugador más lejos (Titit0N) | z = -1.860 |
+| Cama más lejos (Felix_1256) | (922, -1.593) |
+
+Con 4.000 de radio **no queda afuera ni un chunk de los que ya existen**, y
+todavía sobran 1.440 bloques de frontera nueva en cada dirección. El spawn está
+en (48, 97, 0), o sea a 48 bloques del centro: no se nota.
+
+Hay cuatro regiones generadas a 250.000 bloques. **No son de nadie**: salieron de
+probar spawners el 2026-09-04, y está en el log
+(`Changed the block at 250000, 100, 250000`).
+
+El Nether lleva el mismo número y **no la octava parte**. Achicarlo a 500 de
+radio para que coincidiera geográficamente con el overworld cortaría chunks que
+ya están generados. Y no abre ningún agujero para escaparse, porque el juego
+recorta el portal de vuelta contra el borde del overworld: caminar 4.000 bloques
+de Nether no deja a nadie a 32.000 del spawn.
 
 ## Los shards
 
@@ -408,7 +484,28 @@ que limpia el chat. `modificadores/clear.json` lo deja solo para nivel 4 y
   `value`, y el slot del scoreboard es `below_name`, no `belowName`.
 - **`/reload` recarga los datapacks, los menús de cofre y los comandos de
   Melius, pero NO el cartel** (`/styledsidebars reload`) **ni la configuración
-  de EconomyCraft** (esa pide reinicio, y no tiene comando de reload).
+  de EconomyCraft**. EconomyCraft no tiene comando de reload, pero sí un botón:
+  el reloj **"Reload from disk"** del `/eco admin` (slot 16) hace
+  `EconomyConfig.load` + `prices.reload` + `applyRuntimeSettings` y aplica
+  `config.json` y `prices.json` sin reiniciar. Lo tiene que apretar alguien con
+  op, porque `/eco admin` pide `gamemaster`.
+- **El borde del mundo es POR DIMENSIÓN.** `WorldBorderCommand` trabaja siempre
+  sobre `source.getLevel().getWorldBorder()`, y cada nivel guarda el suyo aparte
+  como SavedData `minecraft:world_border` en su propia carpeta `data/`. Un
+  `/worldborder set` suelto en la consola configura **solamente el overworld**.
+  Van los tres con `execute in <dimensión>`, que es lo que hace
+  `configurar-borde.py`.
+- **El `warning time` del borde va en ticks**, aunque el comando conteste en
+  segundos: con `10` el servidor respondió "0.50 second(s)". El default de
+  vanilla son 300, que son los 15 segundos de siempre.
+- **`level.dat` cambió de forma en 26.1.** El spawn ya no son `SpawnX`/`SpawnY`/
+  `SpawnZ`: es un compound `spawn` con `pos` como array de tres enteros, más
+  `pitch`, `yaw` y `dimension`. La dificultad también se mudó adentro de
+  `difficulty_settings`.
+- **El log dice `[EconomyCraft] Dynamic prices: ... multiplier 2.31x` aunque
+  estén apagados.** Es ruido: el motor calcula y loguea siempre, pero
+  `isDynamicPricingActive` exige `dynamicPricesEnabled`, que está en `false`, y
+  sin eso `getEffectiveBuyPrice` devuelve el precio base sin tocar.
 - **`dailySellLimit` es todo-o-nada por operación**, no un tope que se llena: si
   al jugador le quedan 500 de margen y quiere vender algo de 600, se le rechaza
   la venta completa. Por eso está en 250.000 y no en 10.000: con los precios

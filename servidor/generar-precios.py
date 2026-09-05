@@ -119,6 +119,26 @@ VENTA = {
 # del /shop: el /sell nunca mira si esta habilitada, asi que seguir vendiendo si.
 CATEGORIAS_SIN_COMPRA = ["armor", "weapons", "tools", "enchantments"]
 
+# Categorias que ademas no se venden. Poner unit_sell en 0 alcanza: getUnitSell
+# devuelve null cuando el precio no es mayor que cero, y ahi el item deja de ser
+# vendible sin que el /sell se lo coma.
+#
+# Los libros encantados estan aca porque medimos el dano. El 5 de septiembre la
+# economia creo 763.005 pesos y 732.060 de esos (el 96%) salieron de 285 libros
+# encantados que vendio un solo jugador, 162 de ellos Mending a 4.200 cada uno.
+#
+# No es que el jugador hiciera trampa: la tabla estaba mal. A un librero curado se
+# le saca Mending por UNA esmeralda, y el trueque se repone doce veces por
+# aldeano. O sea que cualquier precio mayor que cero multiplicado por una sala de
+# aldeanos es plata infinita, y ademas la tienda no puede saber que encantamiento
+# tiene el libro que le estas vendiendo: le paga lo mismo a un Mending que a un
+# Bane of Arthropods I.
+#
+# Los libros pasan a moverse entre jugadores por el /ah, que es justo lo que
+# queremos: el equipo se consigue jugando, cambiando o matando, y ademas cada
+# venta por /ah quema el 10% de impuesto, que es el unico sumidero real que hay.
+CATEGORIAS_SIN_VENTA = ["enchantments"]
+
 # Items durables sueltos que viven en categorias que si se compran.
 SIN_COMPRA = [
     "minecraft:netherite_ingot", "minecraft:netherite_block", "minecraft:netherite_scrap",
@@ -289,7 +309,7 @@ def reparar(base, verif):
     sale de papel y una pepita, el papel de la cana de azucar y la pepita de un
     lingote, y ninguno de esos pasos intermedios se vende en la tienda.
     """
-    recetas, etiquetas = verif.cargar_juego()
+    recetas, etiquetas, _ = verif.cargar_juego()
     costo = verif.costos(base, recetas, etiquetas)
     reparadas = []
     for item, p in sorted(base.items()):
@@ -334,6 +354,12 @@ def construir(verif):
             base[item]["unit_buy"] = 0
         else:
             faltantes.append(item)
+    # Va despues de VENTA y COMPRA a proposito: lo que la categoria saca de la
+    # tienda no lo vuelve a meter ningun ajuste posterior.
+    for p in base.values():
+        if p["category"] in CATEGORIAS_SIN_VENTA:
+            p["unit_buy"] = 0
+            p["unit_sell"] = 0
     for item, categoria in RECATEGORIZAR.items():
         if item in base:
             base[item]["category"] = categoria
@@ -424,10 +450,10 @@ def main():
     rearmar_mod(precios_mod)
 
     # El mismo chequeo que corre verificar-precios.py, sobre lo que se acaba de armar.
-    recetas, etiquetas = verif.cargar_juego()
+    recetas, etiquetas, trueques = verif.cargar_juego()
     limpio = {k: v for k, v in doc.items() if not k.startswith("_")}
     print()
-    fallas = verif.informe(limpio, recetas, etiquetas)
+    fallas = verif.informe(limpio, recetas, etiquetas, trueques)
     if fallas:
         print("HAY %d FALLAS: no subo nada" % fallas)
         return 1
@@ -445,7 +471,11 @@ def main():
         mc.write("/config/economycraft/prices.json", texto)
         mc.write("/config/economycraft/config.json", config)
         print("subidos prices.json y config.json")
-        print("EconomyCraft no tiene reload: los dos entran con el reinicio")
+        # No hay comando de recarga, pero si un boton: el reloj "Reload from
+        # disk" del /eco admin (slot 16) hace EconomyConfig.load + prices.reload
+        # y aplica los dos archivos sin reiniciar. Lo tiene que apretar alguien
+        # con op, porque /eco admin pide gamemaster.
+        print("para que entren: /eco admin y tocar el reloj (o reiniciar)")
     return 0
 
 

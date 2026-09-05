@@ -47,7 +47,7 @@ JAR = glob.glob(os.path.join(
 
 
 def cargar_juego():
-    """Devuelve (recetas, etiquetas) leidas del jar del juego."""
+    """Devuelve (recetas, etiquetas, trueques) leidos del jar del juego."""
     if not JAR:
         print("No encuentro el jar del juego en la cache de Loom de mod-precios.")
         print("Corre una vez 'gradlew build' en mod-precios, o pasa el jar a mano.")
@@ -55,13 +55,19 @@ def cargar_juego():
     z = zipfile.ZipFile(JAR[0])
     recetas = []
     etiquetas = {}
+    trueques = []
     for nombre in z.namelist():
         if nombre.startswith("data/minecraft/recipe/") and nombre.endswith(".json"):
             recetas.append((nombre, json.loads(z.read(nombre))))
         elif nombre.startswith("data/minecraft/tags/item/") and nombre.endswith(".json"):
             clave = "#minecraft:" + nombre[len("data/minecraft/tags/item/"):-len(".json")]
             etiquetas[clave] = json.loads(z.read(nombre))
-    return recetas, etiquetas
+        # Los datapacks que vienen adentro del jar (trade_rebalance entre ellos)
+        # estan apagados en este mundo: se ve en la lista Disabled del level.dat.
+        elif ("data/minecraft/villager_trade/" in nombre and nombre.endswith(".json")
+              and "datapacks" not in nombre):
+            trueques.append((nombre.split("villager_trade/")[1][:-5], json.loads(z.read(nombre))))
+    return recetas, etiquetas, trueques
 
 
 def resolver(ingrediente, etiquetas, visto=None):
@@ -160,6 +166,67 @@ def costos(precios, recetas, etiquetas):
     return costo
 
 
+def trueques_con_ganancia(precios, trueques):
+    """Trueques de aldeano que dejan mas plata de la que costo lo que entregaste.
+
+    Es el cuarto agujero, y el que de verdad rompio la economia: el punto fijo de
+    los crafteos no lo veia porque un trueque no es una receta. Los aldeanos son
+    la unica maquina del juego que convierte cosas renovables (zanahorias, papel,
+    lana) en esmeraldas, y las esmeraldas en equipo. Si lo que te dan vale mas que
+    lo que entregas, una sala de aldeanos imprime plata para siempre.
+
+    Se valua todo a precio de VENTA, que es la plata que el jugador tendria si en
+    vez de comerciar hubiera vendido los insumos en la tienda. Los trueques cuyo
+    resultado no tiene precio (los libros encantados, las pociones) quedan afuera
+    solos: no hay con que compararlos, que es exactamente por que no se venden.
+    """
+    # La tabla no tiene "minecraft:enchanted_book": tiene 121 entradas
+    # enchanted_book_<encantamiento>_<nivel>. Si se buscara el id pelado el
+    # trueque del librero quedaria afuera del chequeo, que es justo lo que paso.
+    # Se usa el maximo de las variantes porque el jugador elige cual conseguir.
+    variantes = {}
+    for k, v in precios.items():
+        if "_" in k and v["unit_sell"] > 0:
+            raiz = k.rsplit("_", 1)[0].rsplit("_", 1)[0]
+            variantes[raiz] = max(variantes.get(raiz, 0), v["unit_sell"])
+
+    def valor(item, cantidad):
+        p = precios.get(item)
+        if p and p["unit_sell"] > 0:
+            return p["unit_sell"] * cantidad
+        if item in variantes:
+            return variantes[item] * cantidad
+        return None
+
+    ganadores = []
+    for nombre, t in trueques:
+        da, quiere = t.get("gives"), t.get("wants")
+        if not da or not quiere or "id" not in da:
+            continue
+        pide = quiere if isinstance(quiere, list) else [quiere]
+        if "additional_wants" in t:
+            pide = pide + [t["additional_wants"]]
+        entra = 0
+        for q in pide:
+            v = valor(q.get("id"), int(q.get("count", 1))) if "id" in q else None
+            if v is None:
+                entra = None
+                break
+            entra += v
+        sale = valor(da["id"], int(da.get("count", 1)))
+        if entra is None or sale is None or sale <= entra:
+            continue
+        # max_uses es cuantas veces se puede hacer antes de que el aldeano se
+        # quede sin stock; repone dos veces por dia si duerme y trabaja.
+        usos = int(t.get("max_uses", 12))
+        ganadores.append({
+            "trueque": nombre, "entrega": entra, "recibe": sale,
+            "ganancia": sale - entra, "por_dia": (sale - entra) * usos * 2,
+        })
+    ganadores.sort(key=lambda x: -x["por_dia"])
+    return ganadores
+
+
 def revisar(precios, recetas, etiquetas):
     """Devuelve las tres listas: ventas por encima de la compra, del costo, y bloques."""
     directas = [(k, v) for k, v in precios.items()
@@ -197,7 +264,14 @@ def revisar(precios, recetas, etiquetas):
     return directas, fabricables, comprimidos
 
 
-def informe(precios, recetas, etiquetas, tope=25):
+# Un trueque que deja ganancia no es de por si una maquina: los aldeanos hay que
+# criarlos, subirlos de nivel y darles de comer, y el stock se agota. Lo que no
+# puede pasar es que UN aldeano solo rinda como un dia entero de granja, que
+# medido en este servidor son unos 170.000 por dia.
+TOPE_TRUEQUE_POR_DIA = 25000
+
+
+def informe(precios, recetas, etiquetas, trueques, tope=25):
     directas, fabricables, comprimidos = revisar(precios, recetas, etiquetas)
 
     print("1) items que se venden por mas de lo que se compran: %d" % len(directas))
@@ -219,7 +293,15 @@ def informe(precios, recetas, etiquetas, tope=25):
         print("     %-34s venta %-10d vs 9 x %-24s = %-10d exceso %d"
               % (b.replace("minecraft:", ""), vb, u.replace("minecraft:", ""), 9 * vu, exceso))
 
-    return len(directas) + len(fabricables)
+    ganadores = trueques_con_ganancia(precios, trueques)
+    graves = [g for g in ganadores if g["por_dia"] > TOPE_TRUEQUE_POR_DIA]
+    print("4) trueques de aldeano que dejan ganancia: %d, y %d pasan los %d por dia"
+          % (len(ganadores), len(graves), TOPE_TRUEQUE_POR_DIA))
+    for g in ganadores[:tope]:
+        print("     %-46s entregas %-8d recibis %-8d gana %-8d %d/dia"
+              % (g["trueque"], g["entrega"], g["recibe"], g["ganancia"], g["por_dia"]))
+
+    return len(directas) + len(fabricables) + len(graves)
 
 
 if __name__ == "__main__":
@@ -231,8 +313,9 @@ if __name__ == "__main__":
         import mc
         precios = json.loads(mc.read("/config/economycraft/prices.json"))
     precios = {k: v for k, v in precios.items() if not k.startswith("_")}
-    recetas, etiquetas = cargar_juego()
-    print("%d precios, %d recetas, %d etiquetas de items" % (len(precios), len(recetas), len(etiquetas)))
-    fallas = informe(precios, recetas, etiquetas)
+    recetas, etiquetas, trueques = cargar_juego()
+    print("%d precios, %d recetas, %d etiquetas de items, %d trueques"
+          % (len(precios), len(recetas), len(etiquetas), len(trueques)))
+    fallas = informe(precios, recetas, etiquetas, trueques)
     print("total de fallas: %d" % fallas)
     sys.exit(1 if fallas else 0)
