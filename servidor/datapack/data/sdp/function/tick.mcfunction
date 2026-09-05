@@ -1,10 +1,11 @@
 # Si murio alguien que tenia precio en su cabeza, se le paga a quien lo mato.
+# El diseno asume una muerte por tick: con dos en el mismo tick, el limit=1 de
+# sdp:cobrar puede emparejar mal. Con cuatro jugadores no pasa nunca.
 execute as @a[scores={sdp_death=1..,Bounty=1..}] run function sdp:cobrar
 
-# Shards por matar. Se paga aca y no en el advancement porque recien en el tick
-# se sabe quien murio: matarse con la propia flecha tambien dispara el
-# advancement, y asi nadie cobra por su propia muerte.
-execute as @a[scores={sdp_killer=1}] unless score @s sdp_death matches 1.. run function sdp:shard_kill
+# Shards por matar. Se paga aca y no en el advancement porque el advancement no
+# dice a quien mato, y el asesino se marca en el mismo tick que la muerte.
+execute as @a[scores={sdp_killer=1}] run function sdp:shard_kill
 
 # El contador de muertes se reinicia todos los ticks: solo interesa este.
 scoreboard players reset * sdp_death
@@ -23,10 +24,10 @@ execute as @a unless score @s sdp_marca matches 1.. run function sdp:empezar
 # sdp_marca guarda en que tick jugado toca el proximo shard.
 #
 # La comparacion va con @s a los dos lados a proposito. Con @a NO anda, y lo
-# peor es que no falla: si hay dos jugadores conectados, la fuente del selector
-# se resuelve a UNO solo y su valor se le aplica a todos. Medido en el servidor:
-# con dos conectados, el sdp_dif de los dos quedo con el sdp_tiempo de uno menos
-# el sdp_marca del otro, y los shards por tiempo dejaron de pagarse.
+# peor es que no falla: scoreboard players operation recorre las dos colecciones
+# anidadas, asi que cada jugador termina con el valor del ultimo de la lista y,
+# en la resta, con la suma de todos. Medido en el servidor: con dos conectados
+# los shards por tiempo dejaron de pagarse; con uno solo andaba perfecto.
 execute as @a if score @s sdp_tiempo >= @s sdp_marca run function sdp:turno
 
 # Repone la vision nocturna a quien la dejo prendida y la perdio al morir.
