@@ -52,9 +52,16 @@ cartel = {
     # y se avisa por chat cuando alguien pone una, que es como lo hacen alla.
     "lines": [
         "",
-        # EconomyCraft ya devuelve la plata con el signo adelante y los puntos
-        # de miles puestos, asi que aca no se agrega nada.
-        fila("", e.PLATA, "Dinero", "%economycraft:balance_formatted%"),
+        # El formato corto, que es el que usa DonutSMP: $337k, $1.5k, $2.5M.
+        # EconomyCraft lo devuelve YA con el signo adelante (formatMoneyShort
+        # arranca con "$"), asi que esta fila va sin icono: ponerle el $ del lado
+        # izquierdo lo dejaria dos veces. Es la unica de las cinco sin simbolo, y
+        # es a proposito.
+        #
+        # Los otros dos placeholders de saldo tambien traen el signo, asi que no
+        # hay forma de tener icono y numero corto a la vez: balance es el unico
+        # que devuelve el numero pelado, pero sin separador de miles.
+        fila("", e.PLATA, "Dinero", "%economycraft:balance_short%"),
         fila(e.SHARD, e.SHARDS, "Shards", "%player:objective Shards%"),
         "",
         fila(e.ESPADAS, e.KILLS, "Kills", "%player:statistic_raw player_kills%"),

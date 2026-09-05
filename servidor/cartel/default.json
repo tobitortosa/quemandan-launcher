@@ -12,7 +12,7 @@
     "",
     [
       "<#00ff00> <gray>Dinero",
-      "<#00ff00>%economycraft:balance_formatted%"
+      "<#00ff00>%economycraft:balance_short%"
     ],
     [
       "<#a503fc>✦ <gray>Shards",
