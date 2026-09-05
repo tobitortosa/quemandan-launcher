@@ -193,6 +193,7 @@ nuevo a `/mods`:
 | iris, sodium, sodium-extra, reeses-sodium-options, zoomx | Son `environment: client`. El servidor nunca los cargó (se ve en la lista de arranque). Ya están en el pack, que es donde sirven. |
 | tl_skin_cape | Igual, pero además **no está en el pack**, o sea que no lo tenía nadie. Del lado del servidor las skins las resuelve `skinrestorer`. |
 | maplink | Este sí cargaba. Sincroniza Xaero con un Bluemap/Dynmap/Squaremap, y acá no hay ninguno. Su `maplink.fabric.mixins.json` tiene la lista común **vacía**: todos sus mixins son de cliente, así que en un servidor dedicado no parchea nada. |
+| player-revive (Simple Revive) | Peleaba con el diseño. Es un datapack puro, sin una sola clase, y el downed lo dispara `simplerevive.deathCount`, o sea que **la muerte pasa de verdad primero**: el asesino cobra kill, shards, recompensa y el 10% de la plata igual. Lo que rompía era el resto. Con `keepinv: 1b`, `as_item.mcfunction` le pone `PickupDelay: 0` a lo que soltaste y **te lo teletransporta encima**, así que revivir te devuelve el equipo y matar deja de dar botín. Y sobre todo: matarse con un amigo y revivirlo era una máquina de shards gratis. Al sacarlo quedaron 16 objetivos `simplerevive.*` huérfanos, que se borraron a mano. |
 
 ## El borde del mundo
 
@@ -231,9 +232,22 @@ de Nether no deja a nadie a 32.000 del spawn.
 Un objetivo de scoreboard llamado `Shards`, que es lo único que se puede
 verificar de verdad con comandos.
 
-- **+10 al matar a otro jugador.** Se paga en `sdp:tick` y no en el advancement,
-  porque recién en el tick se sabe quién murió: matarse con la propia flecha
-  también dispara el advancement, y así nadie cobra por su propia muerte.
+- **+10 al matar a otro jugador, y la misma víctima no vuelve a pagar por
+  diez minutos.** Se paga en `sdp:tick` y no en el advancement, porque recién en
+  el tick se sabe quién murió: matarse con la propia flecha también dispara el
+  advancement, y así nadie cobra por su propia muerte.
+
+  El recorrido va **por muerto y no por asesino** (`sdp:pagar_kill` corre como
+  la víctima), y esa es la parte que importa: sin saber a quién mataron no se
+  puede mirar el enfriamiento de esa víctima, y sin enfriamiento dos amigos se
+  matan en loop y los shards salen de la nada. Respawnear desnudo al lado del
+  otro no cuesta nada y son 10 shards por vuelta, contra los 144 por día que
+  paga el tiempo jugado. El enfriamiento vive en `sdp_cd` y baja un tick por
+  tick, solo mientras el jugador está conectado.
+
+  De paso arregla algo que el recorrido por asesino hacía mal: `sdp_killer` es
+  una marca y no una cuenta, así que matar a dos en el mismo tick pagaba una
+  sola vez. Ahora paga una vez por muerto.
 - **+1 cada 10 minutos jugados**, y el tiempo AFK no cuenta. El juego ya lleva
   el contador de ticks de cada jugador con el criterio
   `minecraft.custom:minecraft.play_time`, así que no hace falta contar ticks a

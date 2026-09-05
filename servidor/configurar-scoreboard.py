@@ -40,6 +40,8 @@ OBJETIVOS = [
 
     ("sdp_death", "deathCount", {"text": "muertes del tick"}),
     ("sdp_killer", "dummy", {"text": "asesino del tick"}),
+    # Ticks que faltan para que matar a este jugador vuelva a pagar shards.
+    ("sdp_cd", "dummy", {"text": "enfriamiento de la kill"}),
     ("sdp_ok", "dummy", {"text": "resultado del cobro"}),
     ("sdp_nv", "dummy", {"text": "vision nocturna"}),
 ]

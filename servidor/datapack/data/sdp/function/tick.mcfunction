@@ -5,7 +5,13 @@ execute as @a[scores={sdp_death=1..,Bounty=1..}] run function sdp:cobrar
 
 # Shards por matar. Se paga aca y no en el advancement porque el advancement no
 # dice a quien mato, y el asesino se marca en el mismo tick que la muerte.
-execute as @a[scores={sdp_killer=1}] run function sdp:shard_kill
+# Se recorre por MUERTO y no por asesino: sdp:pagar_kill necesita saber a quien
+# mataron para mirar el enfriamiento de esa victima.
+execute as @a[scores={sdp_death=1..}] run function sdp:pagar_kill
+
+# El enfriamiento de cada uno baja un tick por tick. Solo corre mientras el
+# jugador esta conectado, que es lo que se quiere: desconectarse no lo acelera.
+scoreboard players remove @a[scores={sdp_cd=1..}] sdp_cd 1
 
 # El contador de muertes se reinicia todos los ticks: solo interesa este.
 scoreboard players reset * sdp_death
