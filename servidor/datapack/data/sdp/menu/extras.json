@@ -469,7 +469,7 @@
     {
       "slot": [
         2,
-        2
+        3
       ],
       "type": "item",
       "item": {
@@ -507,51 +507,6 @@
       "action": {
         "type": "command",
         "command": "nv",
-        "as_player": true,
-        "silent": false
-      }
-    },
-    {
-      "slot": [
-        2,
-        3
-      ],
-      "type": "item",
-      "item": {
-        "id": "minecraft:filled_map",
-        "count": 1,
-        "components": {
-          "minecraft:custom_name": {
-            "text": "/waypoint list",
-            "italic": false,
-            "color": "#00a6ff",
-            "bold": true
-          },
-          "minecraft:lore": [
-            {
-              "text": "  Ver los puntos de tu mapa",
-              "italic": false,
-              "color": "gray"
-            }
-          ],
-          "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
-          },
-          "minecraft:custom_data": {
-            "sdp": "menu"
-          }
-        }
-      },
-      "sound": "click",
-      "action": {
-        "type": "command",
-        "command": "waypoint list",
         "as_player": true,
         "silent": false
       }
@@ -723,51 +678,6 @@
       ],
       "type": "item",
       "item": {
-        "id": "minecraft:clock",
-        "count": 1,
-        "components": {
-          "minecraft:custom_name": {
-            "text": "/afk",
-            "italic": false,
-            "color": "#00a6ff",
-            "bold": true
-          },
-          "minecraft:lore": [
-            {
-              "text": "  Avisar que te vas un rato",
-              "italic": false,
-              "color": "gray"
-            }
-          ],
-          "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
-          },
-          "minecraft:custom_data": {
-            "sdp": "menu"
-          }
-        }
-      },
-      "sound": "click",
-      "action": {
-        "type": "command",
-        "command": "afk",
-        "as_player": true,
-        "silent": false
-      }
-    },
-    {
-      "slot": [
-        2,
-        7
-      ],
-      "type": "item",
-      "item": {
         "id": "minecraft:ender_chest",
         "count": 1,
         "components": {
@@ -809,52 +719,7 @@
     {
       "slot": [
         2,
-        8
-      ],
-      "type": "item",
-      "item": {
-        "id": "minecraft:crafting_table",
-        "count": 1,
-        "components": {
-          "minecraft:custom_name": {
-            "text": "/workbench",
-            "italic": false,
-            "color": "#00a6ff",
-            "bold": true
-          },
-          "minecraft:lore": [
-            {
-              "text": "  Mesa de crafteo portatil",
-              "italic": false,
-              "color": "gray"
-            }
-          ],
-          "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
-          },
-          "minecraft:custom_data": {
-            "sdp": "menu"
-          }
-        }
-      },
-      "sound": "click",
-      "action": {
-        "type": "command",
-        "command": "workbench",
-        "as_player": true,
-        "silent": false
-      }
-    },
-    {
-      "slot": [
-        3,
-        2
+        7
       ],
       "type": "item",
       "item": {
@@ -929,96 +794,6 @@
             }
           ]
         }
-      }
-    },
-    {
-      "slot": [
-        3,
-        3
-      ],
-      "type": "item",
-      "item": {
-        "id": "minecraft:note_block",
-        "count": 1,
-        "components": {
-          "minecraft:custom_name": {
-            "text": "/voicechat",
-            "italic": false,
-            "color": "#00a6ff",
-            "bold": true
-          },
-          "minecraft:lore": [
-            {
-              "text": "  Ajustes del chat de voz",
-              "italic": false,
-              "color": "gray"
-            }
-          ],
-          "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
-          },
-          "minecraft:custom_data": {
-            "sdp": "menu"
-          }
-        }
-      },
-      "sound": "click",
-      "action": {
-        "type": "command",
-        "command": "voicechat",
-        "as_player": true,
-        "silent": false
-      }
-    },
-    {
-      "slot": [
-        3,
-        4
-      ],
-      "type": "item",
-      "item": {
-        "id": "minecraft:paper",
-        "count": 1,
-        "components": {
-          "minecraft:custom_name": {
-            "text": "/clearchat",
-            "italic": false,
-            "color": "#00a6ff",
-            "bold": true
-          },
-          "minecraft:lore": [
-            {
-              "text": "  Limpiar el chat",
-              "italic": false,
-              "color": "gray"
-            }
-          ],
-          "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
-          },
-          "minecraft:custom_data": {
-            "sdp": "menu"
-          }
-        }
-      },
-      "sound": "click",
-      "action": {
-        "type": "command",
-        "command": "clearchat",
-        "as_player": true,
-        "silent": false
       }
     },
     {

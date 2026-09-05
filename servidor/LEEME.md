@@ -496,12 +496,21 @@ Lo peor de esto es cómo se veía: como el chequeo cortaba por lo alto cuando el
 jugador era operador, a quien administra el servidor le funcionaba todo y a los
 demás no les aparecía nada, sin ningún error visible en el juego.
 
-## `/clear` y `/clearchat`
+## Comandos escondidos
 
-`/clear` le vacía el inventario a quien lo escribe y el nombre invita a pensar
-que limpia el chat. `modificadores/clear.json` lo deja solo para nivel 4 y
-`/clearchat` hace lo que la gente busca. Un operador todavía puede escribir
-`/clear` y borrarse el inventario: para eso no hay red de contención.
+`modificadores/` tiene un archivo por comando que se le tapa a los jugadores.
+Todos hacen lo mismo: le reemplazan el requisito al nodo por operador 4, así que
+el comando sigue existiendo pero no aparece ni autocompleta para quien no es op.
+Se aplican con `/reload`.
+
+| Comando | Por qué |
+|---|---|
+| `clear` | Le vacía el inventario a quien lo escribe, y el nombre invita a pensar que limpia el chat. Un operador todavía puede borrarse el inventario: para eso no hay red de contención. |
+| `sidebar`, `styledsidebars` | Cualquiera podía escribir `/sidebar disable` y quedarse sin cartel para siempre. |
+| `warp` | No hay ningún lugar creado, así que solo podía fallar. Se destapa borrando el archivo cuando existan. |
+| `workbench`, `anvil`, `stonecutter` | Mesas portátiles. La idea es que cada uno tenga su mesa de crafteo de verdad, no llevarla en el bolsillo. |
+
+`/clearchat` existió y se sacó: eran sesenta líneas vacías y no lo usaba nadie.
 
 ## Otras cosas de 26.1 que ya nos costaron tiempo
 

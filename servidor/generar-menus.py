@@ -225,16 +225,27 @@ def volver(menu="sdp:comandos", fila=None, columna=5):
                  abrir(menu), sonido="page_turn")
 
 
+ANCHO = 7   # las siete columnas utiles: la 1 y la 9 son el borde
+
+
 def lista(comandos, primera=2):
     """
     Acomoda una lista de comandos en filas de 7, dejando libres las columnas de
     los bordes. Cada entrada es (item, comando, texto, accion).
+
+    Cada fila va centrada, incluida la ultima cuando queda incompleta. Con las
+    filas pegadas a la izquierda un menu de cinco items queda todo amontonado en
+    una esquina y se nota: los menus hechos a mano reparten simetrico alrededor
+    de la columna 5 y estos quedaban distintos.
     """
     celdas = []
-    for i, (iid, nombre, desc, accion) in enumerate(comandos):
-        fila = primera + i // 7
-        columna = 2 + i % 7
-        celdas.append(celda(fila, columna, item(iid, nombre, e.ACENTO, desc), accion))
+    for arranque in range(0, len(comandos), ANCHO):
+        renglon = comandos[arranque:arranque + ANCHO]
+        fila = primera + arranque // ANCHO
+        primera_columna = 2 + (ANCHO - len(renglon)) // 2
+        for i, (iid, nombre, desc, accion) in enumerate(renglon):
+            celdas.append(celda(fila, primera_columna + i,
+                                item(iid, nombre, e.ACENTO, desc), accion))
     return celdas
 
 
@@ -358,23 +369,14 @@ guardar("extras", {
     "rows": 5,
     "items": marco(5, saltar=[(5, 5)]) + lista([
         ("minecraft:golden_carrot", "/nv", ["Ver de noche en las cuevas"], correr("nv")),
-        # El punto se crea desde el minimapa con la tecla B: el comando del servidor
-        # solo lista y edita los que ya existen.
-        ("minecraft:filled_map", "/waypoint list", ["Ver los puntos de tu mapa"],
-         correr("waypoint list")),
         ("minecraft:player_head", "/skin set mojang", ["Ponerte la skin de otra cuenta"],
          escribir("/skin set mojang ", "Para ponerte la skin de otra cuenta:")),
         ("minecraft:name_tag", "/nickname set", ["Tu apodo en el chat"],
          escribir("/nickname set ", "Para ponerte un apodo:")),
-        ("minecraft:clock", "/afk", ["Avisar que te vas un rato"], correr("afk")),
         ("minecraft:ender_chest", "/enderchest", ["Tu cofre de ender donde estes"],
          correr("enderchest")),
-        ("minecraft:crafting_table", "/workbench", ["Mesa de crafteo portatil"],
-         correr("workbench")),
         ("minecraft:writable_book", "/msg", ["Mensaje privado a alguien"],
          escribir("/msg ", "Para mandarle un privado a alguien:")),
-        ("minecraft:note_block", "/voicechat", ["Ajustes del chat de voz"], correr("voicechat")),
-        ("minecraft:paper", "/clearchat", ["Limpiar el chat"], correr("clearchat")),
     ]) + [volver(fila=5)],
 })
 

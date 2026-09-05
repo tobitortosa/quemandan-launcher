@@ -103,8 +103,7 @@ GRUPOS = [
         ("/shards", False), ("/tienda", False),
     ]),
     ("EXTRAS", e.MARCA, [
-        ("/nv", False), ("/afk", False), ("/enderchest", False), ("/workbench", False),
-        ("/voicechat", False), ("/clearchat", False), ("/waypoint list", False),
+        ("/nv", False), ("/enderchest", False),
         ("/msg ", True), ("/nickname set ", True), ("/skin set ", True),
     ]),
 ]
@@ -135,11 +134,6 @@ lista.append(t("/ayuda", e.ACENTO, negrita=True, run="/ayuda",
 lista.append(t(chr(10) + "  " + e.RAYA * 22 + chr(10), e.APAGADO))
 
 guardar("comandos", {"executes": [accion("tellraw @s " + json.dumps(lista))]})
-
-# El chat limpio son sesenta lineas vacias: no hay comando vanilla que lo haga.
-guardar("clearchat", {"executes": [accion(
-    "tellraw @s " + json.dumps(["", {"text": chr(10) * 60},
-                                t("  Chat limpio." + chr(10), e.APAGADO)]))]})
 
 mc.cmd("reload")
 print("  recargado")
