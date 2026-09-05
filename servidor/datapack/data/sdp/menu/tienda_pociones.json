@@ -396,7 +396,7 @@
               "italic": false
             },
             {
-              "text": "  ✦ 400 shards",
+              "text": "  ✦ 800 shards",
               "italic": false,
               "color": "#a503fc"
             },
@@ -431,7 +431,7 @@
           {
             "type": "score",
             "objective": "Shards",
-            "amount": 400,
+            "amount": 800,
             "fail_message": {
               "message": {
                 "text": "",

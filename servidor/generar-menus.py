@@ -49,7 +49,12 @@ PRECIO = {
     "pala": 110,
     "hacha": 80,
     "arco": 70,
-    "haste": 400,
+    # La unica que no sigue la regla de tres tal cual, y a proposito: en Donut
+    # sale 6.000, que son CUATRO spawners. Estuvo en 400 por error hasta el
+    # 2026-09-05, o sea la mitad de lo que le toca. Es el mejor sumidero de
+    # shards que hay, porque multiplica lo que rendis minando en vez de darte
+    # un objeto que ya tenes.
+    "haste": 800,
 }
 
 # Los encantamientos de lo que vende la tienda. La armadura va con Proteccion y
