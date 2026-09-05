@@ -15,6 +15,7 @@ subir tal cual y todo queda como estaba.
 | `generar-cartel.py` | Arma el cartel de la derecha. |
 | `configurar-scoreboard.py` | Rehace los objetivos y los lugares del scoreboard, que el juego guarda dentro del mundo. |
 | `configurar-borde.py` | Pone el borde del mundo, igual en las tres dimensiones. |
+| `ajustar-saldos.py` | Deja el saldo de cada uno en proporción a las horas jugadas. |
 | `estilo.py` | Los colores y los símbolos, en un solo lugar. |
 
 Las credenciales salen de `web/.env.local`, que no está en el repositorio.
@@ -163,6 +164,35 @@ exactamente lo que rompió Donut: los jugadores compraban en las órdenes por
 debajo de `precio_base x multiplicador` y le vendían al servidor. Uno solo llegó
 a vender 15 billones así, y Donut eliminó el sistema entero el 2026-06-02. Por
 eso `dynamic_prices_enabled` queda en `false`.
+
+## Qué mods van en el servidor y cuáles en el launcher
+
+Son dos listas distintas y no tienen por qué coincidir. El servidor carga 20
+mods; el pack que baja el launcher tiene 17 entradas. **Los 14 que están en los
+dos lados son el mismo archivo**, verificado por hash.
+
+Cómo se decide dónde va cada uno: se lee el `fabric.mod.json` del jar.
+
+- `"environment": "client"` → **no lo carga el servidor**, ni aunque esté en
+  `/mods`. Va solo en el pack.
+- `"environment": "*"` con entrypoint `main` y nada de `client` → va solo en el
+  servidor (essential_commands, melius-commands, inventory-menu,
+  styled-sidebars, skinrestorer).
+- `"environment": "server"` → solo servidor (luckperms).
+
+Ojo con los que declaran entrypoint de cliente pero no lo usan:
+**EconomyCraft tiene `onInitializeClient()` vacío**, así que los jugadores no
+necesitan tenerlo. Está bien que no esté en el pack.
+
+En `/mods-apagados/` hay siete jars que se sacaron el 2026-09-05 porque no
+hacían nada. Se movieron en vez de borrarse, así que volver atrás es moverlos de
+nuevo a `/mods`:
+
+| Jar | Por qué salió |
+|---|---|
+| iris, sodium, sodium-extra, reeses-sodium-options, zoomx | Son `environment: client`. El servidor nunca los cargó (se ve en la lista de arranque). Ya están en el pack, que es donde sirven. |
+| tl_skin_cape | Igual, pero además **no está en el pack**, o sea que no lo tenía nadie. Del lado del servidor las skins las resuelve `skinrestorer`. |
+| maplink | Este sí cargaba. Sincroniza Xaero con un Bluemap/Dynmap/Squaremap, y acá no hay ninguno. Su `maplink.fabric.mixins.json` tiene la lista común **vacía**: todos sus mixins son de cliente, así que en un servidor dedicado no parchea nada. |
 
 ## El borde del mundo
 
