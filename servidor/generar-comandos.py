@@ -91,6 +91,10 @@ aviso_sin_shards = ["", t("  " + e.CRUZ + " ", e.ERROR),
                     t("No te alcanzan los shards para esa recompensa.", e.ERROR),
                     t(chr(10))]
 
+aviso_sin_jugador = ["", t("  " + e.CRUZ + " ", e.ERROR),
+                     t("Ese jugador no existe o nunca entro al servidor.", e.ERROR),
+                     t(chr(10))]
+
 anuncio = ["",
            t(chr(10) + "  " + e.CALAVERA + " RECOMPENSA " + e.CALAVERA + chr(10),
              e.RECOMPENSA, negrita=True),
@@ -115,19 +119,31 @@ guardar("bounty", {
         "arguments": [{
             "id": "monto",
             "type": "brigadier:integer 10",
+            # sdp_ok hace de semaforo: 0 el objetivo no existe, 1 existe pero no
+            # alcanzan los shards, 2 todo bien. Se chequea que el objetivo exista
+            # ANTES de cobrar, porque Melius sustituye ${objetivo} como texto
+            # crudo: probado en el juego, con un selector que no matchea a nadie
+            # el comando cobraba los shards y la recompensa no iba a ningun lado.
+            # Tener score en Bounty equivale a haber entrado alguna vez, asi que
+            # tambien sirve para poner precio a alguien desconectado.
             "executes": [
                 accion("execute store success score @s sdp_ok "
-                       "if score @s Shards matches ${monto}.."),
-                accion("execute if score @s sdp_ok matches 1 run "
+                       "if score ${objetivo} Bounty matches 0.."),
+                accion("execute if score @s sdp_ok matches 1 "
+                       "if score @s Shards matches ${monto}.. run "
+                       "scoreboard players set @s sdp_ok 2"),
+                accion("execute if score @s sdp_ok matches 2 run "
                        "scoreboard players remove @s Shards ${monto}"),
-                accion("execute if score @s sdp_ok matches 1 run "
+                accion("execute if score @s sdp_ok matches 2 run "
                        "scoreboard players add ${objetivo} Bounty ${monto}"),
-                accion("execute if score @s sdp_ok matches 1 run tellraw @a "
+                accion("execute if score @s sdp_ok matches 2 run tellraw @a "
                        + json.dumps(anuncio)),
-                accion("execute if score @s sdp_ok matches 1 run "
+                accion("execute if score @s sdp_ok matches 2 run "
                        "playsound minecraft:entity.wither.spawn master @a ~ ~ ~ 0.4 1.6"),
-                accion("execute if score @s sdp_ok matches 0 run tellraw @s "
+                accion("execute if score @s sdp_ok matches 1 run tellraw @s "
                        + json.dumps(aviso_sin_shards)),
+                accion("execute if score @s sdp_ok matches 0 run tellraw @s "
+                       + json.dumps(aviso_sin_jugador)),
                 accion("scoreboard players reset @s sdp_ok"),
             ],
         }],

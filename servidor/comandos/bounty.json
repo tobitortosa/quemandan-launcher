@@ -17,37 +17,49 @@
           "type": "brigadier:integer 10",
           "executes": [
             {
-              "command": "execute store success score @s sdp_ok if score @s Shards matches ${monto}..",
+              "command": "execute store success score @s sdp_ok if score ${objetivo} Bounty matches 0..",
               "silent": true,
               "as_console": false,
               "op_level": 4
             },
             {
-              "command": "execute if score @s sdp_ok matches 1 run scoreboard players remove @s Shards ${monto}",
+              "command": "execute if score @s sdp_ok matches 1 if score @s Shards matches ${monto}.. run scoreboard players set @s sdp_ok 2",
               "silent": true,
               "as_console": false,
               "op_level": 4
             },
             {
-              "command": "execute if score @s sdp_ok matches 1 run scoreboard players add ${objetivo} Bounty ${monto}",
+              "command": "execute if score @s sdp_ok matches 2 run scoreboard players remove @s Shards ${monto}",
               "silent": true,
               "as_console": false,
               "op_level": 4
             },
             {
-              "command": "execute if score @s sdp_ok matches 1 run tellraw @a [\"\", {\"text\": \"\\n  \\u2620 RECOMPENSA \\u2620\\n\", \"color\": \"#ff00a6\", \"bold\": true}, {\"text\": \"  \", \"color\": \"gray\"}, {\"selector\": \"@s\", \"color\": \"#ffb02e\", \"bold\": true}, {\"text\": \" puso \", \"color\": \"gray\"}, {\"text\": \"\\u2726${monto}\", \"color\": \"#a503fc\", \"bold\": true}, {\"text\": \" shards por la cabeza de\\n  \", \"color\": \"gray\"}, {\"selector\": \"${objetivo}\", \"color\": \"#ff00a6\", \"bold\": true}, {\"text\": \"\\n\\n  Total acumulado: \", \"color\": \"gray\"}, {\"text\": \"\\u2726\", \"color\": \"#a503fc\"}, {\"score\": {\"name\": \"${objetivo}\", \"objective\": \"Bounty\"}, \"color\": \"#a503fc\", \"bold\": true}, {\"text\": \"   \\u00bb  \", \"color\": \"dark_gray\"}, {\"text\": \"/bounty\", \"color\": \"#00a6ff\", \"click_event\": {\"action\": \"run_command\", \"command\": \"/bounty\"}, \"hover_event\": {\"action\": \"show_text\", \"value\": {\"text\": \"Ver la lista de buscados\", \"color\": \"gray\"}}}, {\"text\": \" para ver la lista\\n\", \"color\": \"gray\"}]",
+              "command": "execute if score @s sdp_ok matches 2 run scoreboard players add ${objetivo} Bounty ${monto}",
               "silent": true,
               "as_console": false,
               "op_level": 4
             },
             {
-              "command": "execute if score @s sdp_ok matches 1 run playsound minecraft:entity.wither.spawn master @a ~ ~ ~ 0.4 1.6",
+              "command": "execute if score @s sdp_ok matches 2 run tellraw @a [\"\", {\"text\": \"\\n  \\u2620 RECOMPENSA \\u2620\\n\", \"color\": \"#ff00a6\", \"bold\": true}, {\"text\": \"  \", \"color\": \"gray\"}, {\"selector\": \"@s\", \"color\": \"#ffb02e\", \"bold\": true}, {\"text\": \" puso \", \"color\": \"gray\"}, {\"text\": \"\\u2726${monto}\", \"color\": \"#a503fc\", \"bold\": true}, {\"text\": \" shards por la cabeza de\\n  \", \"color\": \"gray\"}, {\"selector\": \"${objetivo}\", \"color\": \"#ff00a6\", \"bold\": true}, {\"text\": \"\\n\\n  Total acumulado: \", \"color\": \"gray\"}, {\"text\": \"\\u2726\", \"color\": \"#a503fc\"}, {\"score\": {\"name\": \"${objetivo}\", \"objective\": \"Bounty\"}, \"color\": \"#a503fc\", \"bold\": true}, {\"text\": \"   \\u00bb  \", \"color\": \"dark_gray\"}, {\"text\": \"/bounty\", \"color\": \"#00a6ff\", \"click_event\": {\"action\": \"run_command\", \"command\": \"/bounty\"}, \"hover_event\": {\"action\": \"show_text\", \"value\": {\"text\": \"Ver la lista de buscados\", \"color\": \"gray\"}}}, {\"text\": \" para ver la lista\\n\", \"color\": \"gray\"}]",
               "silent": true,
               "as_console": false,
               "op_level": 4
             },
             {
-              "command": "execute if score @s sdp_ok matches 0 run tellraw @s [\"\", {\"text\": \"  \\u2716 \", \"color\": \"#ff5555\"}, {\"text\": \"No te alcanzan los shards para esa recompensa.\", \"color\": \"#ff5555\"}, {\"text\": \"\\n\"}]",
+              "command": "execute if score @s sdp_ok matches 2 run playsound minecraft:entity.wither.spawn master @a ~ ~ ~ 0.4 1.6",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if score @s sdp_ok matches 1 run tellraw @s [\"\", {\"text\": \"  \\u2716 \", \"color\": \"#ff5555\"}, {\"text\": \"No te alcanzan los shards para esa recompensa.\", \"color\": \"#ff5555\"}, {\"text\": \"\\n\"}]",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if score @s sdp_ok matches 0 run tellraw @s [\"\", {\"text\": \"  \\u2716 \", \"color\": \"#ff5555\"}, {\"text\": \"Ese jugador no existe o nunca entro al servidor.\", \"color\": \"#ff5555\"}, {\"text\": \"\\n\"}]",
               "silent": true,
               "as_console": false,
               "op_level": 4
