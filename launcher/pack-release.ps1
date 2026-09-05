@@ -4,6 +4,13 @@
 #
 # Deja en releases/ un Setup.exe para el que instala por primera vez, y los archivos
 # que el launcher ya instalado usa para actualizarse solo.
+#
+# OJO: no se puede correr primero sin -Publish para ver que salga bien y despues
+# con -Publish. La segunda corrida se cae con "There is a release in channel win
+# which is equal or greater to the current version", porque vpk mira releases/ y
+# encuentra los .nupkg que dejo la primera. Si pasa, borrar los de esa version:
+#   Remove-Item releases/SobrinosDePepe-<version>-*.nupkg
+# y volver a correr. Lo mas simple es correrlo una sola vez con -Publish.
 
 param(
   [Parameter(Mandatory = $true)][string]$Version,
