@@ -25,13 +25,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -55,13 +52,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -85,13 +79,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -115,13 +106,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -145,13 +133,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -175,13 +160,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -205,13 +187,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -235,13 +214,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -265,13 +241,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -295,13 +268,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -325,13 +295,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -355,13 +322,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -385,13 +349,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -415,13 +376,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -445,13 +403,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -475,13 +430,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -505,13 +457,10 @@
           },
           "minecraft:lore": [],
           "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
+            "hide_tooltip": true
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },
@@ -577,6 +526,9 @@
               "minecraft:stored_enchantments",
               "minecraft:enchantments"
             ]
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           },
           "minecraft:enchantment_glint_override": true
         }
@@ -676,6 +628,9 @@
               "minecraft:stored_enchantments",
               "minecraft:enchantments"
             ]
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           },
           "minecraft:enchantment_glint_override": true
         }
@@ -781,6 +736,9 @@
               "minecraft:enchantments"
             ]
           },
+          "minecraft:custom_data": {
+            "sdp": "menu"
+          },
           "minecraft:enchantment_glint_override": true
         }
       },
@@ -880,6 +838,9 @@
               "minecraft:enchantments"
             ]
           },
+          "minecraft:custom_data": {
+            "sdp": "menu"
+          },
           "minecraft:enchantment_glint_override": true
         }
       },
@@ -954,6 +915,9 @@
               "minecraft:stored_enchantments",
               "minecraft:enchantments"
             ]
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
           }
         }
       },

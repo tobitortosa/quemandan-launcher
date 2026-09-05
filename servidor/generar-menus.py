@@ -114,8 +114,23 @@ SIN_ADORNOS = {
             "minecraft:stored_enchantments",
             "minecraft:enchantments",
         ]
-    }
+    },
+    # La marca que lee el mod de precios para no ponerle "Precio: $180" al
+    # lingote de oro que en realidad es el boton de ECONOMIA.
+    #
+    # Tiene que ser custom_data y NO tooltip_display, aunque tooltip_display
+    # parezca la marca natural: ese componente esta en COMMON_ITEM_COMPONENTS,
+    # o sea que TODOS los items lo traen por defecto. Con esa version el mod
+    # salteaba el inventario entero y no mostraba ningun precio. custom_data no
+    # esta en esa lista, asi que un item normal no lo tiene nunca.
+    "minecraft:custom_data": {"sdp": "menu"},
 }
+
+# El relleno del marco no tiene nombre ni texto, asi que sin esto el juego le
+# dibuja igual un cuadrito negro vacio al pasarle el mouse por encima. Los
+# huecos de verdad (slots sin item) no dibujan nada, y quedaban dos clases de
+# cuadrado vacio en la misma grilla.
+SIN_CARTEL = {"minecraft:tooltip_display": {"hide_tooltip": True}}
 
 
 def item(iid, nombre, color, lore=(), componentes=None, cantidad=1):
@@ -198,7 +213,8 @@ def comprar(comando, precio):
 
 def marco(rows, saltar=()):
     """Vidrio gris arriba y abajo, para que el menu no se vea vacio."""
-    relleno = item("minecraft:gray_stained_glass_pane", " ", e.APAGADO)
+    relleno = item("minecraft:gray_stained_glass_pane", " ", e.APAGADO,
+                   componentes=SIN_CARTEL)
     return [celda(f, c, relleno) for f in (1, rows) for c in range(1, 10)
             if (f, c) not in saltar]
 
