@@ -426,12 +426,8 @@ def main():
         print("   quedaron sin poder venderse: %s"
               % ", ".join(s.replace("minecraft:", "") for s in sin_venta))
 
-    salida = os.path.join(AQUI, "precios", "prices.json")
-    os.makedirs(os.path.dirname(salida), exist_ok=True)
     texto = json.dumps(doc, indent=2, ensure_ascii=False)
-    open(salida, "w", encoding="utf-8", newline=SALTO).write(texto)
-    print("escrito servidor/precios/prices.json (%d items, %d KB)"
-          % (len(doc) - 1, len(texto) // 1024))
+    print("armados %d items de precios (%d KB)" % (len(doc) - 1, len(texto) // 1024))
 
     precios_mod = {k: v["unit_sell"] for k, v in doc.items()
                    if not k.startswith("_") and v["unit_sell"] > 0}

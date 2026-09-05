@@ -411,11 +411,7 @@
               "color": "dark_gray"
             }
           ],
-          "minecraft:enchantments": {
-            "protection": 4,
-            "unbreaking": 3,
-            "mending": 1
-          }
+          "minecraft:enchantment_glint_override": true
         }
       },
       "sound": [
@@ -505,11 +501,7 @@
               "color": "dark_gray"
             }
           ],
-          "minecraft:enchantments": {
-            "protection": 4,
-            "unbreaking": 3,
-            "mending": 1
-          }
+          "minecraft:enchantment_glint_override": true
         }
       },
       "sound": [
@@ -599,11 +591,7 @@
               "color": "dark_gray"
             }
           ],
-          "minecraft:enchantments": {
-            "protection": 4,
-            "unbreaking": 3,
-            "mending": 1
-          }
+          "minecraft:enchantment_glint_override": true
         }
       },
       "sound": [
@@ -693,11 +681,7 @@
               "color": "dark_gray"
             }
           ],
-          "minecraft:enchantments": {
-            "protection": 4,
-            "unbreaking": 3,
-            "mending": 1
-          }
+          "minecraft:enchantment_glint_override": true
         }
       },
       "sound": [

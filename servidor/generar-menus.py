@@ -55,6 +55,16 @@ PRECIO = {
 # Los encantamientos de lo que vende la tienda. La armadura va con Proteccion y
 # no con Blast Protection a proposito: es el detalle que usa Donut para dar
 # acceso sin dar la ventaja que decide las peleas con crystals.
+#
+# OJO: estos encantamientos van SOLO en el comando give, nunca en el item que
+# dibuja el menu. Inventory Menu resuelve el stack con JsonOps pelado, sin
+# acceso a los registros, y desde 1.21 los encantamientos son datapack: el item
+# revienta con "Can't access registry minecraft:enchantment" y en el slot
+# aparece una barrera que dice Invalid menu item. Medido en el juego: fallaron
+# los once items encantados y anduvieron los spawners y las pociones, porque el
+# NBT del bloque y los efectos no pasan por un registro de datapack.
+# Para que igual se vean encantados va enchantment_glint_override, que es un
+# booleano y no toca ningun registro.
 ENC_ARMADURA = {"protection": 4, "unbreaking": 3, "mending": 1}
 ENC_ESPADA = {"sharpness": 5, "unbreaking": 3, "mending": 1, "looting": 3}
 ENC_MAZA = {"density": 5, "unbreaking": 3, "mending": 1}
@@ -62,6 +72,7 @@ ENC_PICO = {"efficiency": 5, "unbreaking": 3, "mending": 1, "fortune": 3}
 ENC_PALA = {"efficiency": 5, "unbreaking": 3, "mending": 1}
 ENC_HACHA = {"efficiency": 5, "unbreaking": 3, "mending": 1}
 ENC_ARCO = {"power": 5, "unbreaking": 3, "mending": 1, "flame": 1}
+ENC_BALLESTA = {"piercing": 4, "unbreaking": 3, "mending": 1}
 
 
 def texto(t, color=None, negrita=False, cursiva=False):
@@ -71,6 +82,14 @@ def texto(t, color=None, negrita=False, cursiva=False):
     if negrita:
         c["bold"] = True
     return c
+
+
+BRILLO = {"minecraft:enchantment_glint_override": True}
+
+
+def enc(encantamientos):
+    """Los encantamientos como los escribe el comando give, de una sola fuente."""
+    return "enchantments={%s}" % ",".join("%s:%d" % par for par in encantamientos.items())
 
 
 def item(iid, nombre, color, lore=(), componentes=None, cantidad=1):
@@ -359,8 +378,8 @@ def armadura(fila, columna, pieza, nombre):
     return articulo(
         fila, columna, "minecraft:netherite_" + pieza, nombre, PRECIO["armadura"],
         ["Proteccion IV", "Irrompibilidad III", "Reparacion"],
-        {"minecraft:enchantments": ENC_ARMADURA},
-        "give %%name%% netherite_%s[enchantments={protection:4,unbreaking:3,mending:1}] 1" % pieza)
+        BRILLO,
+        "give %%name%% netherite_%s[%s] 1" % (pieza, enc(ENC_ARMADURA)))
 
 
 guardar("tienda_armadura", {
@@ -385,20 +404,20 @@ guardar("tienda_armas", {
     "items": marco(4, saltar=[(4, 5)]) + [
         articulo(2, 3, "minecraft:netherite_sword", "ESPADA", PRECIO["espada"],
                  ["Filo V", "Botin III", "Irrompibilidad III", "Reparacion"],
-                 {"minecraft:enchantments": ENC_ESPADA},
-                 "give %name% netherite_sword[enchantments={sharpness:5,looting:3,unbreaking:3,mending:1}] 1"),
+                 BRILLO,
+                 "give %name% netherite_sword[" + enc(ENC_ESPADA) + "] 1"),
         articulo(2, 4, "minecraft:mace", "MAZA", PRECIO["maza"],
                  ["Densidad V", "Irrompibilidad III", "Reparacion"],
-                 {"minecraft:enchantments": ENC_MAZA},
-                 "give %name% mace[enchantments={density:5,unbreaking:3,mending:1}] 1"),
+                 BRILLO,
+                 "give %name% mace[" + enc(ENC_MAZA) + "] 1"),
         articulo(2, 6, "minecraft:bow", "ARCO", PRECIO["arco"],
                  ["Poder V", "Fuego", "Irrompibilidad III", "Reparacion"],
-                 {"minecraft:enchantments": ENC_ARCO},
-                 "give %name% bow[enchantments={power:5,flame:1,unbreaking:3,mending:1}] 1"),
+                 BRILLO,
+                 "give %name% bow[" + enc(ENC_ARCO) + "] 1"),
         articulo(2, 7, "minecraft:crossbow", "BALLESTA", PRECIO["arco"],
                  ["Perforacion IV", "Irrompibilidad III", "Reparacion"],
-                 {"minecraft:enchantments": {"piercing": 4, "unbreaking": 3, "mending": 1}},
-                 "give %name% crossbow[enchantments={piercing:4,unbreaking:3,mending:1}] 1"),
+                 BRILLO,
+                 "give %name% crossbow[" + enc(ENC_BALLESTA) + "] 1"),
         volver("sdp:tienda", fila=4),
     ],
 })
@@ -409,16 +428,16 @@ guardar("tienda_herramientas", {
     "items": marco(4, saltar=[(4, 5)]) + [
         articulo(2, 3, "minecraft:netherite_pickaxe", "PICO", PRECIO["pico"],
                  ["Eficiencia V", "Fortuna III", "Irrompibilidad III", "Reparacion"],
-                 {"minecraft:enchantments": ENC_PICO},
-                 "give %name% netherite_pickaxe[enchantments={efficiency:5,fortune:3,unbreaking:3,mending:1}] 1"),
+                 BRILLO,
+                 "give %name% netherite_pickaxe[" + enc(ENC_PICO) + "] 1"),
         articulo(2, 5, "minecraft:netherite_shovel", "PALA", PRECIO["pala"],
                  ["Eficiencia V", "Irrompibilidad III", "Reparacion"],
-                 {"minecraft:enchantments": ENC_PALA},
-                 "give %name% netherite_shovel[enchantments={efficiency:5,unbreaking:3,mending:1}] 1"),
+                 BRILLO,
+                 "give %name% netherite_shovel[" + enc(ENC_PALA) + "] 1"),
         articulo(2, 7, "minecraft:netherite_axe", "HACHA", PRECIO["hacha"],
                  ["Eficiencia V", "Irrompibilidad III", "Reparacion"],
-                 {"minecraft:enchantments": ENC_HACHA},
-                 "give %name% netherite_axe[enchantments={efficiency:5,unbreaking:3,mending:1}] 1"),
+                 BRILLO,
+                 "give %name% netherite_axe[" + enc(ENC_HACHA) + "] 1"),
         volver("sdp:tienda", fila=4),
     ],
 })
