@@ -53,7 +53,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
 sys.path.insert(0, AQUI)
 
-VERSION_MOD = "1.4.0"
+VERSION_MOD = "1.5.0"
 SALTO = chr(10)
 
 # Toda la tabla de fabrica se multiplica por esto. No es inflacion decorativa:

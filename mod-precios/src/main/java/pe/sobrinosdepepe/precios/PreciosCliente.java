@@ -6,10 +6,13 @@ import com.google.gson.JsonParser;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import org.slf4j.Logger;
@@ -39,7 +42,7 @@ public class PreciosCliente implements ClientModInitializer {
 		cargarPrecios();
 
 		ItemTooltipCallback.EVENT.register((pila, contexto, bandera, lineas) -> {
-			if (esBoton(pila)) return;
+			if (esBoton(pila) || !esTuyo(pila)) return;
 
 			var id = BuiltInRegistries.ITEM.getKey(pila.getItem());
 			Integer unidad = VENTA.get(id.toString());
@@ -65,6 +68,39 @@ public class PreciosCliente implements ClientModInitializer {
 	private static boolean esBoton(ItemStack pila) {
 		CustomData datos = pila.get(DataComponents.CUSTOM_DATA);
 		return datos != null && datos.copyTag().contains("sdp");
+	}
+
+	/**
+	 * El precio se muestra solo en lo que el jugador tiene EN LA MANO O EN EL
+	 * INVENTARIO, y no en cualquier item que aparezca en una pantalla.
+	 *
+	 * La marca de custom_data alcanza para nuestros menus, pero no para los de
+	 * EconomyCraft: sus botones salen de MenuUiSupport.button() y sus items de un
+	 * new ItemStack() pelado, o sea que no traen ninguna senal que se pueda leer
+	 * desde afuera. Adentro del /shop nuestra linea encima era ademas repetida,
+	 * porque EconomyCraft ya escribe ahi cuanto sale y cuanto paga.
+	 *
+	 * Se compara por IDENTIDAD y no por contenido. Los slots del inventario del
+	 * jugador devuelven el mismo objeto ItemStack que tiene el inventario, asi que
+	 * la comparacion es exacta; los items que dibuja un menu son copias aparte y
+	 * nunca coinciden. Compararlos por contenido daria falsos positivos con
+	 * cualquier item de la tienda que el jugador tambien tenga.
+	 *
+	 * Lo que se pierde: los items adentro de un cofre abierto dejan de mostrar el
+	 * precio, porque no estan en el inventario. Del lado del cliente un cofre y
+	 * el menu de una tienda son los dos un ChestMenu y no hay forma de
+	 * distinguirlos.
+	 */
+	private static boolean esTuyo(ItemStack pila) {
+		LocalPlayer jugador = Minecraft.getInstance().player;
+		if (jugador == null) return false;
+
+		Inventory inventario = jugador.getInventory();
+		for (int i = 0; i < inventario.getContainerSize(); i++) {
+			if (inventario.getItem(i) == pila) return true;
+		}
+
+		return false;
 	}
 
 	/** "Precio: $2" y, cuando hay varios, cuanto vale el monton entero. */
