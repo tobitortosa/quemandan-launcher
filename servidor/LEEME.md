@@ -43,6 +43,14 @@ perlas, obsidiana, crystals, respawn anchors. Eso es lo que hace DonutSMP a
 propósito: si regearse cuesta horas, nadie sale a buscar pelea. Es la
 distinción que importa: **consumible sí, durable no.**
 
+**Toda la tabla está multiplicada por 10** respecto de la de fábrica. No es
+inflación decorativa: es resolución. Las recetas que multiplican (6 vidrios dan
+16 paneles) obligan a ponerle un tope al precio de venta del resultado, y con
+precios enteros que valen 1 ese tope cae abajo de 1 y el item queda sin poder
+venderse. Medido: a escala 1 quedaban 17 items sin venta; a escala 5 o más,
+ninguno. Se escaló todo junto — saldo inicial, regalo diario, tope de venta y
+los saldos que ya tenían los jugadores.
+
 ### La trampa de los precios de Donut
 
 Los números que circulan de DonutSMP (netherite ingot 3,5-6 millones, elytra
@@ -86,6 +94,26 @@ juego. **Correlo después de cada cambio de precios.**
    lo reporta como aviso y no como falla: comprimir para vender mejor no crea
    plata, porque las unidades hay que conseguirlas igual.
 
+El punto 2 **no** se puede chequear receta por receta. La primera versión de
+`verificar-precios.py` costeaba una sola receta y solo con precios directos de
+la tienda, y así se le escaparon las dos peores:
+
+- el **name tag** son 1 papel + 1 pepita de metal, y ninguno de los dos se vende
+  en la tienda, así que la receta se salteaba entera. Pero el papel sale de la
+  caña de azúcar y la pepita de un lingote de hierro: $23 de insumos para un
+  item que estaba valuado en $1.400 copiando el `/sell` de Donut, donde el name
+  tag **no** se craftea. 60 veces.
+- la **arena** se compra, se funde en vidrio, y 6 vidrios dan 16 paneles: 33%
+  garantizado. Es literalmente la misma máquina que hundió a Donut con los slabs
+  de madera.
+
+Por eso el costo de cada item se calcula con un **punto fijo** sobre las 1.515
+recetas: `costo(x)` es el menor entre lo que sale comprarlo y, por cada receta
+que lo produce, la suma del costo de sus ingredientes dividida por cuántos
+salen. Se itera hasta que ningún costo baja más. El combustible de los hornos no
+se cuenta, que es el lado conservador. Con ese cálculo aparecieron 61 items para
+reparar y el chequeo queda en cero.
+
 Nunca poner un **multiplicador de venta** que suba con el volumen. Es
 exactamente lo que rompió Donut: los jugadores compraban en las órdenes por
 debajo de `precio_base x multiplicador` y le vendían al servidor. Uno solo llegó
@@ -108,6 +136,13 @@ verificar de verdad con comandos.
   posición del jugador con la de hace diez minutos y solo paga si se movió.
 - **No se pierden al morir ni se pueden pasar a otro jugador.** Si se pudieran
   pasar, dejarían de ser una segunda moneda al instante.
+
+**`scoreboard players operation` con `@a` de los dos lados hace producto
+cartesiano**, y no falla: recorre las dos colecciones anidadas, así que cada
+jugador termina con el valor del último de la lista y, en la resta, con la suma
+de todos. Con un solo jugador conectado anda perfecto — por eso pasó la primera
+prueba — y con dos deja de pagar. La comparación de `sdp_tiempo` contra
+`sdp_marca` va con `@s` a los dos lados por eso.
 
 El estado AFK de Essential Commands **no se puede leer desde un datapack**: es
 un `private boolean` en memoria y el único placeholder que registra el mod es
@@ -212,6 +247,19 @@ Trampas:
   `Error while reading file resource: sdp:menu/<archivo>`.
 - `action_cost` de tipo `score` es lo que cobra los shards: el mod verifica el
   score y lo descuenta él, así que no hay forma de comprar sin pagar.
+- **Los encantamientos no se pueden poner en el item que dibuja el menú.** El
+  mod resuelve el stack con `JsonOps` pelado, sin acceso a los registros, y
+  desde 1.21 los encantamientos son datapack: el item revienta con
+  `Can't access registry minecraft:enchantment` y en el slot aparece una barrera
+  que dice "Invalid menu item". Los spawners y las pociones sí andan, porque el
+  NBT del bloque y los efectos no pasan por un registro de datapack. Los ítems
+  de la tienda llevan `enchantment_glint_override` para verse encantados y los
+  encantamientos de verdad viajan solo en el `give`.
+- **El mensaje de una acción `message` va como UN componente y sin saltos de
+  línea.** Con un salto, el mod parte el texto y rearma cada pedazo como un
+  literal, y se pierden el click y el color. Con una lista de componentes, el
+  codec es un `xor` entre "lista" y "componente" y un array parsea como los dos:
+  el menú entero no carga y el log dice "Both alternatives read successfully".
 
 ## `cartel/` → `/config/styled-sidebars/styles/`
 
@@ -240,6 +288,16 @@ Trampas:
   entero y `/styledsidebars reload` responde en rojo.
 - Los códigos `&a` no se interpretan, y `<hover>` y `<click>` parsean pero no
   hacen nada: la sidebar no es texto interactivo.
+- **`%player:playtime%` sin argumento devuelve vacío** en la beta de
+  placeholder-api que hay instalada, y `%player:statistic play_time%` se pasa a
+  días con decimal a las 12 horas ("0.58 d"). El que sirve es
+  `%player:playtime H'h' m'm'%`, con el patrón explícito.
+- **El mod escribe cuatro estilos de ejemplo la primera vez que arranca**
+  (`disable`, `pages`, `right_text`, `scrolling`) y `/sidebar <style>` los
+  ofrece a cualquiera: quien escriba `/sidebar disable` se queda sin cartel para
+  siempre, porque la elección se guarda por jugador y sobrevive el relogueo.
+  Están borrados, y `modificadores/sidebar.json` deja el comando para nivel 4.
+  `/sidebar` es una raíz aparte: el modificador de `styledsidebars` no la tapa.
 
 Los colores de los números son los de Donut, que están triangulados entre dos
 configs de plugins réplica y el muestreo de píxeles de una captura real: verde

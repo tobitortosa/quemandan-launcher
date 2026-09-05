@@ -594,12 +594,12 @@
           "text": "",
           "extra": [
             {
-              "text": "\n  » ",
+              "text": "  » ",
               "italic": false,
               "color": "dark_gray"
             },
             {
-              "text": "Para pagarle a alguien:\n  ",
+              "text": "Para pagarle a alguien:   ",
               "italic": false,
               "color": "gray"
             },
@@ -622,7 +622,7 @@
               }
             },
             {
-              "text": "   clickealo y completalo\n",
+              "text": "   clickealo y completalo",
               "italic": false,
               "color": "dark_gray"
             }

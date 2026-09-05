@@ -50,18 +50,19 @@ cartel = {
         "",
         # EconomyCraft ya devuelve la plata con el signo adelante y los puntos
         # de miles puestos, asi que aca no se agrega nada.
-        fila(e.PESOS, e.PLATA, "Dinero", "%economycraft:balance_formatted%"),
+        fila("", e.PLATA, "Dinero", "%economycraft:balance_formatted%"),
         fila(e.SHARD, e.SHARDS, "Shards", "%player:objective Shards%"),
         "",
         fila(e.ESPADAS, e.KILLS, "Kills", "%player:statistic_raw player_kills%"),
         fila(e.CALAVERA, e.MUERTES, "Muertes", "%player:statistic_raw deaths%"),
-        # NO usar %player:playtime%: en placeholder-api 3.0.0-beta.2 la version
-        # sin argumento devuelve vacio (probado en el juego). Esta pasa por el
-        # formateador de estadisticas del propio juego y sale como "13h 55m".
-        fila(e.RELOJ, e.TIEMPO, "Jugado", "%player:statistic play_time%"),
+        # El placeholder de tiempo tiene dos trampas: sin argumento devuelve
+        # VACIO (probado en el juego), y el formateador de estadisticas del juego
+        # se pasa a dias con decimal a las 12 horas ("0.58 d"). Con el patron
+        # explicito siempre sale en horas y minutos.
+        fila(e.RELOJ, e.TIEMPO, "Jugado", "%player:playtime H'h' m'm'%"),
         "",
         # "Tu cabeza" y no "Tu precio": el precio en la tienda es otra cosa.
-        fila(e.CALAVERA, e.RECOMPENSA, "Tu cabeza", e.SHARD + "%player:objective Bounty%"),
+        fila(e.SHARD, e.RECOMPENSA, "Tu cabeza", "%player:objective Bounty%"),
         "",
         "<dark_gray>sobrinosdepepe.minehost.pro",
     ],

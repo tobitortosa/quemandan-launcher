@@ -537,12 +537,12 @@
           "text": "",
           "extra": [
             {
-              "text": "\n  » ",
+              "text": "  » ",
               "italic": false,
               "color": "dark_gray"
             },
             {
-              "text": "Para poner precio a una cabeza:\n  ",
+              "text": "Para poner precio a una cabeza:   ",
               "italic": false,
               "color": "gray"
             },
@@ -565,7 +565,7 @@
               }
             },
             {
-              "text": "   clickealo y completalo\n",
+              "text": "   clickealo y completalo",
               "italic": false,
               "color": "dark_gray"
             }

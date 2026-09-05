@@ -126,20 +126,29 @@ def correr(comando):
 def escribir(comando, explicacion):
     """
     Para los comandos que piden datos que una GUI de cofre no puede pedir. Manda
-    una linea al chat que se clickea para que quede escrita y el jugador la
-    complete.
+    dos lineas al chat, y la segunda se clickea para que el comando quede escrito
+    y el jugador lo complete.
+
+    Es UN componente y sin ningun salto de linea adentro, y las dos cosas
+    importan:
+
+      - con un salto, el mod parte el texto por los saltos y rearma cada pedazo
+        como un literal: se pierden el click y el color de los hijos, y el item
+        deja de servir. Es PlaceholderResolver.resolve(List<Component>).
+      - con una lista de componentes, el codec del mensaje es un xor entre "una
+        lista" y "un componente", y un array de componentes parsea como las dos
+        cosas: el menu entero no carga y el log dice "Both alternatives read
+        successfully, can not pick the correct one".
     """
-    return {"type": "message", "message": {
-        "text": "",
-        "extra": [
-            texto("\n  " + e.FLECHA + " ", e.APAGADO),
-            texto(explicacion + "\n  ", e.ETIQUETA),
-            {"text": comando, "color": e.ACENTO, "bold": True, "italic": False,
-             "click_event": {"action": "suggest_command", "command": comando},
-             "hover_event": {"action": "show_text",
-                             "value": texto("Clickea y completa lo que falta", e.ETIQUETA)}},
-            texto("   clickealo y completalo\n", e.APAGADO),
-        ]}}
+    return {"type": "message", "message": {"text": "", "extra": [
+        texto("  " + e.FLECHA + " ", e.APAGADO),
+        texto(explicacion + "   ", e.ETIQUETA),
+        {"text": comando, "color": e.ACENTO, "bold": True, "italic": False,
+         "click_event": {"action": "suggest_command", "command": comando},
+         "hover_event": {"action": "show_text",
+                         "value": texto("Clickea y completa lo que falta", e.ETIQUETA)}},
+        texto("   clickealo y completalo", e.APAGADO),
+    ]}}
 
 
 def comprar(comando, precio):
@@ -304,12 +313,14 @@ guardar("extras", {
     "rows": 5,
     "items": marco(5, saltar=[(5, 5)]) + lista([
         ("minecraft:golden_carrot", "/nv", ["Ver de noche en las cuevas"], correr("nv")),
-        ("minecraft:filled_map", "/waypoint", ["Marcar un punto en tu mapa"],
-         escribir("/waypoint ", "Para marcar un punto:")),
-        ("minecraft:player_head", "/skin set", ["Ponerte la skin de otra cuenta"],
-         escribir("/skin set ", "Para cambiar tu skin:")),
-        ("minecraft:name_tag", "/nickname", ["Tu apodo en el chat"],
-         escribir("/nickname ", "Para ponerte un apodo:")),
+        # El punto se crea desde el minimapa con la tecla B: el comando del servidor
+        # solo lista y edita los que ya existen.
+        ("minecraft:filled_map", "/waypoint list", ["Ver los puntos de tu mapa"],
+         correr("waypoint list")),
+        ("minecraft:player_head", "/skin set mojang", ["Ponerte la skin de otra cuenta"],
+         escribir("/skin set mojang ", "Para ponerte la skin de otra cuenta:")),
+        ("minecraft:name_tag", "/nickname set", ["Tu apodo en el chat"],
+         escribir("/nickname set ", "Para ponerte un apodo:")),
         ("minecraft:clock", "/afk", ["Avisar que te vas un rato"], correr("afk")),
         ("minecraft:ender_chest", "/enderchest", ["Tu cofre de ender donde estes"],
          correr("enderchest")),

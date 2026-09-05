@@ -11,7 +11,7 @@
   "lines": [
     "",
     [
-      "<#00ff00>$ <gray>Dinero",
+      "<#00ff00> <gray>Dinero",
       "<#00ff00>%economycraft:balance_formatted%"
     ],
     [
@@ -29,12 +29,12 @@
     ],
     [
       "<#ffe600>⌛ <gray>Jugado",
-      "<#ffe600>%player:statistic play_time%"
+      "<#ffe600>%player:playtime H'h' m'm'%"
     ],
     "",
     [
-      "<#ff00a6>☠ <gray>Tu cabeza",
-      "<#ff00a6>✦%player:objective Bounty%"
+      "<#ff00a6>✦ <gray>Tu cabeza",
+      "<#ff00a6>%player:objective Bounty%"
     ],
     "",
     "<dark_gray>sobrinosdepepe.minehost.pro"

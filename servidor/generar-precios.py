@@ -53,11 +53,20 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
 sys.path.insert(0, AQUI)
 
-VERSION_MOD = "1.1.0"
+VERSION_MOD = "1.2.0"
 SALTO = chr(10)
 
+# Toda la tabla de fabrica se multiplica por esto. No es inflacion decorativa:
+# es resolucion. Con precios enteros que valen 1 no hay forma de cerrar las
+# cadenas de crafteo que multiplican, porque el tope que hay que ponerle al
+# resultado cae abajo de 1 y el item queda sin poder venderse. Medido: a escala
+# 1 quedaban 17 items sin venta (los paneles de vidrio y el name tag); a escala
+# 5 o mas, ninguno. Se escala TODO junto, incluidos el saldo inicial, el regalo
+# diario, el tope de venta y los saldos que ya tienen los jugadores.
+ESCALA = 10
+
 # El diamante es el ancla: no se mueve, y todo lo de Donut se escala por el.
-DIAMANTE = 84
+DIAMANTE = 84 * ESCALA
 DIAMANTE_DONUT = 360
 
 
@@ -79,13 +88,13 @@ VENTA = {
     "minecraft:trident": d(30000),                # 83 diamantes
     "minecraft:beacon": d(22500),                 # 62 diamantes
     "minecraft:heavy_core": d(3000),
-    "minecraft:mace": 750,                        # el heavy core mas una vara de breeze
-    "minecraft:nether_star": 4200,                # no esta en Donut: lo dejo abajo del beacon
+    "minecraft:mace": 750 * ESCALA,                        # el heavy core mas una vara de breeze
+    "minecraft:nether_star": 4200 * ESCALA,                # no esta en Donut: lo dejo abajo del beacon
     "minecraft:conduit": d(1600),
     "minecraft:heart_of_the_sea": d(1200),
-    "minecraft:enchanted_golden_apple": 700,      # tampoco esta; lo alineo con las cabezas
+    "minecraft:enchanted_golden_apple": 700 * ESCALA,      # tampoco esta; lo alineo con las cabezas
     # Trofeos: no se craftean, no se farmean, y son lo que se cuelga en la base.
-    "minecraft:dragon_egg": 1000000,              # Donut lo pone en 6.400 millones y rompe el /baltop
+    "minecraft:dragon_egg": 2000000,              # Donut lo pone en 6.400 millones y rompe el /baltop
     "minecraft:dragon_head": d(3000),
     "minecraft:wither_skeleton_skull": d(3000),
     "minecraft:skeleton_skull": d(3000),
@@ -96,7 +105,6 @@ VENTA = {
     "minecraft:sponge": d(1500),
     "minecraft:wet_sponge": d(1200),
     "minecraft:enchanting_table": d(1500),
-    "minecraft:name_tag": d(600),
     "minecraft:diamond_horse_armor": d(1500),
     "minecraft:golden_horse_armor": d(900),
     "minecraft:iron_horse_armor": d(300),
@@ -153,18 +161,6 @@ COMPRA = {
     "minecraft:blaze_rod": d(150),
     "minecraft:ghast_tear": d(350),
     "minecraft:dragon_breath": d(1000),
-    "minecraft:end_rod": d(100),
-    "minecraft:chorus_fruit": d(108),
-    "minecraft:popped_chorus_fruit": d(24),
-    "minecraft:magma_cream": d(96),
-    "minecraft:nether_wart": d(96),
-    "minecraft:potato": d(96),
-    "minecraft:carrot": d(96),
-    "minecraft:sweet_berries": d(50),
-    "minecraft:melon_slice": d(36),
-    "minecraft:apple": d(25),
-    "minecraft:cooked_chicken": d(48),
-    "minecraft:cooked_beef": d(35),
 }
 
 # ------------------------------------------------------------------ 4) los ajustes
@@ -175,15 +171,15 @@ COMPRA = {
 CONFIG = {
     # Doce diamantes para arrancar. Donut arranca en cero, pero aca son cuatro
     # amigos y empezar sin nada no le suma nada a nadie.
-    "startingBalance": 1000,
-    "dailyAmount": 100,
+    "startingBalance": 1000 * ESCALA,
+    "dailyAmount": 100 * ESCALA,
 
     # Estaba en 10.000, que con los precios nuevos rompia el /sell: un ingot de
     # netherita vale 17.500 y el limite es todo-o-nada por operacion, asi que la
     # venta entera se rechazaba sin explicacion. 250.000 deja pasar cualquier
     # botin de una pelea (una elytra son 21.000, un bloque de netherita 157.500)
     # y todavia tapa el grifo en unos 3.000 diamantes por dia.
-    "dailySellLimit": 250000,
+    "dailySellLimit": 250000 * ESCALA,
 
     # El 10% NO es un impuesto general: solo lo cobran las subastas y las
     # ordenes de compra. Es el unico sumidero real de plata que tiene el
@@ -285,42 +281,32 @@ def tabla_de_fabrica():
 
 
 def reparar(base, verif):
-    """Baja la venta de todo lo que se pueda craftear comprando los ingredientes."""
-    recetas, etiquetas = verif.cargar_juego()
-    tope = {}
-    for _, receta in recetas:
-        opciones = verif.ingredientes(receta, etiquetas)
-        if not opciones:
-            continue
-        resultado = receta.get("result", {})
-        salida = resultado.get("id")
-        if not salida or salida not in base:
-            continue
-        cantidad = resultado.get("count", 1)
-        costo = 0
-        for opcion in opciones:
-            posibles = [base[i]["unit_buy"] for i in opcion
-                        if i in base and base[i]["unit_buy"] > 0]
-            if not posibles:
-                costo = None      # ese ingrediente no se vende: no hay maquina
-                break
-            costo += min(posibles)
-        if costo is None:
-            continue
-        limite = costo // cantidad
-        tope[salida] = min(tope.get(salida, limite), limite)
+    """
+    Baja la venta de todo lo que se pueda fabricar por menos de lo que vale.
 
+    El costo lo calcula verificar-precios.py con un punto fijo sobre las 1.515
+    recetas, asi que cubre las cadenas enteras y no una sola receta: el name tag
+    sale de papel y una pepita, el papel de la cana de azucar y la pepita de un
+    lingote, y ninguno de esos pasos intermedios se vende en la tienda.
+    """
+    recetas, etiquetas = verif.cargar_juego()
+    costo = verif.costos(base, recetas, etiquetas)
     reparadas = []
-    for item, limite in sorted(tope.items()):
-        p = base[item]
-        if p["unit_sell"] > limite:
+    for item, p in sorted(base.items()):
+        c = costo.get(item, float("inf"))
+        if c < float("inf") and p["unit_sell"] > c:
+            limite = int(math.floor(c))
             reparadas.append((item, p["unit_sell"], limite))
             p["unit_sell"] = limite
     return reparadas
 
 
 def construir(verif):
-    base = {k: dict(v) for k, v in tabla_de_fabrica().items() if not k.startswith("_")}
+    base = {}
+    for k, v in tabla_de_fabrica().items():
+        if k.startswith("_"):
+            continue
+        base[k] = dict(v, unit_buy=v["unit_buy"] * ESCALA, unit_sell=v["unit_sell"] * ESCALA)
     faltantes = []
 
     # 1) fin del juego. La compra sigue el mismo salto que la venta para que los

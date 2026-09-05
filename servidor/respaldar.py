@@ -19,13 +19,8 @@ import mc
 
 # Lo que baja siempre, con su nombre local.
 ARCHIVOS = [
-    # Los comandos propios y los modificadores de permisos de comandos ajenos.
-    ("/config/melius-commands/modifiers/styledsidebars.json", "modificadores/styledsidebars.json"),
-    ("/config/melius-commands/modifiers/clear.json", "modificadores/clear.json"),
-    # El cartel de la derecha.
-    ("/config/styled-sidebars/styles/default.json", "cartel/default.json"),
-    # La economía. prices.json también queda en servidor/precios/ cuando lo
-    # genera generar-precios.py; esta copia es la que está viva en el servidor.
+    # La economía. Los mismos dos archivos los escribe generar-precios.py; esta
+    # copia es la que está viva en el servidor, así que sirve para comparar.
     ("/config/economycraft/config.json", "economia/config.json"),
     ("/config/economycraft/prices.json", "economia/prices.json"),
     # La configuración del mod de los menús de cofre.
@@ -36,6 +31,13 @@ ARCHIVOS = [
 # servidor no pide tocar ninguna lista.
 CARPETAS = [
     ("/config/melius-commands/commands", "comandos"),
+    ("/config/melius-commands/modifiers", "modificadores"),
+    # La carpeta entera y no solo default.json: el mod escribe cuatro estilos de
+    # ejemplo la primera vez que arranca, y uno se llama "disable". Cualquiera
+    # que escriba /sidebar disable se queda sin cartel para siempre, porque la
+    # eleccion se guarda por jugador y sobrevive el relogueo. Bajarlos es la
+    # unica forma de darse cuenta de que estan.
+    ("/config/styled-sidebars/styles", "cartel"),
     ("/world/datapacks/sobrinosdepepe", "datapack"),
 ]
 

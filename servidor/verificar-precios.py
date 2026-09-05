@@ -1,23 +1,35 @@
 # -*- coding: utf-8 -*-
 """
-Busca las tres formas de sacar plata infinita de la tienda.
+Busca las formas de sacar plata infinita de la tienda.
 
-    python servidor/verificar-precios.py
+    python servidor/verificar-precios.py                 # contra el servidor
+    python servidor/verificar-precios.py <prices.json>   # contra un archivo
 
-Correr esto DESPUES de cada cambio de precios. Las tres fallas que busca:
+Correr esto DESPUES de cada cambio de precios.
 
-1. Un item que se venda por mas de lo que se compra. Es la mas obvia y la unica
-   que ya estaba controlada.
-2. Una receta cuyos ingredientes se puedan comprar todos en la tienda y cuyo
-   resultado se venda por mas que la suma de los ingredientes. Es la que hundio
-   la economia de DonutSMP: alla un log de madera cuesta $72 y crafteado en 8
-   slabs vale $96 en la venta, o sea 30% garantizado sin riesgo.
-3. Una receta reversible (el bloque y sus nueve unidades) donde el bloque valga
-   mas de nueve veces la unidad.
+La idea es una sola: **nada que se pueda fabricar comprando en la tienda puede
+venderse por mas de lo que costo fabricarlo.** Y "fabricar" no es un paso: es
+toda la cadena. La primera version de este chequeo costeaba una sola receta y
+solo con precios directos de la tienda, y por eso no veia nada de esto:
 
-Las recetas salen del jar del juego, no de una lista escrita a mano: si Mojang
-agrega una receta nueva, el chequeo la ve sola. El jar sale de la cache de Loom
-del mod de precios, que ya tiene la version exacta del servidor.
+  - el name tag son 1 papel + 1 pepita de metal. Ni el papel ni las pepitas se
+    venden en la tienda, asi que la receta se salteaba entera. Pero el papel sale
+    de la cana de azucar (2 cada uno) y las pepitas de un lingote de hierro (1,67
+    cada una): $3,67 de insumos para un item que se vendia a $140.
+  - la arena se compra a 2, se funde en vidrio, y 6 vidrios dan 16 paneles: $12
+    de insumos por $16 de venta, 33% garantizado. Es la misma maquina que hundio
+    la economia de DonutSMP con los slabs de madera.
+
+Asi que el costo de cada item se calcula con un punto fijo:
+
+    costo(x) = el menor entre
+               lo que sale comprarlo en la tienda, y
+               por cada receta que lo produce, la suma del costo de sus
+               ingredientes dividida por cuantos salen
+
+Se itera hasta que ningun costo baja mas. El combustible de los hornos no se
+cuenta, que es el lado conservador: hace que el chequeo sea mas exigente y no
+menos.
 """
 import glob
 import json
@@ -27,6 +39,7 @@ import zipfile
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
+INFINITO = float("inf")
 
 JAR = glob.glob(os.path.join(
     RAIZ, "mod-precios", ".gradle", "loom-cache", "minecraftMaven", "net", "minecraft",
@@ -104,90 +117,99 @@ def ingredientes(receta, etiquetas):
     return [o for o in opciones if o]
 
 
+def salida_de(receta):
+    """El item que produce la receta y cuantos salen."""
+    resultado = receta.get("result", {})
+    return resultado.get("id"), resultado.get("count", 1)
+
+
+def costos(precios, recetas, etiquetas):
+    """
+    Cuanto sale conseguir cada item empezando desde la tienda, siguiendo todas
+    las cadenas de crafteo. Punto fijo: se repite hasta que ningun costo baja.
+    """
+    costo = {k: (v["unit_buy"] if v["unit_buy"] > 0 else INFINITO)
+             for k, v in precios.items()}
+
+    # Las recetas se preparan una sola vez: aplanar etiquetas es lo caro.
+    preparadas = []
+    for _, receta in recetas:
+        opciones = ingredientes(receta, etiquetas)
+        salida, cantidad = salida_de(receta)
+        if opciones and salida:
+            preparadas.append((salida, cantidad, opciones))
+
+    for _ in range(40):
+        cambio = False
+        for salida, cantidad, opciones in preparadas:
+            total = 0.0
+            for opcion in opciones:
+                mejor = min((costo.get(i, INFINITO) for i in opcion), default=INFINITO)
+                if mejor == INFINITO:
+                    total = INFINITO
+                    break
+                total += mejor
+            if total == INFINITO:
+                continue
+            candidato = total / cantidad
+            if candidato < costo.get(salida, INFINITO) - 1e-9:
+                costo[salida] = candidato
+                cambio = True
+        if not cambio:
+            break
+    return costo
+
+
 def revisar(precios, recetas, etiquetas):
-    """Devuelve las tres listas de fallas."""
-    def compra(item):
-        p = precios.get(item)
-        return p["unit_buy"] if p and p["unit_buy"] > 0 else None
-
-    def venta(item):
-        p = precios.get(item)
-        return p["unit_sell"] if p else 0
-
-    # 1. venta >= compra en el mismo item
+    """Devuelve las tres listas: ventas por encima de la compra, del costo, y bloques."""
     directas = [(k, v) for k, v in precios.items()
                 if v["unit_buy"] > 0 and v["unit_sell"] >= v["unit_buy"]]
 
-    # 2. craftear desde la tienda y vender el resultado
-    crafteo = []
-    for nombre, receta in recetas:
-        opciones = ingredientes(receta, etiquetas)
-        if not opciones:
-            continue
-        resultado = receta.get("result", {})
-        salida = resultado.get("id")
-        if not salida:
-            continue
-        cantidad = resultado.get("count", 1)
-        # El ingrediente se compra por la opcion mas barata que ofrezca la tienda.
-        costo = 0
-        for opcion in opciones:
-            precios_opcion = [compra(i) for i in opcion]
-            precios_opcion = [p for p in precios_opcion if p is not None]
-            if not precios_opcion:
-                costo = None       # este ingrediente no se vende: no hay maquina
-                break
-            costo += min(precios_opcion)
-        if costo is None:
-            continue
-        ingreso = venta(salida) * cantidad
-        if ingreso > costo:
-            crafteo.append({
-                "receta": nombre.split("/")[-1][:-5],
-                "salida": salida,
-                "cantidad": cantidad,
-                "ingreso": ingreso,
-                "costo": costo,
-                "ganancia": ingreso - costo,
+    costo = costos(precios, recetas, etiquetas)
+    fabricables = []
+    for item, v in precios.items():
+        c = costo.get(item, INFINITO)
+        if c < INFINITO and v["unit_sell"] > c:
+            fabricables.append({
+                "item": item, "venta": v["unit_sell"], "costo": c,
+                "ganancia": v["unit_sell"] - c,
+                "veces": v["unit_sell"] / c if c > 0 else INFINITO,
             })
-    crafteo.sort(key=lambda x: -x["ganancia"])
+    fabricables.sort(key=lambda x: -x["ganancia"])
 
-    # 3. bloque comprimido que valga mas que sus nueve unidades
     comprimidos = []
-    for nombre, receta in recetas:
+    for _, receta in recetas:
         if receta.get("type") != "minecraft:crafting_shaped":
             continue
-        patron = receta.get("pattern", [])
-        if patron != ["###", "###", "###"]:
+        if receta.get("pattern") != ["###", "###", "###"]:
             continue
         claves = list(receta.get("key", {}).values())
         if len(claves) != 1 or not isinstance(claves[0], str) or claves[0].startswith("#"):
             continue
-        unidad, bloque = claves[0], receta.get("result", {}).get("id")
+        unidad, bloque = claves[0], salida_de(receta)[0]
         if not bloque or unidad not in precios or bloque not in precios:
             continue
-        if venta(bloque) > 9 * venta(unidad):
-            comprimidos.append((bloque, venta(bloque), unidad, venta(unidad),
-                                venta(bloque) - 9 * venta(unidad)))
+        vb, vu = precios[bloque]["unit_sell"], precios[unidad]["unit_sell"]
+        if vb > 9 * vu:
+            comprimidos.append((bloque, vb, unidad, vu, vb - 9 * vu))
     comprimidos.sort(key=lambda x: -x[4])
 
-    return directas, crafteo, comprimidos
+    return directas, fabricables, comprimidos
 
 
 def informe(precios, recetas, etiquetas, tope=25):
-    directas, crafteo, comprimidos = revisar(precios, recetas, etiquetas)
+    directas, fabricables, comprimidos = revisar(precios, recetas, etiquetas)
 
     print("1) items que se venden por mas de lo que se compran: %d" % len(directas))
     for k, v in directas[:tope]:
         print("     %-42s compra %-10d venta %d" % (k, v["unit_buy"], v["unit_sell"]))
 
-    print("2) recetas rentables comprando todo en la tienda: %d" % len(crafteo))
-    for c in crafteo[:tope]:
-        print("     %-34s x%-3d  cuesta %-10d rinde %-10d gana %d"
-              % (c["salida"].replace("minecraft:", ""), c["cantidad"],
-                 c["costo"], c["ingreso"], c["ganancia"]))
-    if len(crafteo) > tope:
-        print("     ... y %d mas" % (len(crafteo) - tope))
+    print("2) items que se venden por mas de lo que sale fabricarlos: %d" % len(fabricables))
+    for c in fabricables[:tope]:
+        print("     %-38s cuesta %-12.2f vende %-10d x%.1f"
+              % (c["item"].replace("minecraft:", ""), c["costo"], c["venta"], c["veces"]))
+    if len(fabricables) > tope:
+        print("     ... y %d mas" % (len(fabricables) - tope))
 
     # Este tercero es un aviso y no una falla: comprimir para vender mejor no
     # crea plata de la nada, porque las unidades hay que conseguirlas igual. Solo
@@ -197,7 +219,7 @@ def informe(precios, recetas, etiquetas, tope=25):
         print("     %-34s venta %-10d vs 9 x %-24s = %-10d exceso %d"
               % (b.replace("minecraft:", ""), vb, u.replace("minecraft:", ""), 9 * vu, exceso))
 
-    return len(directas) + len(crafteo)
+    return len(directas) + len(fabricables)
 
 
 if __name__ == "__main__":

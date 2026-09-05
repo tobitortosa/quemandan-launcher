@@ -23,6 +23,24 @@
               "op_level": 4
             },
             {
+              "command": "tag ${objetivo} add sdp_objetivo",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if entity @s[tag=sdp_objetivo] run scoreboard players set @s sdp_ok 3",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "tag @a remove sdp_objetivo",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
               "command": "execute if score @s sdp_ok matches 1 if score @s Shards matches ${monto}.. run scoreboard players set @s sdp_ok 2",
               "silent": true,
               "as_console": false,
@@ -60,6 +78,12 @@
             },
             {
               "command": "execute if score @s sdp_ok matches 0 run tellraw @s [\"\", {\"text\": \"  \\u2716 \", \"color\": \"#ff5555\"}, {\"text\": \"Ese jugador no existe o nunca entro al servidor.\", \"color\": \"#ff5555\"}, {\"text\": \"\\n\"}]",
+              "silent": true,
+              "as_console": false,
+              "op_level": 4
+            },
+            {
+              "command": "execute if score @s sdp_ok matches 3 run tellraw @s [\"\", {\"text\": \"  \\u2716 \", \"color\": \"#ff5555\"}, {\"text\": \"No podes poner precio a tu propia cabeza.\", \"color\": \"#ff5555\"}, {\"text\": \"\\n\"}]",
               "silent": true,
               "as_console": false,
               "op_level": 4
