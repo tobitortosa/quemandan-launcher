@@ -81,8 +81,11 @@ cartel = {
         # El cartel es el unico lugar que ve un jugador todo el tiempo, asi que
         # aca vive la pista de como se abre la interfaz. DonutSMP no tiene ningun
         # item que abra menus: todas sus GUIs se abren tipeando el comando, y el
-        # indice de todas es /help. Aca ese indice es /comandos.
-        "<#00a6ff>/comandos <gray>para todo",
+        # indice de todas es /help. Aca ese indice es /ayuda.
+        #
+        # Va como instruccion y no como etiqueta. "para todo" obliga a deducir
+        # que hay que escribirlo; "Escribi /ayuda" dice que hacer.
+        "<white>Escribi <#00a6ff>/ayuda",
     ],
 }
 

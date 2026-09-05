@@ -59,6 +59,10 @@ def t(texto, color=None, negrita=False, run=None, hover=None):
 
 # Los que solo abren un menu.
 for cid, menu in [
+    # /ayuda es el nombre que se publicita y /comandos queda de alias. Un jugador
+    # hispanohablante tipea "/ayuda" sin que nadie le diga nada, y /help ya es del
+    # vanilla. /menu no se puede usar: lo registra Inventory Menu y pide un id.
+    ("ayuda", "sdp:comandos"),
     ("comandos", "sdp:comandos"),
     ("tienda", "sdp:tienda"),
     ("economia", "sdp:economia"),

@@ -1,0 +1,11 @@
+{
+  "executes": [
+    {
+      "command": "menu sdp:comandos",
+      "silent": true,
+      "as_console": false,
+      "op_level": 4
+    }
+  ],
+  "id": "ayuda"
+}

@@ -15,7 +15,7 @@ El saludo va solo en la PRIMERA entrada. El unico gancho vanilla para saludar en
 cada reconexion es el criterio leave_game, y tiene un modo de falla feo: si el
 jugador todavia no tiene score en ese objetivo, la comparacion contra la copia
 falla y el mensaje se repite cada tick, para todos. El cartel de la derecha deja
-/comandos a la vista todo el tiempo, asi que no hace falta.
+/ayuda a la vista todo el tiempo, asi que no hace falta.
 """
 import json
 import os
@@ -35,8 +35,8 @@ MENSAJE = ["",
            {"text": "SOBRINOS DE PEPE", "color": e.MARCA, "bold": True},
            {"text": SALTO * 2},
            {"text": "  Todo se abre desde ", "color": e.ETIQUETA},
-           {"text": "/comandos", "color": e.ACENTO, "bold": True,
-            "click_event": {"action": "run_command", "command": "/comandos"},
+           {"text": "/ayuda", "color": e.ACENTO, "bold": True,
+            "click_event": {"action": "run_command", "command": "/ayuda"},
             "hover_event": {"action": "show_text",
                             "value": {"text": "Clickealo para abrir el menu",
                                       "color": e.ETIQUETA}}},
@@ -45,17 +45,22 @@ MENSAJE = ["",
            {"text": "  La tienda, tu casa, el PvP y la tienda de shards.", "color": e.ETIQUETA},
            {"text": SALTO}]
 
+MARCA = "# Es la primera vez que entra, asi que aca va el unico saludo. El JSON lo"
+
 COMENTARIO = [
     "",
-    "# Es la primera vez que entra, asi que aca va el unico saludo. El JSON lo",
+    MARCA,
     "# escribe generar-bienvenida.py: tiene saltos de linea adentro y a mano se",
     "# parte al medio.",
 ]
 
 if __name__ == "__main__":
     base = open(RUTA, encoding="utf-8").read().rstrip(SALTO)
-    if "tellraw" in base:
-        sys.exit("empezar.mcfunction ya tiene el saludo; no lo duplico")
+    # Si ya estaba, se reemplaza en vez de negarse: asi cambiar el texto del
+    # saludo es correr el script otra vez y no editar el .mcfunction a mano,
+    # que es justo lo que no queremos con un JSON que lleva saltos de linea.
+    if MARCA in base:
+        base = base[:base.index(MARCA)].rstrip(SALTO)
     lineas = [base] + COMENTARIO + [
         "tellraw @s " + json.dumps(MENSAJE, ensure_ascii=True),
         "playsound minecraft:block.note_block.chime master @s ~ ~ ~ 1 1.2",
