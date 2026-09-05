@@ -63,7 +63,6 @@ for cid, menu in [
     # hispanohablante tipea "/ayuda" sin que nadie le diga nada, y /help ya es del
     # vanilla. /menu no se puede usar: lo registra Inventory Menu y pide un id.
     ("ayuda", "sdp:comandos"),
-    ("comandos", "sdp:comandos"),
     ("tienda", "sdp:tienda"),
     ("economia", "sdp:economia"),
     ("casa", "sdp:casa"),
@@ -79,6 +78,63 @@ for cid, funcion in [
     ("shards", "sdp:shards"),
 ]:
     guardar(cid, {"executes": [accion("function " + funcion)]})
+
+# --------------------------------------------------------------------- /comandos
+# Los dos nombres significan lo que dicen: /ayuda abre el menu de cofre para ir
+# clickeando, y /comandos escupe la lista entera en el chat para el que ya sabe
+# lo que busca y quiere escribirlo. Ninguno es obligatorio: todos los comandos
+# de la lista funcionan solos, el menu es nada mas que un lanzador.
+#
+# Los que piden algo mas (un jugador, un monto, un nombre) van con
+# suggest_command, que te lo deja escrito en el chat para completarlo. Los que
+# se ejecutan solos van con run_command, asi es un click y listo.
+GRUPOS = [
+    ("PLATA", e.PLATA, [
+        ("/bal", False), ("/bal top", False), ("/daily", False), ("/shop", False),
+        ("/sell", False), ("/worth", False), ("/ah", False), ("/orders", False),
+        ("/transactions", False), ("/pay ", True),
+    ]),
+    ("VIAJES", e.ACENTO, [
+        ("/spawn", False), ("/home casa", False), ("/home set casa", False),
+        ("/rtp", False), ("/back", False), ("/top", False),
+        ("/tpa ", True), ("/tpaccept", False), ("/tpdeny", False),
+    ]),
+    ("PELEA", e.KILLS, [
+        ("/shards", False), ("/tienda", False),
+    ]),
+    ("EXTRAS", e.MARCA, [
+        ("/nv", False), ("/afk", False), ("/enderchest", False), ("/workbench", False),
+        ("/voicechat", False), ("/clearchat", False), ("/waypoint list", False),
+        ("/msg ", True), ("/nickname set ", True), ("/skin set ", True),
+    ]),
+]
+
+
+def boton(comando, pide_algo):
+    """Un comando clickeable dentro de la lista."""
+    c = {"text": comando.strip() + " ", "color": e.ACENTO, "italic": False,
+         "hover_event": {"action": "show_text", "value": {
+             "text": ("Clickea y completa lo que falta" if pide_algo
+                      else "Clickea para usarlo"), "color": e.ETIQUETA}}}
+    c["click_event"] = ({"action": "suggest_command", "command": comando} if pide_algo
+                        else {"action": "run_command", "command": comando})
+    return c
+
+
+lista = ["", t(chr(10) + "  " + e.RAYA * 22 + chr(10), e.APAGADO),
+         t("  TODOS LOS COMANDOS" + chr(10) * 2, e.MARCA, negrita=True)]
+for nombre, color, comandos in GRUPOS:
+    lista.append(t("  " + e.VINETA + " " + nombre + chr(10), color, negrita=True))
+    lista.append(t("    ", e.APAGADO))
+    for comando, pide in comandos:
+        lista.append(boton(comando, pide))
+    lista.append(t(chr(10)))
+lista.append(t(chr(10) + "  Los podes escribir directo, o abrir el menu con ", e.ETIQUETA))
+lista.append(t("/ayuda", e.ACENTO, negrita=True, run="/ayuda",
+                hover="Abrir el menu"))
+lista.append(t(chr(10) + "  " + e.RAYA * 22 + chr(10), e.APAGADO))
+
+guardar("comandos", {"executes": [accion("tellraw @s " + json.dumps(lista))]})
 
 # El chat limpio son sesenta lineas vacias: no hay comando vanilla que lo haga.
 guardar("clearchat", {"executes": [accion(

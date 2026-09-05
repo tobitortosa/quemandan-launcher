@@ -495,6 +495,61 @@
     },
     {
       "slot": [
+        2,
+        5
+      ],
+      "type": "item",
+      "item": {
+        "id": "minecraft:writable_book",
+        "count": 1,
+        "components": {
+          "minecraft:custom_name": {
+            "text": "TODOS LOS COMANDOS",
+            "italic": false,
+            "color": "#ffd98a",
+            "bold": true
+          },
+          "minecraft:lore": [
+            {
+              "text": "  La lista entera en el chat",
+              "italic": false,
+              "color": "gray"
+            },
+            {
+              "text": "  No hace falta el menu: todos",
+              "italic": false,
+              "color": "gray"
+            },
+            {
+              "text": "  se pueden escribir directo",
+              "italic": false,
+              "color": "gray"
+            }
+          ],
+          "minecraft:tooltip_display": {
+            "hidden_components": [
+              "minecraft:attribute_modifiers",
+              "minecraft:potion_contents",
+              "minecraft:unbreakable",
+              "minecraft:stored_enchantments",
+              "minecraft:enchantments"
+            ]
+          },
+          "minecraft:custom_data": {
+            "sdp": "menu"
+          }
+        }
+      },
+      "sound": "click",
+      "action": {
+        "type": "command",
+        "command": "comandos",
+        "as_player": true,
+        "silent": false
+      }
+    },
+    {
+      "slot": [
         3,
         2
       ],
@@ -560,7 +615,7 @@
           },
           "minecraft:lore": [
             {
-              "text": "  Homes, spawn, warps",
+              "text": "  Homes, spawn, rtp",
               "italic": false,
               "color": "gray"
             },

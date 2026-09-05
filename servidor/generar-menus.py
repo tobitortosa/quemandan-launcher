@@ -256,11 +256,19 @@ guardar("comandos", {
     "name": texto("SOBRINOS DE PEPE", e.MARCA, negrita=True),
     "rows": 5,
     "items": marco(5) + [
+        # Arriba y solo, como el cartel que explica en tienda y en pvp. Existe
+        # para desarmar la idea de que hay que pasar por el menu para todo: los
+        # comandos funcionan escribiendolos, y el menu es nada mas un lanzador.
+        celda(2, 5, item("minecraft:writable_book", "TODOS LOS COMANDOS", e.MARCA_CLARA,
+                         ["La lista entera en el chat",
+                          "No hace falta el menu: todos",
+                          "se pueden escribir directo"]),
+              correr("comandos")),
         celda(3, 2, item("minecraft:gold_ingot", "ECONOMIA", e.PLATA,
                          ["Plata, tienda, subastas", "y ordenes de compra"]),
               abrir("sdp:economia"), "select"),
         celda(3, 3, item("minecraft:oak_door", "CASA Y VIAJES", e.MARCA,
-                         ["Homes, spawn, warps", "y teletransportes"]),
+                         ["Homes, spawn, rtp", "y teletransportes"]),
               abrir("sdp:casa"), "select"),
         celda(3, 4, item("minecraft:netherite_sword", "PVP", e.KILLS,
                          ["Como se pelea aca"]),
