@@ -123,6 +123,17 @@ SIN_COMPRA = [
     "minecraft:vault", "minecraft:budding_amethyst", "minecraft:enchanted_golden_apple",
 ]
 
+# Apagar una categoria entera se lleva puestos tres items que no hacen fuerte a
+# nadie: el soporte de armaduras es decoracion, y la cana y las tijeras se
+# craftean con palos y hierro. Se mudan a "utiles" para que sigan comprables.
+RECATEGORIZAR = {
+    "minecraft:armor_stand": "utility",
+    "minecraft:fishing_rod": "utility",
+    "minecraft:shears": "utility",
+    "minecraft:carrot_on_a_stick": "utility",
+    "minecraft:warped_fungus_on_a_stick": "utility",
+}
+
 # Consumibles de pelea, a los precios de la tienda que tenia Donut. La idea es
 # que regearse sea barato: si cuesta horas, nadie sale a buscar pelea.
 COMPRA = {
@@ -335,6 +346,11 @@ def construir(verif):
     for item in SIN_COMPRA:
         if item in base:
             base[item]["unit_buy"] = 0
+        else:
+            faltantes.append(item)
+    for item, categoria in RECATEGORIZAR.items():
+        if item in base:
+            base[item]["category"] = categoria
         else:
             faltantes.append(item)
 
