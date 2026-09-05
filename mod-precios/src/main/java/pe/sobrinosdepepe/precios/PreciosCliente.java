@@ -36,12 +36,30 @@ public class PreciosCliente implements ClientModInitializer {
 		cargarPrecios();
 
 		ItemTooltipCallback.EVENT.register((pila, contexto, bandera, lineas) -> {
+			if (esBoton(pila)) return;
+
 			var id = BuiltInRegistries.ITEM.getKey(pila.getItem());
 			Integer unidad = VENTA.get(id.toString());
 			if (unidad == null) return;
 
 			lineas.add(linea(unidad, pila.getCount()));
 		});
+	}
+
+	/**
+	 * Los botones de los menus de cofre del servidor no son objetos: son iconos.
+	 * Ponerle "Precio: $180" al lingote de oro que abre ECONOMIA no informa nada
+	 * y ensucia un menu que ya tiene su propio texto.
+	 *
+	 * La marca es el componente tooltip_display, que el servidor le pone a cada
+	 * item de menu para tambien esconder lo que dibuja el juego solo (el dano de
+	 * ataque de las espadas, los efectos de las pociones). Sirve de marca porque
+	 * significa exactamente eso: a este item alguien le curo la descripcion a
+	 * mano, no le agregues nada encima. Un item que el jugador tiene de verdad
+	 * en el inventario nunca lo trae, asi que sigue mostrando su precio.
+	 */
+	private static boolean esBoton(net.minecraft.world.item.ItemStack pila) {
+		return pila.has(net.minecraft.core.component.DataComponents.TOOLTIP_DISPLAY);
 	}
 
 	/** "Precio: $2" y, cuando hay varios, cuanto vale el monton entero. */

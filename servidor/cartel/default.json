@@ -9,26 +9,25 @@
     "<b><gr:#ffb02e:#ffd98a>SOBRINOS DE PEPE</gr>"
   ],
   "lines": [
-    "",
     [
-      "<#00ff00> <gray>Dinero",
+      "<#00ff00>$ <white>Dinero",
       "<#00ff00>%economycraft:balance_short%"
     ],
     [
-      "<#a503fc>✦ <gray>Shards",
+      "<#a503fc>✦ <white>Shards",
       "<#a503fc>%player:objective Shards%"
     ],
     "",
     [
-      "<#ff0000>⚔ <gray>Kills",
+      "<#ff0000>⚔ <white>Kills",
       "<#ff0000>%player:statistic_raw player_kills%"
     ],
     [
-      "<#fc7703>☠ <gray>Muertes",
+      "<#fc7703>☠ <white>Muertes",
       "<#fc7703>%player:statistic_raw deaths%"
     ],
     [
-      "<#ffe600>⌛ <gray>Jugado",
+      "<#ffe600>⌛ <white>Jugado",
       "<#ffe600>%player:playtime H'h' m'm'%"
     ],
     "",

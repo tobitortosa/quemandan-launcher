@@ -97,6 +97,27 @@ def enc(encantamientos):
     return "enchantments={%s}" % ",".join("%s:%d" % par for par in encantamientos.items())
 
 
+# Los items del menu son botones, no objetos: no tiene que aparecerles nada de
+# lo que el juego dibuja solo. Una espada mostrando "7 de dano de ataque" abajo
+# del cartel que explica cuanto sale marea, y no dice nada util.
+#
+# Ademas es la marca que usa el mod de precios para NO ponerle el "Precio: $180"
+# a un lingote de oro que en realidad es el boton de ECONOMIA. El mod saltea
+# cualquier item que traiga tooltip_display, que es exactamente "a este item
+# alguien le curo la descripcion a mano".
+SIN_ADORNOS = {
+    "minecraft:tooltip_display": {
+        "hidden_components": [
+            "minecraft:attribute_modifiers",   # el dano de las espadas y la armadura
+            "minecraft:potion_contents",       # los efectos de la pocion, que ya estan en el lore
+            "minecraft:unbreakable",
+            "minecraft:stored_enchantments",
+            "minecraft:enchantments",
+        ]
+    }
+}
+
+
 def item(iid, nombre, color, lore=(), componentes=None, cantidad=1):
     """El stack como lo serializa el juego: id, count y components."""
     comp = {
@@ -104,6 +125,7 @@ def item(iid, nombre, color, lore=(), componentes=None, cantidad=1):
         "minecraft:lore": [l if isinstance(l, dict) else texto("  " + l, e.ETIQUETA)
                            for l in lore],
     }
+    comp.update(SIN_ADORNOS)
     comp.update(componentes or {})
     return {"id": iid, "count": cantidad, "components": comp}
 

@@ -53,7 +53,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
 sys.path.insert(0, AQUI)
 
-VERSION_MOD = "1.2.0"
+VERSION_MOD = "1.3.0"
 SALTO = chr(10)
 
 # Toda la tabla de fabrica se multiplica por esto. No es inflacion decorativa:
@@ -394,12 +394,21 @@ def rearmar_mod(precios_mod, version=VERSION_MOD):
     if not os.path.isdir(libs):
         print("no hay mod-precios/build/libs; salteo el rearmado del mod cliente")
         return
-    candidatos = sorted(n for n in os.listdir(libs)
-                        if n.startswith("precios-sobrinosdepepe-") and n.endswith(".jar"))
+    candidatos = [n for n in os.listdir(libs)
+                  if n.startswith("precios-sobrinosdepepe-") and n.endswith(".jar")]
     if not candidatos:
         print("no encuentro el jar del mod de precios; salteo el rearmado")
         return
-    origen = os.path.join(libs, candidatos[0])
+    # El jar MAS NUEVO, no el primero por orden alfabetico. Antes agarraba el
+    # 1.0.0 y le escribia encima los precios nuevos, asi que cualquier cambio de
+    # codigo del mod se perdia en silencio la proxima vez que se regeneraban los
+    # precios. Se ordena por fecha porque "1.10.0" es alfabeticamente menor que
+    # "1.2.0" y comparar strings volveria a elegir mal.
+    def clave(n):
+        return os.path.getmtime(os.path.join(libs, n))
+
+    origen = os.path.join(libs, max(candidatos, key=clave))
+    print("  rearmando a partir de %s" % os.path.basename(origen))
     destino = os.path.join(libs, "precios-sobrinosdepepe-%s.jar" % version)
     temporal = destino + ".tmp"
     with zipfile.ZipFile(origen) as zin, \

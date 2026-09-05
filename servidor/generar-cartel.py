@@ -32,8 +32,13 @@ import mc
 
 
 def fila(icono, color, etiqueta, valor):
-    """Una fila: icono y etiqueta a la izquierda, valor pegado a la derecha."""
-    return ["<%s>%s <gray>%s" % (color, icono, etiqueta), "<%s>%s" % (color, valor)]
+    """Una fila: icono y etiqueta a la izquierda, valor pegado a la derecha.
+
+    La etiqueta va en blanco y no en gris: sobre el fondo del cartel el gris casi
+    no se lee. El icono y el valor mantienen su color, que es lo que distingue
+    una fila de otra de un vistazo.
+    """
+    return ["<%s>%s <white>%s" % (color, icono, etiqueta), "<%s>%s" % (color, valor)]
 
 
 cartel = {
@@ -51,7 +56,7 @@ cartel = {
     # tampoco) ni la recompensa: el bounty sigue vivo, pero se mira con /bounty
     # y se avisa por chat cuando alguien pone una, que es como lo hacen alla.
     "lines": [
-        "",
+        # Sin linea en blanco despues del titulo: el titulo ya separa solo.
         # El formato corto, que es el que usa DonutSMP: $337k, $1.5k, $2.5M.
         # EconomyCraft lo devuelve YA con el signo adelante (formatMoneyShort
         # arranca con "$"), asi que esta fila va sin icono: ponerle el $ del lado
@@ -60,8 +65,10 @@ cartel = {
         #
         # Los otros dos placeholders de saldo tambien traen el signo, asi que no
         # hay forma de tener icono y numero corto a la vez: balance es el unico
-        # que devuelve el numero pelado, pero sin separador de miles.
-        fila("", e.PLATA, "Dinero", "%economycraft:balance_short%"),
+        # que devuelve el numero pelado, pero sin separador de miles. Queda con el
+        # $ dos veces, uno de icono y otro adentro del valor, y esta bien asi: la
+        # fila se lee mejor con simbolo que con el hueco que quedaba antes.
+        fila(e.PESOS, e.PLATA, "Dinero", "%economycraft:balance_short%"),
         fila(e.SHARD, e.SHARDS, "Shards", "%player:objective Shards%"),
         "",
         fila(e.ESPADAS, e.KILLS, "Kills", "%player:statistic_raw player_kills%"),
