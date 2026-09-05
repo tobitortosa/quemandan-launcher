@@ -330,12 +330,16 @@ reglas = item("minecraft:netherite_chestplate", e.CALAVERA + " COMO SE PELEA ACA
 guardar("pvp", {
     "name": texto("PVP", e.KILLS, negrita=True),
     "rows": 5,
+    # La misma forma que sdp:tienda: el cartel que explica arriba y solo, y las
+    # dos puertas abajo repartidas alrededor de la columna del medio. Quedo
+    # corrido a la izquierda (columnas 2, 4 y 6) al sacar las dos entradas del
+    # bounty y no volver a centrar lo que quedaba.
     "items": marco(5, saltar=[(5, 5)]) + [
-        celda(2, 2, reglas),
-        celda(2, 4, item("minecraft:amethyst_shard", "/shards", e.SHARDS,
+        celda(2, 5, reglas),
+        celda(3, 4, item("minecraft:amethyst_shard", "/shards", e.SHARDS,
                          ["Cuantos shards tenes", "y como se ganan"]),
               correr("shards")),
-        celda(2, 6, item("minecraft:diamond_sword", "TIENDA DE SHARDS", e.SHARDS,
+        celda(3, 6, item("minecraft:diamond_sword", "TIENDA DE SHARDS", e.SHARDS,
                          ["Lo que se compra matando"]),
               abrir("sdp:tienda"), "select"),
         volver(fila=5),
