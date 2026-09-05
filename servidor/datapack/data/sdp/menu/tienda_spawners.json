@@ -519,14 +519,6 @@
           },
           "minecraft:custom_data": {
             "sdp": "menu"
-          },
-          "minecraft:block_entity_data": {
-            "id": "minecraft:mob_spawner",
-            "SpawnData": {
-              "entity": {
-                "id": "minecraft:skeleton"
-              }
-            }
           }
         }
       },
@@ -623,14 +615,6 @@
           },
           "minecraft:custom_data": {
             "sdp": "menu"
-          },
-          "minecraft:block_entity_data": {
-            "id": "minecraft:mob_spawner",
-            "SpawnData": {
-              "entity": {
-                "id": "minecraft:zombie"
-              }
-            }
           }
         }
       },
@@ -727,14 +711,6 @@
           },
           "minecraft:custom_data": {
             "sdp": "menu"
-          },
-          "minecraft:block_entity_data": {
-            "id": "minecraft:mob_spawner",
-            "SpawnData": {
-              "entity": {
-                "id": "minecraft:spider"
-              }
-            }
           }
         }
       },
@@ -831,14 +807,6 @@
           },
           "minecraft:custom_data": {
             "sdp": "menu"
-          },
-          "minecraft:block_entity_data": {
-            "id": "minecraft:mob_spawner",
-            "SpawnData": {
-              "entity": {
-                "id": "minecraft:creeper"
-              }
-            }
           }
         }
       },
@@ -935,14 +903,6 @@
           },
           "minecraft:custom_data": {
             "sdp": "menu"
-          },
-          "minecraft:block_entity_data": {
-            "id": "minecraft:mob_spawner",
-            "SpawnData": {
-              "entity": {
-                "id": "minecraft:blaze"
-              }
-            }
           }
         }
       },
@@ -1039,14 +999,6 @@
           },
           "minecraft:custom_data": {
             "sdp": "menu"
-          },
-          "minecraft:block_entity_data": {
-            "id": "minecraft:mob_spawner",
-            "SpawnData": {
-              "entity": {
-                "id": "minecraft:cow"
-              }
-            }
           }
         }
       },

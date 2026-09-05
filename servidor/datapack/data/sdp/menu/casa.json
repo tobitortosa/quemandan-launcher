@@ -692,14 +692,19 @@
         "count": 1,
         "components": {
           "minecraft:custom_name": {
-            "text": "/warp",
+            "text": "/warp list",
             "italic": false,
             "color": "#00a6ff",
             "bold": true
           },
           "minecraft:lore": [
             {
-              "text": "  Los lugares del servidor",
+              "text": "  Los lugares con nombre del server",
+              "italic": false,
+              "color": "gray"
+            },
+            {
+              "text": "  Los crea un admin con /warp set",
               "italic": false,
               "color": "gray"
             }
@@ -720,45 +725,10 @@
       },
       "sound": "click",
       "action": {
-        "type": "message",
-        "message": {
-          "text": "",
-          "extra": [
-            {
-              "text": "  » ",
-              "italic": false,
-              "color": "dark_gray"
-            },
-            {
-              "text": "Para viajar a un lugar:   ",
-              "italic": false,
-              "color": "gray"
-            },
-            {
-              "text": "/warp ",
-              "color": "#00a6ff",
-              "bold": true,
-              "italic": false,
-              "click_event": {
-                "action": "suggest_command",
-                "command": "/warp "
-              },
-              "hover_event": {
-                "action": "show_text",
-                "value": {
-                  "text": "Clickea y completa lo que falta",
-                  "italic": false,
-                  "color": "gray"
-                }
-              }
-            },
-            {
-              "text": "   clickealo y completalo",
-              "italic": false,
-              "color": "dark_gray"
-            }
-          ]
-        }
+        "type": "command",
+        "command": "warp list",
+        "as_player": true,
+        "silent": false
       }
     },
     {

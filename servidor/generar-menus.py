@@ -304,8 +304,12 @@ guardar("casa", {
         ("minecraft:oak_door", "/home casa", ["Viajar a tu casa"], correr("home casa")),
         ("minecraft:respawn_anchor", "/spawn", ["Volver al spawn"], correr("spawn")),
         ("minecraft:ender_pearl", "/rtp", ["Tirarte a un lugar random"], correr("rtp")),
-        ("minecraft:lodestone", "/warp", ["Los lugares del servidor"],
-         escribir("/warp ", "Para viajar a un lugar:")),
+        # Va a /warp list y no a sugerir "/warp ": sin nombre el comando esta
+        # incompleto y el juego contesta que no lo conoce. La lista tambien
+        # avisa sola cuando todavia no hay ningun lugar creado, que es el caso.
+        ("minecraft:lodestone", "/warp list", ["Los lugares con nombre del server",
+                                               "Los crea un admin con /warp set"],
+         correr("warp list")),
         ("minecraft:compass", "/tpa", ["Pedirle ir hasta el a alguien"],
          escribir("/tpa ", "Para pedirle a alguien ir hasta el:")),
         ("minecraft:lime_dye", "/tpaccept", ["Aceptar que alguien venga"], correr("tpaccept")),
@@ -500,13 +504,24 @@ guardar("tienda_herramientas", {
 
 
 def spawner(fila, columna, mob, nombre, drop):
+    """El icono va SIN block_entity_data; el mob viaja solo en el give.
+
+    Es el mismo cuidado que con los encantamientos, por otro motivo. Un item con
+    block_entity_data de un tipo con onlyOpCanSetNbt (el spawner lo es) le agrega
+    al tooltip la advertencia roja "el uso de este item puede llevar a la
+    ejecucion de comandos". La condicion esta en BlockItem.shouldPrintOpWarning y
+    solo la ven los operadores, pero igual ensucia el menu para quien lo
+    administra, y no hay componente que la apague: ItemStack la agrega incluso
+    con hide_tooltip.
+
+    El icono no necesita los datos, solo tiene que parecer un spawner. El que
+    genera mobs es el que sale del give, y ese si los lleva.
+    """
     datos = 'block_entity_data={id:"minecraft:mob_spawner",SpawnData:{entity:{id:"minecraft:%s"}}}' % mob
     return articulo(
         fila, columna, "minecraft:spawner", "SPAWNER DE " + nombre, PRECIO["spawner"],
         ["Genera " + drop, "Se coloca y funciona solo"],
-        {"minecraft:block_entity_data": {
-            "id": "minecraft:mob_spawner",
-            "SpawnData": {"entity": {"id": "minecraft:" + mob}}}},
+        None,
         "give %%name%% spawner[%s] 1" % datos)
 
 
