@@ -4,9 +4,9 @@ namespace SobrinosDePepe.App;
 
 /// <summary>
 /// Vigila que la máquina del jugador esté al día, tanto el launcher como el pack de
-/// mods. Pregunta cada diez segundos, y le pregunta al backend en vez de a GitHub:
-/// la API de GitHub corta a las sesenta consultas por hora y cada diez segundos son
-/// trescientas sesenta.
+/// mods. Pregunta al abrir y después cada diez segundos, y le pregunta al backend en
+/// vez de a GitHub: la API de GitHub corta a las sesenta consultas por hora y cada
+/// diez segundos son trescientas sesenta.
 ///
 /// Las dos cosas son obligatorias. Un launcher viejo instala mal el pack, y un pack
 /// que no coincide con el del servidor no deja entrar: por eso, cuando aparece algo
@@ -30,8 +30,9 @@ public static class UpdateWatcher
 
             while (!ct.IsCancellationRequested)
             {
-                await Task.Delay(Interval, ct);
-
+                // La espera va al final y no al principio: si va primero, la pantalla
+                // muestra el pack instalado durante diez segundos y despues salta a
+                // "hay mods nuevos", y parece que algo se colgo. Lo reporto Tobias.
                 try
                 {
                     var versions = await api.VersionsAsync(ct);
@@ -54,6 +55,8 @@ public static class UpdateWatcher
                 {
                     // Sin internet se vuelve a intentar en el próximo turno.
                 }
+
+                await Task.Delay(Interval, ct);
             }
         }, ct);
     }
