@@ -70,7 +70,6 @@ cartel = {
         # fila se lee mejor con simbolo que con el hueco que quedaba antes.
         fila(e.PESOS, e.PLATA, "Dinero", "%economycraft:balance_short%"),
         fila(e.SHARD, e.SHARDS, "Shards", "%player:objective Shards%"),
-        "",
         fila(e.ESPADAS, e.KILLS, "Kills", "%player:statistic_raw player_kills%"),
         fila(e.CALAVERA, e.MUERTES, "Muertes", "%player:statistic_raw deaths%"),
         # El placeholder de tiempo tiene dos trampas: sin argumento devuelve

@@ -304,12 +304,6 @@ guardar("casa", {
         ("minecraft:oak_door", "/home casa", ["Viajar a tu casa"], correr("home casa")),
         ("minecraft:respawn_anchor", "/spawn", ["Volver al spawn"], correr("spawn")),
         ("minecraft:ender_pearl", "/rtp", ["Tirarte a un lugar random"], correr("rtp")),
-        # Va a /warp list y no a sugerir "/warp ": sin nombre el comando esta
-        # incompleto y el juego contesta que no lo conoce. La lista tambien
-        # avisa sola cuando todavia no hay ningun lugar creado, que es el caso.
-        ("minecraft:lodestone", "/warp list", ["Los lugares con nombre del server",
-                                               "Los crea un admin con /warp set"],
-         correr("warp list")),
         ("minecraft:compass", "/tpa", ["Pedirle ir hasta el a alguien"],
          escribir("/tpa ", "Para pedirle a alguien ir hasta el:")),
         ("minecraft:lime_dye", "/tpaccept", ["Aceptar que alguien venga"], correr("tpaccept")),

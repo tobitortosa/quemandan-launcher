@@ -688,56 +688,6 @@
       ],
       "type": "item",
       "item": {
-        "id": "minecraft:lodestone",
-        "count": 1,
-        "components": {
-          "minecraft:custom_name": {
-            "text": "/warp list",
-            "italic": false,
-            "color": "#00a6ff",
-            "bold": true
-          },
-          "minecraft:lore": [
-            {
-              "text": "  Los lugares con nombre del server",
-              "italic": false,
-              "color": "gray"
-            },
-            {
-              "text": "  Los crea un admin con /warp set",
-              "italic": false,
-              "color": "gray"
-            }
-          ],
-          "minecraft:tooltip_display": {
-            "hidden_components": [
-              "minecraft:attribute_modifiers",
-              "minecraft:potion_contents",
-              "minecraft:unbreakable",
-              "minecraft:stored_enchantments",
-              "minecraft:enchantments"
-            ]
-          },
-          "minecraft:custom_data": {
-            "sdp": "menu"
-          }
-        }
-      },
-      "sound": "click",
-      "action": {
-        "type": "command",
-        "command": "warp list",
-        "as_player": true,
-        "silent": false
-      }
-    },
-    {
-      "slot": [
-        2,
-        7
-      ],
-      "type": "item",
-      "item": {
         "id": "minecraft:compass",
         "count": 1,
         "components": {
@@ -814,7 +764,7 @@
     {
       "slot": [
         2,
-        8
+        7
       ],
       "type": "item",
       "item": {
@@ -858,8 +808,8 @@
     },
     {
       "slot": [
-        3,
-        2
+        2,
+        8
       ],
       "type": "item",
       "item": {
@@ -904,7 +854,7 @@
     {
       "slot": [
         3,
-        3
+        2
       ],
       "type": "item",
       "item": {
@@ -949,7 +899,7 @@
     {
       "slot": [
         3,
-        4
+        3
       ],
       "type": "item",
       "item": {

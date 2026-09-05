@@ -1,0 +1,11 @@
+{
+  "type": "node:starts_with",
+  "paths": "warp",
+  "requirement_modifier": {
+    "type": "requirement:replace",
+    "predicate": {
+      "type": "operator",
+      "operator": 4
+    }
+  }
+}

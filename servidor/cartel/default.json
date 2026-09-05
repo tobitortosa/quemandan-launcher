@@ -17,7 +17,6 @@
       "<#a503fc>✦ <white>Shards",
       "<#a503fc>%player:objective Shards%"
     ],
-    "",
     [
       "<#ff0000>⚔ <white>Kills",
       "<#ff0000>%player:statistic_raw player_kills%"
