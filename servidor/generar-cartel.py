@@ -64,6 +64,11 @@ cartel = {
         # "Tu cabeza" y no "Tu precio": el precio en la tienda es otra cosa.
         fila(e.SHARD, e.RECOMPENSA, "Tu cabeza", "%player:objective Bounty%"),
         "",
+        # El cartel es el unico lugar que ve un jugador todo el tiempo, asi que
+        # aca vive la pista de como se abre la interfaz. DonutSMP no tiene ningun
+        # item que abra menus: todas sus GUIs se abren tipeando el comando, y el
+        # indice de todas es /help. Aca ese indice es /comandos.
+        "<#00a6ff>/comandos <gray>para todo",
         "<dark_gray>sobrinosdepepe.minehost.pro",
     ],
 }
