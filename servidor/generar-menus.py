@@ -401,10 +401,16 @@ guardar("tienda_armadura", {
         armadura(2, 4, "chestplate", "PETO"),
         armadura(2, 6, "leggings", "PANTALONES"),
         armadura(2, 7, "boots", "BOTAS"),
+        # Lleva Proteccion y no Proteccion contra explosiones, que en vanilla son
+        # excluyentes. Es el detalle que usa Donut para dar acceso sin dar la
+        # ventaja que decide las peleas con crystals: quien quiera esa la tiene
+        # que armar con su propia mesa de encantamientos.
         celda(3, 5, item("minecraft:shield", "El set completo son %d shards"
                          % (PRECIO["armadura"] * 4), e.ETIQUETA,
-                         ["Sin Proteccion contra explosiones:",
-                          "esa se la gana cada uno encantando."])),
+                         ["Lleva Proteccion IV, que es la general.",
+                          "Para pelear con crystals conviene",
+                          "armarse una con Prot. contra explosiones:",
+                          "esa no se vende, se encanta."])),
         volver("sdp:tienda", fila=4),
     ],
 })

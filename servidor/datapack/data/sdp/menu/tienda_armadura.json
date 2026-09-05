@@ -742,12 +742,22 @@
           },
           "minecraft:lore": [
             {
-              "text": "  Sin Proteccion contra explosiones:",
+              "text": "  Lleva Proteccion IV, que es la general.",
               "italic": false,
               "color": "gray"
             },
             {
-              "text": "  esa se la gana cada uno encantando.",
+              "text": "  Para pelear con crystals conviene",
+              "italic": false,
+              "color": "gray"
+            },
+            {
+              "text": "  armarse una con Prot. contra explosiones:",
+              "italic": false,
+              "color": "gray"
+            },
+            {
+              "text": "  esa no se vende, se encanta.",
               "italic": false,
               "color": "gray"
             }
