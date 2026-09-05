@@ -27,7 +27,6 @@ OBJETIVOS = [
     # nombre, criterio, como se muestra
     ("HP", "health", {"text": chr(0x2764), "color": "red"}),
     ("Shards", "dummy", {"text": e.SHARD + " Shards", "color": e.SHARDS}),
-    ("Bounty", "dummy", {"text": e.CALAVERA + " Recompensa", "color": e.RECOMPENSA}),
 
     # El juego cuenta solo los ticks jugados de cada uno con este criterio, asi
     # que no hace falta contar ticks a mano. Arranca en cero cuando se crea el
@@ -42,7 +41,6 @@ OBJETIVOS = [
     ("sdp_killer", "dummy", {"text": "asesino del tick"}),
     # Ticks que faltan para que matar a este jugador vuelva a pagar shards.
     ("sdp_cd", "dummy", {"text": "enfriamiento de la kill"}),
-    ("sdp_ok", "dummy", {"text": "resultado del cobro"}),
     ("sdp_nv", "dummy", {"text": "vision nocturna"}),
 ]
 

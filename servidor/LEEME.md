@@ -257,6 +257,25 @@ verificar de verdad con comandos.
 - **No se pierden al morir ni se pueden pasar a otro jugador.** Si se pudieran
   pasar, dejarían de ser una segunda moneda al instante.
 
+Hubo un sistema de recompensas (`/bounty`, el objetivo `Bounty`, la fila "Tu
+cabeza" del cartel) y **se sacó entero el 2026-09-05**, sin que nadie lo hubiera
+usado nunca: todos los `Bounty` estaban en cero.
+
+DonutSMP sí tiene bounties, pero **en plata** (`/bounty add` te descuenta del
+saldo). Acá no se puede: `eco pay` y `eco removemoney` devuelven éxito aunque no
+alcance, así que un jugador sin un peso pondría una recompensa de un millón
+gratis. Por eso la nuestra era en shards, y ahí no cerraba: el mínimo eran 10
+shards contra los 200 que sale una pieza de armadura, o sea que poner precio a
+una cabeza competía con el equipo que estás ahorrando.
+
+Tampoco se puede hacer que la recompensa **crezca con la plata** del jugador,
+que sería la versión interesante: el objetivo `eco_balance` que crea
+EconomyCraft con `scoreboard_enabled` no es el saldo de cada uno, es un **top 5**
+(`computeLeaderboard(5)`), y al crearlo el mod se apodera del slot del cartel.
+
+Matar ya paga por tres lados sin necesidad de una cuarta: 10 shards, el 10% de
+la plata del muerto y todo el equipo que llevaba puesto.
+
 **`scoreboard players operation` con `@a` de los dos lados hace producto
 cartesiano**, y no falla: recorre las dos colecciones anidadas, así que cada
 jugador termina con el valor del último de la lista y, en la resta, con la suma
@@ -273,19 +292,6 @@ veces por jugador cada diez minutos, así que no se nota.
 Los precios de la tienda de shards son los de Donut escalados por el spawner:
 allá sale 1.500 y acá 200, o sea todo por 0,133. Lo que se mantiene es la
 relación entre los items, que es la que define qué conviene comprar primero.
-
-## `/bounty` se paga en shards, y por qué
-
-Porque **con la plata no se puede hacer bien**. `eco removemoney` devuelve éxito
-tanto si cobra como si no le alcanza (hace `sendFailure` y después `return 1`),
-`eco pay` hace lo mismo, y no existe ningún comando que lea el saldo: el único
-objetivo de scoreboard del mod es `eco_balance`, que solo tiene el top 5 y
-escalado a la milésima. Antes de este cambio `/bounty` estaba roto en las dos
-direcciones: a un operador le publicaba la recompensa **sin cobrarle** (plata de
-la nada) y a un jugador sin OP no le funcionaba nunca, aunque tuviera millones.
-
-Los shards son un score, así que `execute if score @s Shards matches N..` dice
-la verdad, y el pago al asesino es una sola operación de scoreboard.
 
 ## Los comandos de EconomyCraft y el nivel de operador
 

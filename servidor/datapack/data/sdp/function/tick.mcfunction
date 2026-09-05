@@ -1,8 +1,3 @@
-# Si murio alguien que tenia precio en su cabeza, se le paga a quien lo mato.
-# El diseno asume una muerte por tick: con dos en el mismo tick, el limit=1 de
-# sdp:cobrar puede emparejar mal. Con cuatro jugadores no pasa nunca.
-execute as @a[scores={sdp_death=1..,Bounty=1..}] run function sdp:cobrar
-
 # Shards por matar. Se paga aca y no en el advancement porque el advancement no
 # dice a quien mato, y el asesino se marca en el mismo tick que la muerte.
 # Se recorre por MUERTO y no por asesino: sdp:pagar_kill necesita saber a quien
@@ -17,9 +12,8 @@ scoreboard players remove @a[scores={sdp_cd=1..}] sdp_cd 1
 scoreboard players reset * sdp_death
 scoreboard players reset * sdp_killer
 
-# Deja el precio en cero a quien no tenga, para que el cartel muestre algo.
+# Deja los shards en cero a quien no tenga, para que el cartel muestre algo.
 # %player:objective% se cae si el jugador no tiene score en el objetivo.
-scoreboard players add @a Bounty 0
 scoreboard players add @a Shards 0
 
 # Al que todavia no tiene turno asignado se le fija el primero y se le guarda la

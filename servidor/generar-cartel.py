@@ -46,6 +46,10 @@ cartel = {
     "scroll_speed": 1,
     "scroll_loop": True,
     "title": ["<b><gr:%s:%s>SOBRINOS DE PEPE</gr>" % (e.MARCA, e.MARCA_CLARA)],
+    # Las cinco filas de datos son EXACTAMENTE las de DonutSMP, en su orden:
+    # plata, shards, kills, muertes y tiempo jugado. No lleva el dominio (ellos
+    # tampoco) ni la recompensa: el bounty sigue vivo, pero se mira con /bounty
+    # y se avisa por chat cuando alguien pone una, que es como lo hacen alla.
     "lines": [
         "",
         # EconomyCraft ya devuelve la plata con el signo adelante y los puntos
@@ -61,15 +65,11 @@ cartel = {
         # explicito siempre sale en horas y minutos.
         fila(e.RELOJ, e.TIEMPO, "Jugado", "%player:playtime H'h' m'm'%"),
         "",
-        # "Tu cabeza" y no "Tu precio": el precio en la tienda es otra cosa.
-        fila(e.SHARD, e.RECOMPENSA, "Tu cabeza", "%player:objective Bounty%"),
-        "",
         # El cartel es el unico lugar que ve un jugador todo el tiempo, asi que
         # aca vive la pista de como se abre la interfaz. DonutSMP no tiene ningun
         # item que abra menus: todas sus GUIs se abren tipeando el comando, y el
         # indice de todas es /help. Aca ese indice es /comandos.
         "<#00a6ff>/comandos <gray>para todo",
-        "<dark_gray>sobrinosdepepe.minehost.pro",
     ],
 }
 

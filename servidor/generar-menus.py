@@ -225,7 +225,7 @@ guardar("comandos", {
                          ["Homes, spawn, warps", "y teletransportes"]),
               abrir("sdp:casa"), "select"),
         celda(3, 4, item("minecraft:netherite_sword", "PVP", e.KILLS,
-                         ["Como se pelea aca", "y las recompensas"]),
+                         ["Como se pelea aca"]),
               abrir("sdp:pvp"), "select"),
         celda(3, 6, item("minecraft:amethyst_shard", "TIENDA DE SHARDS", e.SHARDS,
                          ["Lo que se compra matando:", "spawners, armas y armaduras"]),
@@ -290,22 +290,14 @@ reglas = item("minecraft:netherite_chestplate", e.CALAVERA + " COMO SE PELEA ACA
 ])
 
 guardar("pvp", {
-    "name": texto("PVP Y RECOMPENSAS", e.KILLS, negrita=True),
+    "name": texto("PVP", e.KILLS, negrita=True),
     "rows": 5,
     "items": marco(5, saltar=[(5, 5)]) + [
         celda(2, 2, reglas),
         celda(2, 4, item("minecraft:amethyst_shard", "/shards", e.SHARDS,
                          ["Cuantos shards tenes", "y como se ganan"]),
               correr("shards")),
-        celda(2, 5, item("minecraft:skeleton_skull", "/bounty", e.RECOMPENSA,
-                         ["La lista de buscados"]),
-              correr("bounty")),
-        celda(2, 6, item("minecraft:wither_skeleton_skull", "PONER RECOMPENSA", e.RECOMPENSA,
-                         ["Poner shards por la cabeza",
-                          "de alguien. Los paga tu bolsillo",
-                          "y se los lleva quien lo mate."]),
-              escribir("/bounty ", "Para poner precio a una cabeza:")),
-        celda(2, 8, item("minecraft:diamond_sword", "TIENDA DE SHARDS", e.SHARDS,
+        celda(2, 6, item("minecraft:diamond_sword", "TIENDA DE SHARDS", e.SHARDS,
                          ["Lo que se compra matando"]),
               abrir("sdp:tienda"), "select"),
         volver(fila=5),

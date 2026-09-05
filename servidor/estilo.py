@@ -21,7 +21,6 @@ SHARDS = "#a503fc"
 KILLS = "#ff0000"
 MUERTES = "#fc7703"
 TIEMPO = "#ffe600"
-RECOMPENSA = "#ff00a6"     # Donut no tiene bounties: uso su magenta de acento
 
 # La marca propia
 MARCA = "#ffb02e"          # el dorado de SOBRINOS DE PEPE

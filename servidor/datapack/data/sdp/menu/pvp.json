@@ -1,6 +1,6 @@
 {
   "name": {
-    "text": "PVP Y RECOMPENSAS",
+    "text": "PVP",
     "italic": false,
     "color": "#ff0000",
     "bold": true
@@ -465,118 +465,7 @@
     {
       "slot": [
         2,
-        5
-      ],
-      "type": "item",
-      "item": {
-        "id": "minecraft:skeleton_skull",
-        "count": 1,
-        "components": {
-          "minecraft:custom_name": {
-            "text": "/bounty",
-            "italic": false,
-            "color": "#ff00a6",
-            "bold": true
-          },
-          "minecraft:lore": [
-            {
-              "text": "  La lista de buscados",
-              "italic": false,
-              "color": "gray"
-            }
-          ]
-        }
-      },
-      "sound": "click",
-      "action": {
-        "type": "command",
-        "command": "bounty",
-        "as_player": true,
-        "silent": false
-      }
-    },
-    {
-      "slot": [
-        2,
         6
-      ],
-      "type": "item",
-      "item": {
-        "id": "minecraft:wither_skeleton_skull",
-        "count": 1,
-        "components": {
-          "minecraft:custom_name": {
-            "text": "PONER RECOMPENSA",
-            "italic": false,
-            "color": "#ff00a6",
-            "bold": true
-          },
-          "minecraft:lore": [
-            {
-              "text": "  Poner shards por la cabeza",
-              "italic": false,
-              "color": "gray"
-            },
-            {
-              "text": "  de alguien. Los paga tu bolsillo",
-              "italic": false,
-              "color": "gray"
-            },
-            {
-              "text": "  y se los lleva quien lo mate.",
-              "italic": false,
-              "color": "gray"
-            }
-          ]
-        }
-      },
-      "sound": "click",
-      "action": {
-        "type": "message",
-        "message": {
-          "text": "",
-          "extra": [
-            {
-              "text": "  » ",
-              "italic": false,
-              "color": "dark_gray"
-            },
-            {
-              "text": "Para poner precio a una cabeza:   ",
-              "italic": false,
-              "color": "gray"
-            },
-            {
-              "text": "/bounty ",
-              "color": "#00a6ff",
-              "bold": true,
-              "italic": false,
-              "click_event": {
-                "action": "suggest_command",
-                "command": "/bounty "
-              },
-              "hover_event": {
-                "action": "show_text",
-                "value": {
-                  "text": "Clickea y completa lo que falta",
-                  "italic": false,
-                  "color": "gray"
-                }
-              }
-            },
-            {
-              "text": "   clickealo y completalo",
-              "italic": false,
-              "color": "dark_gray"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "slot": [
-        2,
-        8
       ],
       "type": "item",
       "item": {

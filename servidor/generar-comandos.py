@@ -4,9 +4,9 @@ Arma los comandos propios y los sube al servidor.
 
     python servidor/generar-comandos.py
 
-Los declara Melius Commands. Desde que los menus son GUI de cofre, casi todos
-estos comandos son una linea: abren el menu que corresponde o llaman a una
-funcion del datapack. La excepcion es /bounty, que hace toda su cuenta aca.
+Los declara Melius Commands. Desde que los menus son GUI de cofre, todos estos
+comandos son una linea: abren el menu que corresponde o llaman a una funcion del
+datapack.
 
 **Cada ejecucion necesita `op_level: 4` explicito.** En Melius ese campo no
 tiene valor por defecto: sin el, el comando corre con el nivel del jugador, y
@@ -80,91 +80,6 @@ for cid, funcion in [
 guardar("clearchat", {"executes": [accion(
     "tellraw @s " + json.dumps(["", {"text": chr(10) * 60},
                                 t("  Chat limpio." + chr(10), e.APAGADO)]))]})
-
-# ---------------------------------------------------------------------- /bounty
-# Poner una recompensa se paga en SHARDS y no en plata. Es la unica forma de que
-# el chequeo sea correcto: los shards son un objetivo de scoreboard, asi que
-# `execute if score` dice de verdad si alcanza. Con la plata no se puede, porque
-# `eco removemoney` devuelve exito tanto si cobra como si no le alcanza, y no hay
-# ningun comando que lea el saldo.
-aviso_sin_shards = ["", t("  " + e.CRUZ + " ", e.ERROR),
-                    t("No te alcanzan los shards para esa recompensa.", e.ERROR),
-                    t(chr(10))]
-
-aviso_sin_jugador = ["", t("  " + e.CRUZ + " ", e.ERROR),
-                     t("Ese jugador no existe o nunca entro al servidor.", e.ERROR),
-                     t(chr(10))]
-
-aviso_vos_mismo = ["", t("  " + e.CRUZ + " ", e.ERROR),
-                   t("No podes poner precio a tu propia cabeza.", e.ERROR),
-                   t(chr(10))]
-
-anuncio = ["",
-           t(chr(10) + "  " + e.CALAVERA + " RECOMPENSA " + e.CALAVERA + chr(10),
-             e.RECOMPENSA, negrita=True),
-           t("  ", e.ETIQUETA), {"selector": "@s", "color": e.MARCA, "bold": True},
-           t(" puso ", e.ETIQUETA),
-           t(e.SHARD + "${monto}", e.SHARDS, negrita=True),
-           t(" shards por la cabeza de" + chr(10) + "  ", e.ETIQUETA),
-           {"selector": "${objetivo}", "color": e.RECOMPENSA, "bold": True},
-           t(chr(10) * 2 + "  Total acumulado: ", e.ETIQUETA),
-           t(e.SHARD, e.SHARDS),
-           {"score": {"name": "${objetivo}", "objective": "Bounty"},
-            "color": e.SHARDS, "bold": True},
-           t("   " + e.FLECHA + "  ", e.APAGADO),
-           t("/bounty", e.ACENTO, run="/bounty", hover="Ver la lista de buscados"),
-           t(" para ver la lista" + chr(10), e.ETIQUETA)]
-
-guardar("bounty", {
-    "executes": [accion("function sdp:lista_bounty")],
-    "arguments": [{
-        "id": "objetivo",
-        "type": "minecraft:entity player",
-        "arguments": [{
-            "id": "monto",
-            "type": "brigadier:integer 10",
-            # sdp_ok hace de semaforo: 0 el objetivo no existe, 1 existe pero no
-            # alcanzan los shards, 2 todo bien, 3 sos vos mismo. Se chequea que
-            # el objetivo exista ANTES de cobrar, porque Melius sustituye
-            # ${objetivo} como texto crudo: probado en el juego, con un selector
-            # que no matchea a nadie el comando cobraba los shards y la
-            # recompensa no iba a ningun lado. Tener score en Bounty equivale a
-            # haber entrado alguna vez, asi que tambien sirve para poner precio a
-            # alguien desconectado.
-            #
-            # Ponerse precio a uno mismo se bloquea porque seria una forma de
-            # pasarle shards a otro: me pongo 500, me dejo matar, y los shards
-            # cambian de dueno. Los shards no se transfieren, que es lo que los
-            # hace una segunda moneda y no plata con otro nombre.
-            "executes": [
-                accion("execute store success score @s sdp_ok "
-                       "if score ${objetivo} Bounty matches 0.."),
-                accion("tag ${objetivo} add sdp_objetivo"),
-                accion("execute if entity @s[tag=sdp_objetivo] run "
-                       "scoreboard players set @s sdp_ok 3"),
-                accion("tag @a remove sdp_objetivo"),
-                accion("execute if score @s sdp_ok matches 1 "
-                       "if score @s Shards matches ${monto}.. run "
-                       "scoreboard players set @s sdp_ok 2"),
-                accion("execute if score @s sdp_ok matches 2 run "
-                       "scoreboard players remove @s Shards ${monto}"),
-                accion("execute if score @s sdp_ok matches 2 run "
-                       "scoreboard players add ${objetivo} Bounty ${monto}"),
-                accion("execute if score @s sdp_ok matches 2 run tellraw @a "
-                       + json.dumps(anuncio)),
-                accion("execute if score @s sdp_ok matches 2 run "
-                       "playsound minecraft:entity.wither.spawn master @a ~ ~ ~ 0.4 1.6"),
-                accion("execute if score @s sdp_ok matches 1 run tellraw @s "
-                       + json.dumps(aviso_sin_shards)),
-                accion("execute if score @s sdp_ok matches 0 run tellraw @s "
-                       + json.dumps(aviso_sin_jugador)),
-                accion("execute if score @s sdp_ok matches 3 run tellraw @s "
-                       + json.dumps(aviso_vos_mismo)),
-                accion("scoreboard players reset @s sdp_ok"),
-            ],
-        }],
-    }],
-})
 
 mc.cmd("reload")
 print("  recargado")
