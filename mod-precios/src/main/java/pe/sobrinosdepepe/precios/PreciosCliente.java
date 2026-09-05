@@ -42,6 +42,11 @@ public class PreciosCliente implements ClientModInitializer {
 		cargarPrecios();
 
 		ItemTooltipCallback.EVENT.register((pila, contexto, bandera, lineas) -> {
+			if (soloEspacios(lineas)) {
+				lineas.clear();
+				return;
+			}
+
 			if (esBoton(pila) || !esTuyo(pila)) return;
 
 			var id = BuiltInRegistries.ITEM.getKey(pila.getItem());
@@ -68,6 +73,33 @@ public class PreciosCliente implements ClientModInitializer {
 	private static boolean esBoton(ItemStack pila) {
 		CustomData datos = pila.get(DataComponents.CUSTOM_DATA);
 		return datos != null && datos.copyTag().contains("sdp");
+	}
+
+	/**
+	 * Un cartel cuyo texto es todo espacios se borra, asi no queda el cuadrito
+	 * negro vacio flotando.
+	 *
+	 * Es para el relleno de los menus de EconomyCraft: su MenuUiSupport.filler()
+	 * es un vidrio gris con custom_name de un solo espacio y sin tooltip_display,
+	 * asi que el juego le dibuja una caja con una linea en blanco adentro. Antes
+	 * no se notaba porque este mod le metia el precio del vidrio adentro.
+	 *
+	 * Nuestros propios menus no pasan por aca: su relleno lleva tooltip_display
+	 * con hide_tooltip, y con eso ItemStack.getTooltipLines devuelve la lista
+	 * vacia directamente. Y una lista vacia no dibuja nada, porque
+	 * setTooltipForNextFrameInternal arranca con "if (!lines.isEmpty())".
+	 *
+	 * Borrar es seguro: solo saca carteles que iban a verse vacios igual. Un item
+	 * de verdad siempre tiene el nombre, que no es blanco.
+	 */
+	private static boolean soloEspacios(java.util.List<Component> lineas) {
+		if (lineas.isEmpty()) return false;
+
+		for (Component linea : lineas) {
+			if (!linea.getString().isBlank()) return false;
+		}
+
+		return true;
 	}
 
 	/**
